@@ -1,0 +1,51 @@
+[
+  {
+    "id": "firewood",
+    "name": "Firewood Bundle",
+    "type": "fuel",
+    "fireEffect": "strongClean",
+    "tags": ["essential", "warmth"]
+  },
+  {
+    "id": "bread",
+    "name": "Loaf of Bread",
+    "type": "food",
+    "fireEffect": "weakClean",
+    "tags": ["dailyUse", "cozy"]
+  },
+  {
+    "id": "silkCloth",
+    "name": "Silk Cloth",
+    "type": "goods",
+    "fireEffect": "weakClean",
+    "tags": ["luxury", "burnable"]
+  },
+  {
+    "id": "ancientTalisman",
+    "name": "Ancient Talisman",
+    "type": "relic",
+    "fireEffect": "strongEffect",
+    "tags": ["magical", "ritual"]
+  },
+  {
+    "id": "ironOre",
+    "name": "Iron Ore",
+    "type": "goods",
+    "fireEffect": "weak",
+    "tags": ["metal", "smithing"]
+  },
+  {
+    "id": "herbs",
+    "name": "Bundle of Rare Herbs",
+    "type": "goods",
+    "fireEffect": "weakClean",
+    "tags": ["healing", "aromatic"]
+  },
+  {
+    "id": "mysticScroll",
+    "name": "Mystic Scroll",
+    "type": "relic",
+    "fireEffect": "strongEffect",
+    "tags": ["arcane", "ritual"]
+  }
+]

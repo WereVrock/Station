@@ -1,0 +1,110 @@
+[
+  {
+    "id": "liora",
+    "name": "Liora",
+    "background": "A former scholar wandering to collect rare herbs. Always curious about strange flames.",
+    "visits": [
+      {
+        "fireRequired": ["strongClean", "weakClean"],
+        "requiredTags": [],
+        "effect": {
+          "stays": true,
+          "willingToBuy": true,
+          "bringsItems": ["herbs"],
+          "tagsToAdd": ["lioraVisit1"]
+        }
+      },
+      {
+        "fireRequired": ["strongEffect"],
+        "requiredTags": ["lioraVisit1"],
+        "effect": {
+          "stays": false,
+          "willingToBuy": true,
+          "bringsItems": ["mysticScroll"],
+          "tagsToAdd": ["lioraVisit2"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "thorn",
+    "name": "Thorn",
+    "background": "Ex-mercenary, gruff but has a soft spot for pets and old relics.",
+    "visits": [
+      {
+        "fireRequired": ["strongEffect", "weakClean"],
+        "requiredTags": [],
+        "effect": {
+          "stays": true,
+          "willingToBuy": true,
+          "bringsItems": ["ironOre"],
+          "tagsToAdd": ["thornVisit1"]
+        }
+      },
+      {
+        "fireRequired": ["strongClean"],
+        "requiredTags": ["thornVisit1"],
+        "effect": {
+          "stays": false,
+          "willingToBuy": false,
+          "bringsItems": [],
+          "tagsToAdd": ["thornVisit2"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "john_the_witch",
+    "name": "John the Witch",
+    "background": "A mysterious witch who only trusts clean weak fires and brings strange magical gifts.",
+    "visits": [
+      {
+        "fireRequired": ["weakClean"],
+        "requiredTags": [],
+        "effect": {
+          "stays": true,
+          "willingToBuy": false,
+          "bringsItems": ["ancientTalisman"],
+          "tagsToAdd": ["witchVisit1"]
+        }
+      },
+      {
+        "fireRequired": ["strongEffect"],
+        "requiredTags": ["witchVisit1"],
+        "effect": {
+          "stays": false,
+          "willingToBuy": true,
+          "bringsItems": ["mysticScroll"],
+          "tagsToAdd": ["witchVisit2"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "mara",
+    "name": "Mara",
+    "background": "A wandering trader, she loves exotic goods and cozy fires.",
+    "visits": [
+      {
+        "fireRequired": ["weakClean", "strongClean"],
+        "requiredTags": [],
+        "effect": {
+          "stays": false,
+          "willingToBuy": true,
+          "bringsItems": ["silkCloth"],
+          "tagsToAdd": ["maraVisit1"]
+        }
+      },
+      {
+        "fireRequired": ["strongEffect"],
+        "requiredTags": ["maraVisit1"],
+        "effect": {
+          "stays": true,
+          "willingToBuy": true,
+          "bringsItems": ["ancientTalisman", "mysticScroll"],
+          "tagsToAdd": ["maraVisit2"]
+        }
+      }
+    ]
+  }
+]
