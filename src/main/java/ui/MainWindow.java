@@ -1,3 +1,4 @@
+// ===== MainWindow.java =====
 package ui;
 
 import logic.GameEngine;
@@ -126,6 +127,8 @@ public class MainWindow extends JFrame {
         burnPanel.removeAll();
 
         if (!game().waitingForBurnChoice) {
+            burnPanel.revalidate();
+            burnPanel.repaint();
             return;
         }
 
@@ -154,14 +157,23 @@ public class MainWindow extends JFrame {
     }
 
     private void handleBurn(Optional<Character> result) {
+        tradePanel.removeAll();
+
         if (result.isPresent()) {
             currentCharacter = result.get();
             portraitLabel.setIcon(new ImageIcon(currentCharacter.name + ".png"));
+
             logArea.append(currentCharacter.name + " appears!\n");
             logArea.append(currentCharacter.background + "\n");
+
             setupTrade();
         } else {
+            currentCharacter = null;
+            portraitLabel.setIcon(null);
+
             logArea.append("No one appears.\n");
+
+            setupEndDayOnly();
         }
 
         refreshAll();
@@ -197,12 +209,23 @@ public class MainWindow extends JFrame {
             tradePanel.add(sell);
         }
 
-        JButton nextDay = new JButton("End Day");
-        nextDay.addActionListener(e -> endDay());
-        tradePanel.add(nextDay);
+        addEndDayButton();
 
         tradePanel.revalidate();
         tradePanel.repaint();
+    }
+
+    private void setupEndDayOnly() {
+        tradePanel.removeAll();
+        addEndDayButton();
+        tradePanel.revalidate();
+        tradePanel.repaint();
+    }
+
+    private void addEndDayButton() {
+        JButton nextDay = new JButton("End Day");
+        nextDay.addActionListener(e -> endDay());
+        tradePanel.add(nextDay);
     }
 
     private void endDay() {

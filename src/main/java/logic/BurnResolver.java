@@ -20,7 +20,7 @@ public class BurnResolver {
         game.player.fuel--;
         game.burnChosen();
 
-        return resolveFire("strong_clean_fire");
+        return resolveFire("strongClean");
     }
 
     public Optional<Character> burnItem(Item item) {
