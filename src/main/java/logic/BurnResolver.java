@@ -1,7 +1,10 @@
-// ===== BurnResolver.java =====
 package logic;
 
-import main.*;
+import main.Game;
+import main.GameCharacter;
+import main.Item;
+import main.Visit;
+
 import java.util.*;
 
 public class BurnResolver {
@@ -13,8 +16,8 @@ public class BurnResolver {
         this.game = game;
     }
 
-    public List<GameCharacter> resolveFireMultiple(String fireEffect) {
-        List<GameCharacter> result = new ArrayList<>();
+    public List<VisitResult> resolveFireMultiple(String fireEffect) {
+        List<VisitResult> results = new ArrayList<>();
         List<GameCharacter> shuffled = new ArrayList<>(game.characters);
         Collections.shuffle(shuffled);
 
@@ -37,30 +40,34 @@ public class BurnResolver {
                 if (visit.isOneShot()) visit.used = true;
 
                 character.visitedToday = true;
-                setupVisitInventory(character, visit);
-                printVisit(character, visit, fireEffect);
-                applyVisitEffects(character, visit);
 
-                result.add(character);
+                List<Item> items = new ArrayList<>();
+                Visit.ResolvedTrade trade = visit.resolveTrade(rng);
+                for (String ref : trade.sells) {
+                    Item item = findItem(ref);
+                    if (item != null) items.add(item);
+                }
+
+                // Pass visit type to VisitResult
+                results.add(new VisitResult(character, items, visit.dialogue, fireEffect, visit.type));
+
+                // Apply visit effects
+                game.worldTags.addAll(visit.tagsToAdd);
+                if (visit.allowScriptedVisits != null) character.allowScriptedVisits = visit.allowScriptedVisits;
+                if (visit.allowScheduledVisits != null) character.allowScheduledVisits = visit.allowScheduledVisits;
+                if (visit.allowRandomVisits != null) character.allowRandomVisits = visit.allowRandomVisits;
             }
         }
 
-        return result;
+        return results;
     }
 
     public boolean isVisitTypeAllowed(GameCharacter character, Visit visit) {
-        if ("scripted".equals(visit.type)) return character.allowScriptedVisits;
-        if ("scheduled".equals(visit.type)) return character.allowScheduledVisits;
-        if ("random".equals(visit.type)) return character.allowRandomVisits;
-        return true;
-    }
-
-    private void setupVisitInventory(GameCharacter character, Visit visit) {
-        character.clearInventory();
-        Visit.ResolvedTrade trade = visit.resolveTrade(rng);
-        for (String ref : trade.sells) {
-            Item item = findItem(ref);
-            if (item != null) character.addItem(item);
+        switch (visit.type) {
+            case "scripted": return character.allowScriptedVisits;
+            case "scheduled": return character.allowScheduledVisits;
+            case "random": return character.allowRandomVisits;
+            default: return true;
         }
     }
 
@@ -69,37 +76,5 @@ public class BurnResolver {
             if (ref.equals(i.id) || ref.equals(i.name)) return i;
         }
         return null;
-    }
-
-    private void printVisit(GameCharacter character, Visit visit, String fireEffect) {
-        System.out.println();
-        System.out.println("=== VISIT ===");
-        System.out.println("Day: " + game.day);
-        System.out.println("Character: " + character.name);
-        System.out.println("Type: " + visit.type);
-        System.out.println("Fire: " + fireEffect);
-        System.out.println();
-
-        for (String line : visit.dialogue) {
-            System.out.println(character.name + ": " + line);
-        }
-
-        if (!character.inventory.isEmpty()) {
-            System.out.println();
-            System.out.println(character.name + " offers:");
-            for (Item item : character.inventory) {
-                System.out.println(" - " + item.name);
-            }
-        }
-
-        System.out.println("================");
-        System.out.println();
-    }
-
-    private void applyVisitEffects(GameCharacter character, Visit visit) {
-        game.worldTags.addAll(visit.tagsToAdd);
-        if (visit.allowScriptedVisits != null) character.allowScriptedVisits = visit.allowScriptedVisits;
-        if (visit.allowScheduledVisits != null) character.allowScheduledVisits = visit.allowScheduledVisits;
-        if (visit.allowRandomVisits != null) character.allowRandomVisits = visit.allowRandomVisits;
     }
 }

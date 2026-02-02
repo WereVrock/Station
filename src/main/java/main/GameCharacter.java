@@ -46,4 +46,28 @@ public class GameCharacter implements Serializable {
     public void clearInventory() {
         inventory.clear();
     }
+
+    // ===== TO STRING =====
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GameCharacter {\n");
+
+        sb.append("  id: ").append(id).append(",\n");
+ 
+        sb.append("  allowScriptedVisits: ").append(allowScriptedVisits).append(",\n");
+        sb.append("  allowScheduledVisits: ").append(allowScheduledVisits).append(",\n");
+        sb.append("  allowRandomVisits: ").append(allowRandomVisits).append(",\n");
+
+       
+        sb.append("  inventory: [");
+        for (int i = 0; i < inventory.size(); i++) {
+            sb.append(inventory.get(i));
+            if (i < inventory.size() - 1) sb.append(", ");
+        }
+        sb.append("]\n");
+
+        sb.append("}");
+        return sb.toString();
+    }
 }

@@ -1,23 +1,22 @@
-// ===== BurnPanel.java =====
 package ui;
 
 import logic.GameEngine;
+import logic.VisitResult;
 import main.Item;
-import main.GameCharacter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Optional;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class BurnPanel extends JPanel {
 
     private final GameEngine engine;
-    private final Consumer<Optional<GameCharacter>> onBurn;
+    private final Consumer<List<VisitResult>> onBurnVisits;
 
-    public BurnPanel(GameEngine engine, Consumer<Optional<GameCharacter>> onBurn) {
+    public BurnPanel(GameEngine engine, Consumer<List<VisitResult>> onBurnVisits) {
         this.engine = engine;
-        this.onBurn = onBurn;
+        this.onBurnVisits = onBurnVisits;
 
         setLayout(new GridLayout(0, 4, 5, 5));
     }
@@ -33,7 +32,7 @@ public class BurnPanel extends JPanel {
 
         if (engine.getGame().player.fuel > 0) {
             JButton fuel = new JButton("Burn Fuel");
-            fuel.addActionListener(e -> onBurn.accept(engine.burnFuel()));
+            fuel.addActionListener(e -> onBurnVisits.accept(engine.burnFuelVisits()));
             add(fuel);
         }
 
@@ -41,7 +40,7 @@ public class BurnPanel extends JPanel {
             if (!item.burnable) continue;
 
             JButton btn = new JButton(item.name);
-            btn.addActionListener(e -> onBurn.accept(engine.burnItem(item)));
+            btn.addActionListener(e -> onBurnVisits.accept(engine.burnItemVisits(item)));
             add(btn);
         }
 

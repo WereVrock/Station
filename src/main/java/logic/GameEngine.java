@@ -1,4 +1,3 @@
-// ===== GameEngine.java =====
 package logic;
 
 import main.*;
@@ -11,7 +10,7 @@ public class GameEngine {
     private final TradeService tradeService;
     private final DayService dayService;
 
-    private final Queue<GameCharacter> pendingCharacters = new LinkedList<>();
+    private final Queue<VisitResult> pendingVisits = new LinkedList<>();
     private boolean burnedToday = false;
 
     public GameEngine(Game game) {
@@ -21,36 +20,40 @@ public class GameEngine {
         this.dayService = new DayService(game);
     }
 
-    public Optional<GameCharacter> burnFuel() {
-        if (burnedToday || game.player.fuel <= 0) return Optional.empty();
+    public List<VisitResult> burnFuelVisits() {
+        if (burnedToday || game.player.fuel <= 0) return Collections.emptyList();
         burnedToday = true;
         game.player.fuel--;
         game.burnChosen();
 
-        List<GameCharacter> characters = burnResolver.resolveFireMultiple("strongClean");
-        pendingCharacters.addAll(characters);
-        return getNextCharacter();
+        List<VisitResult> visits = burnResolver.resolveFireMultiple("strongClean");
+        pendingVisits.addAll(visits);
+        return getNextVisits();
     }
 
-    public Optional<GameCharacter> burnItem(Item item) {
-        if (burnedToday || !game.player.hasItem(item)) return Optional.empty();
+    public List<VisitResult> burnItemVisits(Item item) {
+        if (burnedToday || !game.player.hasItem(item)) return Collections.emptyList();
         burnedToday = true;
         game.player.removeItem(item);
         game.worldTags.addAll(item.tags);
         game.burnChosen();
 
         String fire = item.fireEffect == null || item.fireEffect.isBlank() ? "weakClean" : item.fireEffect;
-        List<GameCharacter> characters = burnResolver.resolveFireMultiple(fire);
-        pendingCharacters.addAll(characters);
-        return getNextCharacter();
+        List<VisitResult> visits = burnResolver.resolveFireMultiple(fire);
+        pendingVisits.addAll(visits);
+        return getNextVisits();
     }
 
-    private Optional<GameCharacter> getNextCharacter() {
-        return Optional.ofNullable(pendingCharacters.poll());
+    private List<VisitResult> getNextVisits() {
+        List<VisitResult> result = new ArrayList<>();
+        while (!pendingVisits.isEmpty() && result.size() < 5) { // max 5 visits per day
+            result.add(pendingVisits.poll());
+        }
+        return result;
     }
 
-    public Optional<GameCharacter> nextCharacter() {
-        return getNextCharacter();
+    public boolean hasPendingVisits() {
+        return !pendingVisits.isEmpty();
     }
 
     public boolean buy(GameCharacter seller, Item item) {
@@ -62,16 +65,12 @@ public class GameEngine {
     }
 
     public void nextDay() {
-        pendingCharacters.clear();
+        pendingVisits.clear();
         burnedToday = false;
         dayService.nextDay();
     }
 
     public Game getGame() {
         return game;
-    }
-
-    public boolean hasPendingCharacters() {
-        return !pendingCharacters.isEmpty();
     }
 }

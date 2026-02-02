@@ -1,13 +1,12 @@
-// ===== MainWindow.java =====
 package ui;
 
 import logic.GameEngine;
-import main.*;
-import main.GameCharacter;
+import logic.VisitResult;
+import main.Game;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Optional;
+import java.util.List;
 
 public class MainWindow extends JFrame {
 
@@ -18,7 +17,8 @@ public class MainWindow extends JFrame {
     private final BurnPanel burnPanel;
     private final TradePanel tradePanel;
 
-    private GameCharacter currentCharacter;
+    private List<VisitResult> currentVisits;
+    private int currentVisitIndex = 0;
 
     public MainWindow(Game game) {
         this.engine = new GameEngine(game);
@@ -30,8 +30,8 @@ public class MainWindow extends JFrame {
 
         statusPanel = new StatusPanel(engine);
         logPanel = new LogPanel();
-        burnPanel = new BurnPanel(engine, this::handleBurn);
-        tradePanel = new TradePanel(engine, this::endDay);
+        burnPanel = new BurnPanel(engine, this::handleBurnVisits);
+        tradePanel = new TradePanel(engine, this::endDay, this::nextVisit);
 
         add(statusPanel, BorderLayout.NORTH);
         add(logPanel, BorderLayout.CENTER);
@@ -46,39 +46,54 @@ public class MainWindow extends JFrame {
         burnPanel.refresh();
         tradePanel.clear();
         logPanel.dayStart(engine.getGame().day);
+
+        currentVisits = null;
+        currentVisitIndex = 0;
     }
 
-    private void handleBurn(Optional<GameCharacter> result) {
+    private void handleBurnVisits(List<VisitResult> visits) {
         burnPanel.refresh();
 
-        if (result.isPresent()) {
-            currentCharacter = result.get();
-            logPanel.characterAppears(currentCharacter);
-            tradePanel.showTrade(currentCharacter);
-        } else {
-            currentCharacter = null;
+        if (visits.isEmpty()) {
             logPanel.noOneAppears();
             tradePanel.showEndDayOnly();
+            return;
         }
 
-        statusPanel.refresh();
+        currentVisits = visits;
+        currentVisitIndex = 0;
+
+        showCurrentVisit();
     }
 
-    public void nextCharacter() {
-        Optional<GameCharacter> next = engine.nextCharacter();
-        if (next.isPresent()) {
-            currentCharacter = next.get();
-            logPanel.characterAppears(currentCharacter);
-            tradePanel.showTrade(currentCharacter);
-        } else {
-            currentCharacter = null;
+    private void showCurrentVisit() {
+        if (currentVisits == null || currentVisitIndex >= currentVisits.size()) {
             tradePanel.showEndDayOnly();
+            return;
         }
+
+        VisitResult visit = currentVisits.get(currentVisitIndex);
+
+        // PRINT FULL VISIT USING toString()
+        System.out.println(visit);
+
+        // LOG PANEL
+        logPanel.visitAppears(visit);
+
+        // TRADE PANEL: hide Next Visit if this is the last visit
+        boolean hasNext = currentVisitIndex < currentVisits.size() - 1;
+        tradePanel.showTrade(visit, hasNext);
+    }
+
+    private void nextVisit() {
+        currentVisitIndex++;
+        showCurrentVisit();
     }
 
     private void endDay() {
         engine.nextDay();
-        currentCharacter = null;
+        currentVisits = null;
+        currentVisitIndex = 0;
         startDay();
     }
 }

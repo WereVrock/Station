@@ -1,8 +1,7 @@
-// ===== TradePanel.java =====
 package ui;
 
 import logic.GameEngine;
-import main.GameCharacter;
+import logic.VisitResult;
 import main.Item;
 
 import javax.swing.*;
@@ -12,32 +11,34 @@ public class TradePanel extends JPanel {
 
     private final GameEngine engine;
     private final Runnable onEndDay;
+    private final Runnable onNextVisit;
 
-    private GameCharacter currentCharacter;
+    private VisitResult currentVisit;
 
-    public TradePanel(GameEngine engine, Runnable onEndDay) {
+    public TradePanel(GameEngine engine, Runnable onEndDay, Runnable onNextVisit) {
         this.engine = engine;
         this.onEndDay = onEndDay;
+        this.onNextVisit = onNextVisit;
         setLayout(new GridLayout(0, 2, 5, 5));
     }
 
     public void clear() {
         removeAll();
-        currentCharacter = null;
+        currentVisit = null;
         revalidate();
         repaint();
     }
 
-    public void showTrade(GameCharacter character) {
-        this.currentCharacter = character;
+    public void showTrade(VisitResult visit, boolean hasNextVisit) {
+        this.currentVisit = visit;
         removeAll();
 
         // BUY: items character owns
-        for (Item item : character.inventory) {
+        for (Item item : visit.itemsForSale) {
             JButton buy = new JButton("Buy " + item.name);
             buy.addActionListener(e -> {
-                engine.buy(character, item);
-                showTrade(character);
+                engine.buy(visit.character, item);
+                showTrade(visit, hasNextVisit);
             });
             add(buy);
             add(new JLabel(""));
@@ -47,18 +48,18 @@ public class TradePanel extends JPanel {
         for (Item item : engine.getGame().player.inventory) {
             JButton sell = new JButton("Sell " + item.name);
             sell.addActionListener(e -> {
-                engine.sell(character, item);
-                showTrade(character);
+                engine.sell(visit.character, item);
+                showTrade(visit, hasNextVisit);
             });
             add(new JLabel(""));
             add(sell);
         }
 
-        // NEXT CHARACTER button
-        if (engine.hasPendingCharacters()) {
-            JButton nextChar = new JButton("Next Character");
-            nextChar.addActionListener(e -> ((MainWindow) SwingUtilities.getWindowAncestor(this)).nextCharacter());
-            add(nextChar);
+        // NEXT VISIT button
+        if (hasNextVisit) {
+            JButton nextVisitButton = new JButton("Next Visit");
+            nextVisitButton.addActionListener(e -> onNextVisit.run());
+            add(nextVisitButton);
         }
 
         addEndDayButton();
