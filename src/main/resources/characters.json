@@ -3,26 +3,57 @@
     "id": "liora",
     "name": "Liora",
     "background": "A former scholar wandering to collect rare herbs. Always curious about strange flames.",
+    "defaultPortrait": "liora_default",
+    "gold": 20,
+    "scriptedVisitsAllowed": true,
+    "scheduledVisitsAllowed": true,
+    "randomVisitsAllowed": true,
     "visits": [
       {
+        "type": "scripted",
         "fireRequired": ["strongClean", "weakClean"],
         "requiredTags": [],
-        "effect": {
-          "stays": true,
-          "willingToBuy": true,
-          "bringsItems": ["herbs"],
-          "tagsToAdd": ["lioraVisit1"]
-        }
+        "minDay": 0,
+        "maxDay": 0,
+        "dialogue": [
+          "Ah… this fire is clean. Rare, these days.",
+          "I could sit here for hours, just watching it breathe."
+        ],
+        "sells": [
+          { "item": "herbs" }
+        ],
+        "buys": [
+          { "item": "herbs" }
+        ],
+        "goldChange": 0,
+        "portraitOverride": null,
+        "portraitOneTime": false,
+        "allowScriptedVisits": null,
+        "allowScheduledVisits": null,
+        "allowRandomVisits": null
       },
       {
+        "type": "scripted",
         "fireRequired": ["strongEffect"],
         "requiredTags": ["lioraVisit1"],
-        "effect": {
-          "stays": false,
-          "willingToBuy": true,
-          "bringsItems": ["mysticScroll"],
-          "tagsToAdd": ["lioraVisit2"]
-        }
+        "minDay": 0,
+        "maxDay": 0,
+        "dialogue": [
+          "This scent… something clings to the flames.",
+          "I have something for you. Don’t ask where it came from."
+        ],
+        "sells": [
+          { "item": "mysticScroll", "rarity": "rare" }
+        ],
+        "buys": [
+          { "item": "herbs" }
+        ],
+        "goldChange": 0,
+        "portraitOverride": null,
+        "portraitOneTime": false,
+        "allowScriptedVisits": null,
+        "allowScheduledVisits": null,
+        "allowRandomVisits": null
       }
     ]
   },
@@ -30,26 +61,53 @@
     "id": "thorn",
     "name": "Thorn",
     "background": "Ex-mercenary, gruff but has a soft spot for pets and old relics.",
+    "defaultPortrait": "thorn_default",
+    "gold": 15,
+    "scriptedVisitsAllowed": true,
+    "scheduledVisitsAllowed": true,
+    "randomVisitsAllowed": true,
     "visits": [
       {
+        "type": "random",
         "fireRequired": ["strongEffect", "weakClean"],
         "requiredTags": [],
-        "effect": {
-          "stays": true,
-          "willingToBuy": true,
-          "bringsItems": ["ironOre"],
-          "tagsToAdd": ["thornVisit1"]
-        }
+        "minDay": 0,
+        "maxDay": 0,
+        "dialogue": [
+          "Hmph. Fire’s decent.",
+          "Had worse camps. Had better too."
+        ],
+        "sells": [
+          { "item": "ironOre" }
+        ],
+        "buys": [
+          { "item": "ironOre" }
+        ],
+        "goldChange": 0,
+        "portraitOverride": null,
+        "portraitOneTime": false,
+        "allowScriptedVisits": null,
+        "allowScheduledVisits": null,
+        "allowRandomVisits": null
       },
       {
+        "type": "scripted",
         "fireRequired": ["strongClean"],
         "requiredTags": ["thornVisit1"],
-        "effect": {
-          "stays": false,
-          "willingToBuy": false,
-          "bringsItems": [],
-          "tagsToAdd": ["thornVisit2"]
-        }
+        "minDay": 0,
+        "maxDay": 0,
+        "dialogue": [
+          "Clean fire. Brings back memories.",
+          "Not all of them good."
+        ],
+        "sells": [],
+        "buys": [],
+        "goldChange": 0,
+        "portraitOverride": null,
+        "portraitOneTime": false,
+        "allowScriptedVisits": null,
+        "allowScheduledVisits": null,
+        "allowRandomVisits": null
       }
     ]
   },
@@ -57,26 +115,55 @@
     "id": "john_the_witch",
     "name": "John the Witch",
     "background": "A mysterious witch who only trusts clean weak fires and brings strange magical gifts.",
+    "defaultPortrait": "john_default",
+    "gold": 30,
+    "scriptedVisitsAllowed": true,
+    "scheduledVisitsAllowed": true,
+    "randomVisitsAllowed": true,
     "visits": [
       {
+        "type": "scripted",
         "fireRequired": ["weakClean"],
         "requiredTags": [],
-        "effect": {
-          "stays": true,
-          "willingToBuy": false,
-          "bringsItems": ["ancientTalisman"],
-          "tagsToAdd": ["witchVisit1"]
-        }
+        "minDay": 0,
+        "maxDay": 0,
+        "dialogue": [
+          "Good. The fire listens.",
+          "Most fires scream."
+        ],
+        "sells": [
+          { "item": "ancientTalisman", "rarity": "rare" }
+        ],
+        "buys": [],
+        "goldChange": 0,
+        "portraitOverride": null,
+        "portraitOneTime": false,
+        "allowScriptedVisits": null,
+        "allowScheduledVisits": null,
+        "allowRandomVisits": null
       },
       {
+        "type": "scripted",
         "fireRequired": ["strongEffect"],
         "requiredTags": ["witchVisit1"],
-        "effect": {
-          "stays": false,
-          "willingToBuy": true,
-          "bringsItems": ["mysticScroll"],
-          "tagsToAdd": ["witchVisit2"]
-        }
+        "minDay": 0,
+        "maxDay": 0,
+        "dialogue": [
+          "Ah. Now it lies.",
+          "Still useful, though."
+        ],
+        "sells": [
+          { "item": "mysticScroll", "rarity": "ultra_rare" }
+        ],
+        "buys": [
+          { "item": "ancientTalisman" }
+        ],
+        "goldChange": 0,
+        "portraitOverride": null,
+        "portraitOneTime": false,
+        "allowScriptedVisits": null,
+        "allowScheduledVisits": null,
+        "allowRandomVisits": null
       }
     ]
   },
@@ -84,26 +171,58 @@
     "id": "mara",
     "name": "Mara",
     "background": "A wandering trader, she loves exotic goods and cozy fires.",
+    "defaultPortrait": "mara_default",
+    "gold": 40,
+    "scriptedVisitsAllowed": true,
+    "scheduledVisitsAllowed": true,
+    "randomVisitsAllowed": true,
     "visits": [
       {
+        "type": "random",
         "fireRequired": ["weakClean", "strongClean"],
         "requiredTags": [],
-        "effect": {
-          "stays": false,
-          "willingToBuy": true,
-          "bringsItems": ["silkCloth"],
-          "tagsToAdd": ["maraVisit1"]
-        }
+        "minDay": 0,
+        "maxDay": 0,
+        "dialogue": [
+          "Oh, this is nice.",
+          "I could sell here."
+        ],
+        "sells": [
+          { "item": "silkCloth" }
+        ],
+        "buys": [
+          { "item": "silkCloth" }
+        ],
+        "goldChange": 0,
+        "portraitOverride": null,
+        "portraitOneTime": false,
+        "allowScriptedVisits": null,
+        "allowScheduledVisits": null,
+        "allowRandomVisits": null
       },
       {
+        "type": "random",
         "fireRequired": ["strongEffect"],
         "requiredTags": ["maraVisit1"],
-        "effect": {
-          "stays": true,
-          "willingToBuy": true,
-          "bringsItems": ["ancientTalisman", "mysticScroll"],
-          "tagsToAdd": ["maraVisit2"]
-        }
+        "minDay": 0,
+        "maxDay": 0,
+        "dialogue": [
+          "Oh wow. That fire’s… exciting.",
+          "Let’s make this interesting."
+        ],
+        "sells": [
+          { "item": "ancientTalisman", "rarity": "rare" },
+          { "item": "mysticScroll", "rarity": "rare" }
+        ],
+        "buys": [
+          { "item": "silkCloth" }
+        ],
+        "goldChange": 0,
+        "portraitOverride": null,
+        "portraitOneTime": false,
+        "allowScriptedVisits": null,
+        "allowScheduledVisits": null,
+        "allowRandomVisits": null
       }
     ]
   }

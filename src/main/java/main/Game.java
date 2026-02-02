@@ -1,4 +1,3 @@
-// ===== Game.java =====
 package main;
 
 import com.google.gson.Gson;
@@ -15,6 +14,9 @@ public class Game implements Serializable {
     public List<Item> items = new ArrayList<>();
     public List<GameCharacter> characters = new ArrayList<>();
     public Set<String> worldTags = new HashSet<>();
+
+    // NEW: per-day visit tracking
+    public Set<String> charactersVisitedToday = new HashSet<>();
 
     public Player player = new Player();
 
@@ -51,6 +53,7 @@ public class Game implements Serializable {
     // ---------- DAY CONTROL ----------
     public void startNewDay() {
         waitingForBurnChoice = true;
+        charactersVisitedToday.clear();
         day++;
     }
 
