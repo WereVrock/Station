@@ -16,7 +16,6 @@ public class DayService {
         game.day++;
         game.waitingForBurnChoice = true;
 
-        // RESET DAILY VISIT STATE
         for (GameCharacter c : game.characters) {
             c.visitedToday = false;
         }

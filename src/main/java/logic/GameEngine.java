@@ -11,7 +11,6 @@ public class GameEngine {
     private final TradeService tradeService;
     private final DayService dayService;
 
-    private GameCharacter activeCharacter;
     private final Queue<GameCharacter> pendingCharacters = new LinkedList<>();
     private boolean burnedToday = false;
 
@@ -23,21 +22,23 @@ public class GameEngine {
     }
 
     public Optional<GameCharacter> burnFuel() {
-        if (burnedToday) return Optional.empty();
+        if (burnedToday || game.player.fuel <= 0) return Optional.empty();
         burnedToday = true;
         game.player.fuel--;
         game.burnChosen();
+
         List<GameCharacter> characters = burnResolver.resolveFireMultiple("strongClean");
         pendingCharacters.addAll(characters);
         return getNextCharacter();
     }
 
     public Optional<GameCharacter> burnItem(Item item) {
-        if (burnedToday) return Optional.empty();
+        if (burnedToday || !game.player.hasItem(item)) return Optional.empty();
         burnedToday = true;
         game.player.removeItem(item);
         game.worldTags.addAll(item.tags);
         game.burnChosen();
+
         String fire = item.fireEffect == null || item.fireEffect.isBlank() ? "weakClean" : item.fireEffect;
         List<GameCharacter> characters = burnResolver.resolveFireMultiple(fire);
         pendingCharacters.addAll(characters);
@@ -45,8 +46,7 @@ public class GameEngine {
     }
 
     private Optional<GameCharacter> getNextCharacter() {
-        activeCharacter = pendingCharacters.poll();
-        return Optional.ofNullable(activeCharacter);
+        return Optional.ofNullable(pendingCharacters.poll());
     }
 
     public Optional<GameCharacter> nextCharacter() {
@@ -61,16 +61,7 @@ public class GameEngine {
         return tradeService.sell(buyer, item, 3);
     }
 
-    public boolean buy(Item item) {
-        return tradeService.buy(activeCharacter, item, 5);
-    }
-
-    public boolean sell(Item item) {
-        return tradeService.sell(activeCharacter, item, 3);
-    }
-
     public void nextDay() {
-        activeCharacter = null;
         pendingCharacters.clear();
         burnedToday = false;
         dayService.nextDay();
