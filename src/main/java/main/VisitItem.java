@@ -1,6 +1,7 @@
 package main;
 
 import java.io.Serializable;
+import java.util.Random;
 
 public class VisitItem implements Serializable {
 
@@ -9,7 +10,21 @@ public class VisitItem implements Serializable {
     // item reference by name or id
     public String item;
 
-    // optional rarity modifier:
     // null | coinflip | rare | ultra_rare
     public String rarity;
+
+    public boolean isAvailable(Random rng) {
+        if (rarity == null) return true;
+
+        switch (rarity) {
+            case "coinflip":
+                return rng.nextBoolean();
+            case "rare":
+                return rng.nextInt(4) == 0;
+            case "ultra_rare":
+                return rng.nextInt(10) == 0;
+            default:
+                return true;
+        }
+    }
 }

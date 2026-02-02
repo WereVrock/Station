@@ -4,6 +4,7 @@
     "name": "Firewood Bundle",
     "type": "fuel",
     "fireEffect": "strongClean",
+    "burnable": true,
     "tags": ["essential", "warmth"]
   },
   {
@@ -11,6 +12,7 @@
     "name": "Loaf of Bread",
     "type": "food",
     "fireEffect": "weakClean",
+    "burnable": true,
     "tags": ["dailyUse", "cozy"]
   },
   {
@@ -18,20 +20,23 @@
     "name": "Silk Cloth",
     "type": "goods",
     "fireEffect": "weakClean",
-    "tags": ["luxury", "burnable"]
+    "burnable": true,
+    "tags": ["luxury"]
   },
   {
     "id": "ancientTalisman",
     "name": "Ancient Talisman",
     "type": "relic",
     "fireEffect": "strongEffect",
+    "burnable": true,
     "tags": ["magical", "ritual"]
   },
   {
     "id": "ironOre",
     "name": "Iron Ore",
     "type": "goods",
-    "fireEffect": "weak",
+    "fireEffect": "weakEffect",
+    "burnable": true,
     "tags": ["metal", "smithing"]
   },
   {
@@ -39,6 +44,7 @@
     "name": "Bundle of Rare Herbs",
     "type": "goods",
     "fireEffect": "weakClean",
+    "burnable": true,
     "tags": ["healing", "aromatic"]
   },
   {
@@ -46,6 +52,34 @@
     "name": "Mystic Scroll",
     "type": "relic",
     "fireEffect": "strongEffect",
+    "burnable": true,
     "tags": ["arcane", "ritual"]
+  },
+
+
+
+  {
+    "id": "bone_charm",
+    "name": "Bone Charm",
+    "type": "trinket",
+    "fireEffect": "strongEffect",
+    "burnable": true,
+    "tags": ["smells_of_death", "ritual"]
+  },
+  {
+    "id": "ashen_ring",
+    "name": "Ashen Ring",
+    "type": "ring",
+    "fireEffect": "weakEffect",
+    "burnable": true,
+    "tags": ["ashes", "worn"]
+  },
+  {
+    "id": "herbal_pouch",
+    "name": "Herbal Pouch",
+    "type": "consumable",
+    "fireEffect": "weakClean",
+    "burnable": true,
+    "tags": ["herbal_smell", "medicine"]
   }
 ]

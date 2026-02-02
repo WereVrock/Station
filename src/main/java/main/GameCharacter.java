@@ -26,7 +26,7 @@ public class GameCharacter implements Serializable {
     // runtime state
     public boolean visitedToday = false;
 
-    // character inventory (used only during visits)
+    // character inventory (visit-scoped)
     public List<Item> inventory = new ArrayList<>();
 
     // ===== INVENTORY HELPERS =====
@@ -41,5 +41,9 @@ public class GameCharacter implements Serializable {
 
     public void removeItem(Item item) {
         inventory.remove(item);
+    }
+
+    public void clearInventory() {
+        inventory.clear();
     }
 }

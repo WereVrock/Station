@@ -7,6 +7,7 @@ import java.util.*;
 public class BurnResolver {
 
     private final Game game;
+    private final Random rng = new Random();
 
     public BurnResolver(Game game) {
         this.game = game;
@@ -52,7 +53,7 @@ public class BurnResolver {
 
             for (Visit visit : character.visits) {
 
-                if (visit.used) continue;
+                if (visit.used && visit.isOneShot()) continue;
                 if (!isVisitTypeAllowed(character, visit)) continue;
                 if (!visit.fireRequired.contains(fireEffect)) continue;
                 if (!game.worldTags.containsAll(visit.requiredTags)) continue;
@@ -62,8 +63,13 @@ public class BurnResolver {
                     if (!visit.isReady(game.day)) continue;
                 }
 
-                visit.used = true;
+                if (visit.isOneShot()) {
+                    visit.used = true;
+                }
+
                 character.visitedToday = true;
+
+                setupVisitInventory(character, visit);
 
                 printVisit(character, visit, fireEffect);
                 applyVisitEffects(character, visit);
@@ -84,12 +90,31 @@ public class BurnResolver {
         return true;
     }
 
-    // === RESTORED SIGNATURE (compatibility) ===
+    private void setupVisitInventory(GameCharacter character, Visit visit) {
+        character.clearInventory();
+
+        Visit.ResolvedTrade trade = visit.resolveTrade(rng);
+
+        for (String ref : trade.sells) {
+            Item item = findItem(ref);
+            if (item != null) {
+                character.addItem(item);
+            }
+        }
+    }
+
+    private Item findItem(String ref) {
+        for (Item i : game.items) {
+            if (ref.equals(i.id)) return i;
+            if (ref.equals(i.name)) return i;
+        }
+        return null;
+    }
+
     public void printVisit(GameCharacter character, Visit visit, String fireEffect) {
         printVisitDetailed(character, visit, fireEffect);
     }
 
-    // === NEW DETAILED PRINTER ===
     private void printVisitDetailed(GameCharacter character, Visit visit, String fireEffect) {
 
         System.out.println();
@@ -99,23 +124,19 @@ public class BurnResolver {
         System.out.println("Type: " + visit.type);
         System.out.println("Fire: " + fireEffect);
 
-        if (!visit.requiredTags.isEmpty()) {
-            System.out.println("Required world tags: " + visit.requiredTags);
-        }
-
-        if (!visit.tagsToAdd.isEmpty()) {
-            System.out.println("Adds world tags: " + visit.tagsToAdd);
-        }
-
-        if ("scripted".equals(visit.type)) {
-            System.out.println("First eligible day: " + visit.firstEligibleDay);
-            System.out.println("Trigger day: " + visit.triggerDay);
-        }
-
         System.out.println();
         for (String line : visit.dialogue) {
             System.out.println(character.name + ": " + line);
         }
+
+        if (!character.inventory.isEmpty()) {
+            System.out.println();
+            System.out.println(character.name + " offers:");
+            for (Item item : character.inventory) {
+                System.out.println(" - " + item.name);
+            }
+        }
+
         System.out.println("================");
         System.out.println();
     }
