@@ -39,14 +39,28 @@ public class BurnResolver {
                 if (visit.isOneShot()) visit.used = true;
                 character.visitedToday = true;
 
-                List<Item> items = new ArrayList<>();
                 Visit.ResolvedTrade trade = visit.resolveTrade(rng);
+
+                List<Item> itemsForSale = new ArrayList<>();
                 for (String ref : trade.sells) {
                     Item item = findItem(ref);
-                    if (item != null) items.add(item);
+                    if (item != null) itemsForSale.add(item);
                 }
 
-                results.add(new VisitResult(character, items, visit.dialogue, fireEffect, visit.type));
+                List<Item> itemsWanted = new ArrayList<>();
+                for (String ref : trade.buys) {
+                    Item item = findItem(ref);
+                    if (item != null) itemsWanted.add(item);
+                }
+
+                results.add(new VisitResult(
+                        character,
+                        itemsForSale,
+                        itemsWanted,
+                        visit.dialogue,
+                        fireEffect,
+                        visit.type
+                ));
 
                 // Apply visit effects
                 game.worldTags.addAll(visit.tagsToAdd);
@@ -79,18 +93,32 @@ public class BurnResolver {
             for (Visit visit : randomVisits) {
                 character.visitedToday = true;
 
-                List<Item> items = new ArrayList<>();
                 Visit.ResolvedTrade trade = visit.resolveTrade(rng);
+
+                List<Item> itemsForSale = new ArrayList<>();
                 for (String ref : trade.sells) {
                     Item item = findItem(ref);
-                    if (item != null) items.add(item);
+                    if (item != null) itemsForSale.add(item);
                 }
 
-                results.add(new VisitResult(character, items, visit.dialogue, "random", visit.type));
-                break; // only one random visit per character per day
+                List<Item> itemsWanted = new ArrayList<>();
+                for (String ref : trade.buys) {
+                    Item item = findItem(ref);
+                    if (item != null) itemsWanted.add(item);
+                }
+
+                results.add(new VisitResult(
+                        character,
+                        itemsForSale,
+                        itemsWanted,
+                        visit.dialogue,
+                        "random",
+                        visit.type
+                ));
+                break;
             }
 
-            if (results.size() >= 2) break; // 1–2 random visits max
+            if (results.size() >= 2) break;
         }
 
         return results;
@@ -105,7 +133,6 @@ public class BurnResolver {
         }
     }
 
-    // Essential helper: maps a reference string to an actual Item object
     private Item findItem(String ref) {
         for (Item i : game.items) {
             if (ref.equals(i.id) || ref.equals(i.name)) return i;

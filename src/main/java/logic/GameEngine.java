@@ -20,8 +20,11 @@ public class GameEngine {
         this.dayService = new DayService(game);
     }
 
+    // ---------- BURN FLOW ----------
+
     public List<VisitResult> burnFuelVisits() {
         if (burnedToday || game.player.fuel <= 0) return Collections.emptyList();
+
         burnedToday = true;
         game.player.fuel--;
         game.burnChosen();
@@ -29,20 +32,26 @@ public class GameEngine {
         List<VisitResult> visits = burnResolver.resolveFireMultiple("strongClean");
         pendingVisits.addAll(visits);
         resolveRandomVisitsIfNeeded();
+
         return getNextVisits();
     }
 
     public List<VisitResult> burnItemVisits(Item item) {
         if (burnedToday || !game.player.hasItem(item)) return Collections.emptyList();
+
         burnedToday = true;
         game.player.removeItem(item);
         game.worldTags.addAll(item.tags);
         game.burnChosen();
 
-        String fire = item.fireEffect == null || item.fireEffect.isBlank() ? "weakClean" : item.fireEffect;
+        String fire = (item.fireEffect == null || item.fireEffect.isBlank())
+                ? "weakClean"
+                : item.fireEffect;
+
         List<VisitResult> visits = burnResolver.resolveFireMultiple(fire);
         pendingVisits.addAll(visits);
         resolveRandomVisitsIfNeeded();
+
         return getNextVisits();
     }
 
@@ -59,9 +68,11 @@ public class GameEngine {
 
     private List<VisitResult> getNextVisits() {
         List<VisitResult> result = new ArrayList<>();
+
         while (!pendingVisits.isEmpty() && result.size() + game.visitsToday < 5) {
             result.add(pendingVisits.poll());
         }
+
         game.visitsToday += result.size();
         return result;
     }
@@ -70,9 +81,11 @@ public class GameEngine {
         return !pendingVisits.isEmpty();
     }
 
-    // Buy from visit
+    // ---------- TRADE ----------
+
     public boolean buyFromVisit(VisitResult visit, Item item) {
         int price = tradeService.getBuyPrice(item);
+
         if (game.player.money >= price && visit.itemsForSale.contains(item)) {
             game.player.money -= price;
             game.player.addItem(item);
@@ -82,9 +95,11 @@ public class GameEngine {
         return false;
     }
 
-    // Sell item to character of the visit
     public boolean sellToVisitCharacter(VisitResult visit, Item item) {
-        if (visit.character == null || !game.player.hasItem(item)) return false;
+        if (visit.character == null) return false;
+        if (!game.player.hasItem(item)) return false;
+        if (!visit.wants(item)) return false;
+
         int price = tradeService.getSellPrice(item);
         game.player.money += price;
         game.player.removeItem(item);
@@ -99,6 +114,8 @@ public class GameEngine {
     public int getSellPrice(Item item) {
         return tradeService.getSellPrice(item);
     }
+
+    // ---------- DAY ----------
 
     public void nextDay() {
         pendingVisits.clear();

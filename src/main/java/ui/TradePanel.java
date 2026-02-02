@@ -33,8 +33,7 @@ public class TradePanel extends JPanel {
     public void clear() {
         removeAll();
         currentVisit = null;
-        revalidate();
-        repaint();
+        refresh();
     }
 
     public void showTrade(VisitResult visit, boolean hasNextVisit) {
@@ -43,30 +42,28 @@ public class TradePanel extends JPanel {
 
         removeAll();
 
-        // BUY buttons
+        // BUY
         for (Item item : new ArrayList<>(visit.itemsForSale)) {
             JButton buy = new JButton("Buy " + item.name);
             buy.addActionListener(e -> {
                 if (engine.buyFromVisit(visit, item)) {
-                    System.out.println("Bought " + item.name + ". Gold now: " + engine.getGame().player.money);
-                    showTrade(visit, hasNextVisit); // rebuild panel
+                    showTrade(visit, hasNextVisit);
                     refreshStatus();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Cannot buy item (not enough money).");
                 }
             });
+
             add(buy);
             add(new JLabel("Price: " + engine.getBuyPrice(item)));
         }
 
-        // SELL buttons
+        // SELL (only wanted items)
         rebuildSellButtons();
 
-        // NEXT VISIT button
         if (hasNextVisit) {
-            JButton nextVisitButton = new JButton("Next Visit");
-            nextVisitButton.addActionListener(e -> onNextVisit.run());
-            add(nextVisitButton);
+            JButton nextVisit = new JButton("Next Visit");
+            nextVisit.addActionListener(e -> onNextVisit.run());
+            add(nextVisit);
+            add(new JLabel(""));
         }
 
         addEndDayButton();
@@ -74,19 +71,20 @@ public class TradePanel extends JPanel {
     }
 
     private void rebuildSellButtons() {
-        List<Item> playerItems = new ArrayList<>(engine.getGame().player.inventory);
-        for (Item item : playerItems) {
+        List<Item> inventory = new ArrayList<>(engine.getGame().player.inventory);
+
+        for (Item item : inventory) {
+            if (!currentVisit.wants(item)) continue;
+
             JButton sell = new JButton("Sell " + item.name);
             sell.addActionListener(e -> {
                 if (engine.sellToVisitCharacter(currentVisit, item)) {
-                    System.out.println("Sold " + item.name + ". Gold now: " + engine.getGame().player.money);
-                    showTrade(currentVisit, hasNextVisit); // rebuild panel
+                    showTrade(currentVisit, hasNextVisit);
                     refreshStatus();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Cannot sell item.");
                 }
             });
-            add(new JLabel(""));
+
+            add(sell);
             add(new JLabel("Price: " + engine.getSellPrice(item)));
         }
     }
@@ -101,6 +99,7 @@ public class TradePanel extends JPanel {
         JButton endDay = new JButton("End Day");
         endDay.addActionListener(e -> onEndDay.run());
         add(endDay);
+        add(new JLabel(""));
     }
 
     private void refresh() {
