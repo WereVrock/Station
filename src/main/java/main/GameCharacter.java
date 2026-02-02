@@ -11,26 +11,25 @@ public class GameCharacter implements Serializable {
     // immutable identity
     public String id;
 
-    // player-visible
+    // player-visible data
     public String name;
     public String background;
-    public String defaultPortrait;
 
-    // economy
-    public int gold = 0;
-
-    // visit permission gates
-    public boolean scriptedVisitsAllowed = true;
-    public boolean scheduledVisitsAllowed = true;
-    public boolean randomVisitsAllowed = true;
+    // visit permissions (global gates)
+    public boolean allowScriptedVisits = true;
+    public boolean allowScheduledVisits = true;
+    public boolean allowRandomVisits = true;
 
     // visits defined in JSON
     public List<Visit> visits = new ArrayList<>();
 
-    // runtime inventory (used only during visits)
+    // runtime state
+    public boolean visitedToday = false;
+
+    // character inventory (used only during visits)
     public List<Item> inventory = new ArrayList<>();
 
-    // -------- inventory helpers --------
+    // ===== INVENTORY HELPERS =====
 
     public boolean hasItem(Item item) {
         return inventory.contains(item);

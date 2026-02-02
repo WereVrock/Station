@@ -1,4 +1,3 @@
-// ===== GameEngine.java =====
 package logic;
 
 import main.*;
@@ -12,7 +11,6 @@ public class GameEngine {
     private final TradeService tradeService;
     private final DayService dayService;
 
-    // NEW: active character context
     private GameCharacter activeCharacter;
 
     public GameEngine(Game game) {
@@ -23,14 +21,30 @@ public class GameEngine {
     }
 
     public Optional<GameCharacter> burnFuel() {
+        if (game.visitsToday >= 5) {
+            System.out.println("The fire burns, but no one comes. The day is too crowded.");
+            return Optional.empty();
+        }
+
         Optional<GameCharacter> result = burnResolver.burnFuel();
-        result.ifPresent(c -> activeCharacter = c);
+        result.ifPresent(c -> {
+            activeCharacter = c;
+            game.visitsToday++;
+        });
         return result;
     }
 
     public Optional<GameCharacter> burnItem(Item item) {
+        if (game.visitsToday >= 5) {
+            System.out.println("The fire crackles, but the day allows no more visitors.");
+            return Optional.empty();
+        }
+
         Optional<GameCharacter> result = burnResolver.burnItem(item);
-        result.ifPresent(c -> activeCharacter = c);
+        result.ifPresent(c -> {
+            activeCharacter = c;
+            game.visitsToday++;
+        });
         return result;
     }
 

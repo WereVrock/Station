@@ -2,7 +2,7 @@ package logic;
 
 import main.*;
 
-import java.util.Optional;
+import java.util.*;
 
 public class BurnResolver {
 
@@ -30,24 +30,40 @@ public class BurnResolver {
         game.worldTags.addAll(item.tags);
         game.burnChosen();
 
-        return resolveFire(item.fireEffect);
+        String fire = normalizeFire(item.fireEffect);
+        return resolveFire(fire);
+    }
+
+    private String normalizeFire(String fireEffect) {
+        if (fireEffect == null || fireEffect.isBlank()) {
+            return "weakClean";
+        }
+        return fireEffect;
     }
 
     private Optional<GameCharacter> resolveFire(String fireEffect) {
 
-        for (GameCharacter character : game.characters) {
+        List<GameCharacter> shuffled = new ArrayList<>(game.characters);
+        Collections.shuffle(shuffled);
 
-            // NEW: once per character per day
-            if (game.charactersVisitedToday.contains(character.id)) continue;
+        for (GameCharacter character : shuffled) {
+
+            if (character.visitedToday) continue;
 
             for (Visit visit : character.visits) {
 
                 if (visit.used) continue;
+                if (!isVisitTypeAllowed(character, visit)) continue;
                 if (!visit.fireRequired.contains(fireEffect)) continue;
                 if (!game.worldTags.containsAll(visit.requiredTags)) continue;
 
+                if ("scripted".equals(visit.type)) {
+                    visit.markFirstEligible(game.day);
+                    if (!visit.isReady(game.day)) continue;
+                }
+
                 visit.used = true;
-                game.charactersVisitedToday.add(character.id);
+                character.visitedToday = true;
 
                 printVisit(character, visit, fireEffect);
                 applyVisitEffects(character, visit);
@@ -59,71 +75,63 @@ public class BurnResolver {
         return Optional.empty();
     }
 
-    private void printVisit(GameCharacter character, Visit visit, String fireEffect) {
+    public boolean isVisitTypeAllowed(GameCharacter character, Visit visit) {
+
+        if ("scripted".equals(visit.type)) return character.allowScriptedVisits;
+        if ("scheduled".equals(visit.type)) return character.allowScheduledVisits;
+        if ("random".equals(visit.type)) return character.allowRandomVisits;
+
+        return true;
+    }
+
+    // === RESTORED SIGNATURE (compatibility) ===
+    public void printVisit(GameCharacter character, Visit visit, String fireEffect) {
+        printVisitDetailed(character, visit, fireEffect);
+    }
+
+    // === NEW DETAILED PRINTER ===
+    private void printVisitDetailed(GameCharacter character, Visit visit, String fireEffect) {
 
         System.out.println();
         System.out.println("=== VISIT ===");
+        System.out.println("Day: " + game.day);
         System.out.println("Character: " + character.name);
-        System.out.println("Visit type: " + visit.type);
-        System.out.println("Fire condition matched: " + fireEffect);
+        System.out.println("Type: " + visit.type);
+        System.out.println("Fire: " + fireEffect);
 
-        if (!visit.dialogue.isEmpty()) {
-            System.out.println();
-            for (String line : visit.dialogue) {
-                System.out.println(character.name + ": " + line);
-            }
-        }
-
-        if (!visit.sells.isEmpty()) {
-            System.out.println();
-            System.out.println("Sells:");
-            for (VisitItem vi : visit.sells) {
-                if (vi.rarity != null) {
-                    System.out.println("- " + vi.item + " (" + vi.rarity + ")");
-                } else {
-                    System.out.println("- " + vi.item);
-                }
-            }
-        }
-
-        if (!visit.buys.isEmpty()) {
-            System.out.println();
-            System.out.println("Buys:");
-            for (VisitItem vi : visit.buys) {
-                System.out.println("- " + vi.item);
-            }
+        if (!visit.requiredTags.isEmpty()) {
+            System.out.println("Required world tags: " + visit.requiredTags);
         }
 
         if (!visit.tagsToAdd.isEmpty()) {
-            System.out.println();
-            System.out.println("World tags added:");
-            for (String tag : visit.tagsToAdd) {
-                System.out.println("- " + tag);
-            }
+            System.out.println("Adds world tags: " + visit.tagsToAdd);
         }
 
-        if (visit.goldChange != 0) {
-            System.out.println();
-            System.out.println("Gold change: " + visit.goldChange);
+        if ("scripted".equals(visit.type)) {
+            System.out.println("First eligible day: " + visit.firstEligibleDay);
+            System.out.println("Trigger day: " + visit.triggerDay);
         }
 
+        System.out.println();
+        for (String line : visit.dialogue) {
+            System.out.println(character.name + ": " + line);
+        }
         System.out.println("================");
         System.out.println();
     }
 
-    private void applyVisitEffects(GameCharacter character, Visit visit) {
+    public void applyVisitEffects(GameCharacter character, Visit visit) {
 
-        character.gold += visit.goldChange;
         game.worldTags.addAll(visit.tagsToAdd);
 
         if (visit.allowScriptedVisits != null) {
-            character.scriptedVisitsAllowed = visit.allowScriptedVisits;
+            character.allowScriptedVisits = visit.allowScriptedVisits;
         }
         if (visit.allowScheduledVisits != null) {
-            character.scheduledVisitsAllowed = visit.allowScheduledVisits;
+            character.allowScheduledVisits = visit.allowScheduledVisits;
         }
         if (visit.allowRandomVisits != null) {
-            character.randomVisitsAllowed = visit.allowRandomVisits;
+            character.allowRandomVisits = visit.allowRandomVisits;
         }
     }
 }
