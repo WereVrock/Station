@@ -64,6 +64,18 @@ public class MainWindow extends JFrame {
         statusPanel.refresh();
     }
 
+    public void nextCharacter() {
+        Optional<GameCharacter> next = engine.nextCharacter();
+        if (next.isPresent()) {
+            currentCharacter = next.get();
+            logPanel.characterAppears(currentCharacter);
+            tradePanel.showTrade(currentCharacter);
+        } else {
+            currentCharacter = null;
+            tradePanel.showEndDayOnly();
+        }
+    }
+
     private void endDay() {
         engine.nextDay();
         currentCharacter = null;

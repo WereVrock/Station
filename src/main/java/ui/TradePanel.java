@@ -40,7 +40,7 @@ public class TradePanel extends JPanel {
                 showTrade(character);
             });
             add(buy);
-            add(new JLabel("")); // layout balance
+            add(new JLabel(""));
         }
 
         // SELL: items player owns
@@ -52,6 +52,13 @@ public class TradePanel extends JPanel {
             });
             add(new JLabel(""));
             add(sell);
+        }
+
+        // NEXT CHARACTER button
+        if (engine.hasPendingCharacters()) {
+            JButton nextChar = new JButton("Next Character");
+            nextChar.addActionListener(e -> ((MainWindow) SwingUtilities.getWindowAncestor(this)).nextCharacter());
+            add(nextChar);
         }
 
         addEndDayButton();

@@ -1,3 +1,4 @@
+// ===== BurnResolver.java =====
 package logic;
 
 import main.*;
@@ -13,8 +14,8 @@ public class BurnResolver {
         this.game = game;
     }
 
+    // Single character resolve (old API, still used in BurnPanel)
     public Optional<GameCharacter> burnFuel() {
-
         if (game.player.fuel <= 0) return Optional.empty();
 
         game.player.fuel--;
@@ -24,7 +25,6 @@ public class BurnResolver {
     }
 
     public Optional<GameCharacter> burnItem(Item item) {
-
         if (!game.player.hasItem(item)) return Optional.empty();
 
         game.player.removeItem(item);
@@ -35,14 +35,12 @@ public class BurnResolver {
         return resolveFire(fire);
     }
 
-    private String normalizeFire(String fireEffect) {
-        if (fireEffect == null || fireEffect.isBlank()) {
-            return "weakClean";
-        }
+    public String normalizeFire(String fireEffect) {
+        if (fireEffect == null || fireEffect.isBlank()) return "weakClean";
         return fireEffect;
     }
 
-    private Optional<GameCharacter> resolveFire(String fireEffect) {
+    public Optional<GameCharacter> resolveFire(String fireEffect) {
 
         List<GameCharacter> shuffled = new ArrayList<>(game.characters);
         Collections.shuffle(shuffled);
@@ -63,14 +61,11 @@ public class BurnResolver {
                     if (!visit.isReady(game.day)) continue;
                 }
 
-                if (visit.isOneShot()) {
-                    visit.used = true;
-                }
+                if (visit.isOneShot()) visit.used = true;
 
                 character.visitedToday = true;
 
                 setupVisitInventory(character, visit);
-
                 printVisit(character, visit, fireEffect);
                 applyVisitEffects(character, visit);
 
@@ -81,25 +76,55 @@ public class BurnResolver {
         return Optional.empty();
     }
 
-    public boolean isVisitTypeAllowed(GameCharacter character, Visit visit) {
+    // NEW: resolve multiple characters after a single burn
+    public List<GameCharacter> resolveFireMultiple(String fireEffect) {
+        List<GameCharacter> result = new ArrayList<>();
+        List<GameCharacter> shuffled = new ArrayList<>(game.characters);
+        Collections.shuffle(shuffled);
 
+        for (GameCharacter character : shuffled) {
+
+            if (character.visitedToday) continue;
+
+            for (Visit visit : character.visits) {
+
+                if (visit.used && visit.isOneShot()) continue;
+                if (!isVisitTypeAllowed(character, visit)) continue;
+                if (!visit.fireRequired.contains(fireEffect)) continue;
+                if (!game.worldTags.containsAll(visit.requiredTags)) continue;
+
+                if ("scripted".equals(visit.type)) {
+                    visit.markFirstEligible(game.day);
+                    if (!visit.isReady(game.day)) continue;
+                }
+
+                if (visit.isOneShot()) visit.used = true;
+
+                character.visitedToday = true;
+                setupVisitInventory(character, visit);
+                printVisit(character, visit, fireEffect);
+                applyVisitEffects(character, visit);
+
+                result.add(character);
+            }
+        }
+
+        return result;
+    }
+
+    public boolean isVisitTypeAllowed(GameCharacter character, Visit visit) {
         if ("scripted".equals(visit.type)) return character.allowScriptedVisits;
         if ("scheduled".equals(visit.type)) return character.allowScheduledVisits;
         if ("random".equals(visit.type)) return character.allowRandomVisits;
-
         return true;
     }
 
     private void setupVisitInventory(GameCharacter character, Visit visit) {
         character.clearInventory();
-
         Visit.ResolvedTrade trade = visit.resolveTrade(rng);
-
         for (String ref : trade.sells) {
             Item item = findItem(ref);
-            if (item != null) {
-                character.addItem(item);
-            }
+            if (item != null) character.addItem(item);
         }
     }
 
@@ -115,8 +140,7 @@ public class BurnResolver {
         printVisitDetailed(character, visit, fireEffect);
     }
 
-    private void printVisitDetailed(GameCharacter character, Visit visit, String fireEffect) {
-
+    public void printVisitDetailed(GameCharacter character, Visit visit, String fireEffect) {
         System.out.println();
         System.out.println("=== VISIT ===");
         System.out.println("Day: " + game.day);
@@ -142,17 +166,10 @@ public class BurnResolver {
     }
 
     public void applyVisitEffects(GameCharacter character, Visit visit) {
-
         game.worldTags.addAll(visit.tagsToAdd);
 
-        if (visit.allowScriptedVisits != null) {
-            character.allowScriptedVisits = visit.allowScriptedVisits;
-        }
-        if (visit.allowScheduledVisits != null) {
-            character.allowScheduledVisits = visit.allowScheduledVisits;
-        }
-        if (visit.allowRandomVisits != null) {
-            character.allowRandomVisits = visit.allowRandomVisits;
-        }
+        if (visit.allowScriptedVisits != null) character.allowScriptedVisits = visit.allowScriptedVisits;
+        if (visit.allowScheduledVisits != null) character.allowScheduledVisits = visit.allowScheduledVisits;
+        if (visit.allowRandomVisits != null) character.allowRandomVisits = visit.allowRandomVisits;
     }
 }
