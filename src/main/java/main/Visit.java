@@ -20,9 +20,7 @@ public class Visit {
     // used ONLY for scripted visits
     public boolean used = false;
 
-    public Integer minDay;
-    public Integer maxDay;
-
+    // minimum and maximum delay for scripted/scheduled visits
     public Integer minDays;
     public Integer maxDays;
 
@@ -62,15 +60,11 @@ public class Visit {
     }
 
     private int resolveMin() {
-        if (minDay != null) return minDay;
-        if (minDays != null) return minDays;
-        return 0;
+        return minDays != null ? minDays : 0;
     }
 
     private int resolveMax() {
-        if (maxDay != null) return maxDay;
-        if (maxDays != null) return maxDays;
-        return 0;
+        return maxDays != null ? maxDays : 0;
     }
 
     public ResolvedTrade resolveTrade(Random rng) {
@@ -95,49 +89,40 @@ public class Visit {
         public List<String> sells = new ArrayList<>();
         public List<String> buys = new ArrayList<>();
     }
-    
-    @Override
-public String toString() {
-    StringBuilder sb = new StringBuilder();
-    
-    sb.append("Visit {\n");
-    
-    sb.append("  type: ").append(type).append(",\n");
-    
-    sb.append("  fireRequired: ").append(fireRequired).append(",\n");
-    sb.append("  requiredTags: ").append(requiredTags).append(",\n");
-    
-    sb.append("  dialogue: ").append(dialogue).append(",\n");
-    sb.append("  tagsToAdd: ").append(tagsToAdd).append(",\n");
-    
-    sb.append("  sells: [");
-    for (int i = 0; i < sells.size(); i++) {
-        sb.append(sells.get(i));
-        if (i < sells.size() - 1) sb.append(", ");
-    }
-    sb.append("],\n");
-    
-    sb.append("  buys: [");
-    for (int i = 0; i < buys.size(); i++) {
-        sb.append(buys.get(i));
-        if (i < buys.size() - 1) sb.append(", ");
-    }
-    sb.append("],\n");
-    
-    sb.append("  used: ").append(used).append(",\n");
-    
-    sb.append("  minDay: ").append(minDay).append(", maxDay: ").append(maxDay).append(",\n");
-    sb.append("  minDays: ").append(minDays).append(", maxDays: ").append(maxDays).append(",\n");
-    
-    sb.append("  firstEligibleDay: ").append(firstEligibleDay).append(", triggerDay: ").append(triggerDay).append(",\n");
-    
-    sb.append("  allowScriptedVisits: ").append(allowScriptedVisits).append(",\n");
-    sb.append("  allowScheduledVisits: ").append(allowScheduledVisits).append(",\n");
-    sb.append("  allowRandomVisits: ").append(allowRandomVisits).append("\n");
-    
-    sb.append("}");
-    
-    return sb.toString();
-}
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Visit {\n");
+        sb.append("  type: ").append(type).append(",\n");
+        sb.append("  fireRequired: ").append(fireRequired).append(",\n");
+        sb.append("  requiredTags: ").append(requiredTags).append(",\n");
+        sb.append("  dialogue: ").append(dialogue).append(",\n");
+        sb.append("  tagsToAdd: ").append(tagsToAdd).append(",\n");
+
+        sb.append("  sells: [");
+        for (int i = 0; i < sells.size(); i++) {
+            sb.append(sells.get(i));
+            if (i < sells.size() - 1) sb.append(", ");
+        }
+        sb.append("],\n");
+
+        sb.append("  buys: [");
+        for (int i = 0; i < buys.size(); i++) {
+            sb.append(buys.get(i));
+            if (i < buys.size() - 1) sb.append(", ");
+        }
+        sb.append("],\n");
+
+        sb.append("  used: ").append(used).append(",\n");
+        sb.append("  minDays: ").append(minDays).append(", maxDays: ").append(maxDays).append(",\n");
+        sb.append("  firstEligibleDay: ").append(firstEligibleDay).append(", triggerDay: ").append(triggerDay).append(",\n");
+        sb.append("  allowScriptedVisits: ").append(allowScriptedVisits).append(",\n");
+        sb.append("  allowScheduledVisits: ").append(allowScheduledVisits).append(",\n");
+        sb.append("  allowRandomVisits: ").append(allowRandomVisits).append("\n");
+        sb.append("}");
+
+        return sb.toString();
+    }
 }

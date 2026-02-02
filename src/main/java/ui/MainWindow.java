@@ -33,6 +33,9 @@ public class MainWindow extends JFrame {
         burnPanel = new BurnPanel(engine, this::handleBurnVisits);
         tradePanel = new TradePanel(engine, this::endDay, this::nextVisit);
 
+        // 🔴 THIS WAS MISSING
+        tradePanel.setStatusPanel(statusPanel);
+
         add(statusPanel, BorderLayout.NORTH);
         add(logPanel, BorderLayout.CENTER);
         add(burnPanel, BorderLayout.SOUTH);
@@ -74,13 +77,10 @@ public class MainWindow extends JFrame {
 
         VisitResult visit = currentVisits.get(currentVisitIndex);
 
-        // PRINT FULL VISIT USING toString()
         System.out.println(visit);
 
-        // LOG PANEL
         logPanel.visitAppears(visit);
 
-        // TRADE PANEL: hide Next Visit if this is the last visit
         boolean hasNext = currentVisitIndex < currentVisits.size() - 1;
         tradePanel.showTrade(visit, hasNext);
     }

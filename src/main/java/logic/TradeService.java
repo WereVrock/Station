@@ -1,7 +1,8 @@
 // ===== TradeService.java =====
 package logic;
 
-import main.*;
+import main.Game;
+import main.Item;
 
 public class TradeService {
 
@@ -11,21 +12,15 @@ public class TradeService {
         this.game = game;
     }
 
-    public boolean buy(GameCharacter seller, Item item, int price) {
-        if (seller == null || !seller.hasItem(item) || game.player.money < price) return false;
-
-        seller.removeItem(item);
-        game.player.money -= price;
-        game.player.addItem(item);
-        return true;
+    // Price player pays to buy from character
+    public int getBuyPrice(Item item) {
+        // Can be extended per-item logic, e.g., item.type or rarity
+        return 5;
     }
 
-    public boolean sell(GameCharacter buyer, Item item, int price) {
-        if (buyer == null || !game.player.hasItem(item)) return false;
-
-        game.player.removeItem(item);
-        game.player.money += price;
-        buyer.addItem(item);
-        return true;
+    // Price player gets for selling to character
+    public int getSellPrice(Item item) {
+        // Can be extended per-item logic
+        return 3;
     }
 }

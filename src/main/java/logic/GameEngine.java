@@ -28,6 +28,7 @@ public class GameEngine {
 
         List<VisitResult> visits = burnResolver.resolveFireMultiple("strongClean");
         pendingVisits.addAll(visits);
+        resolveRandomVisitsIfNeeded();
         return getNextVisits();
     }
 
@@ -41,14 +42,27 @@ public class GameEngine {
         String fire = item.fireEffect == null || item.fireEffect.isBlank() ? "weakClean" : item.fireEffect;
         List<VisitResult> visits = burnResolver.resolveFireMultiple(fire);
         pendingVisits.addAll(visits);
+        resolveRandomVisitsIfNeeded();
         return getNextVisits();
+    }
+
+    private void resolveRandomVisitsIfNeeded() {
+        int visitsToday = game.visitsToday + pendingVisits.size();
+        if (visitsToday >= 3) return;
+
+        List<VisitResult> randoms = burnResolver.resolveRandomVisits();
+        for (VisitResult r : randoms) {
+            if (pendingVisits.size() + game.visitsToday >= 5) break;
+            pendingVisits.add(r);
+        }
     }
 
     private List<VisitResult> getNextVisits() {
         List<VisitResult> result = new ArrayList<>();
-        while (!pendingVisits.isEmpty() && result.size() < 5) { // max 5 visits per day
+        while (!pendingVisits.isEmpty() && result.size() + game.visitsToday < 5) {
             result.add(pendingVisits.poll());
         }
+        game.visitsToday += result.size();
         return result;
     }
 
@@ -56,17 +70,40 @@ public class GameEngine {
         return !pendingVisits.isEmpty();
     }
 
-    public boolean buy(GameCharacter seller, Item item) {
-        return tradeService.buy(seller, item, 5);
+    // Buy from visit
+    public boolean buyFromVisit(VisitResult visit, Item item) {
+        int price = tradeService.getBuyPrice(item);
+        if (game.player.money >= price && visit.itemsForSale.contains(item)) {
+            game.player.money -= price;
+            game.player.addItem(item);
+            visit.itemsForSale.remove(item);
+            return true;
+        }
+        return false;
     }
 
-    public boolean sell(GameCharacter buyer, Item item) {
-        return tradeService.sell(buyer, item, 3);
+    // Sell item to character of the visit
+    public boolean sellToVisitCharacter(VisitResult visit, Item item) {
+        if (visit.character == null || !game.player.hasItem(item)) return false;
+        int price = tradeService.getSellPrice(item);
+        game.player.money += price;
+        game.player.removeItem(item);
+        visit.character.addItem(item);
+        return true;
+    }
+
+    public int getBuyPrice(Item item) {
+        return tradeService.getBuyPrice(item);
+    }
+
+    public int getSellPrice(Item item) {
+        return tradeService.getSellPrice(item);
     }
 
     public void nextDay() {
         pendingVisits.clear();
         burnedToday = false;
+        game.visitsToday = 0;
         dayService.nextDay();
     }
 

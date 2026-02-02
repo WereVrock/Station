@@ -15,10 +15,26 @@ public class Item implements Serializable {
     public String name;
     public String type;
 
+    // base price for trade
+    public int basePrice = 1;
+
     // fire interaction
     public String fireEffect;
     public boolean burnable = true;
 
     // tags added to world on burn
     public List<String> tags = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Item {" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", basePrice=" + basePrice +
+                ", fireEffect='" + fireEffect + '\'' +
+                ", burnable=" + burnable +
+                ", tags=" + tags +
+                '}';
+    }
 }
