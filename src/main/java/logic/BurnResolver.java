@@ -3,7 +3,7 @@ package logic;
 import main.*;
 
 import java.util.Optional;
-import main.Character;
+import main.GameCharacter;
 
 public class BurnResolver {
 
@@ -13,7 +13,7 @@ public class BurnResolver {
         this.game = game;
     }
 
-    public Optional<Character> burnFuel() {
+    public Optional<GameCharacter> burnFuel() {
 
         if (game.player.fuel <= 0) return Optional.empty();
 
@@ -23,7 +23,7 @@ public class BurnResolver {
         return resolveFire("strongClean");
     }
 
-    public Optional<Character> burnItem(Item item) {
+    public Optional<GameCharacter> burnItem(Item item) {
 
         if (!game.player.hasItem(item)) return Optional.empty();
 
@@ -34,9 +34,9 @@ public class BurnResolver {
         return resolveFire(item.fireEffect);
     }
 
-    private Optional<Character> resolveFire(String fireEffect) {
+    private Optional<GameCharacter> resolveFire(String fireEffect) {
 
-        for (Character c : game.characters) {
+        for (GameCharacter c : game.characters) {
             for (Visit v : c.visits) {
 
                 if (v.used) continue;

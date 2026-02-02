@@ -3,7 +3,7 @@ package ui;
 
 import logic.GameEngine;
 import main.Item;
-import main.Character;
+import main.GameCharacter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +13,9 @@ import java.util.function.Consumer;
 public class BurnPanel extends JPanel {
 
     private final GameEngine engine;
-    private final Consumer<Optional<Character>> onBurn;
+    private final Consumer<Optional<GameCharacter>> onBurn;
 
-    public BurnPanel(GameEngine engine, Consumer<Optional<Character>> onBurn) {
+    public BurnPanel(GameEngine engine, Consumer<Optional<GameCharacter>> onBurn) {
         this.engine = engine;
         this.onBurn = onBurn;
 

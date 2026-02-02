@@ -3,7 +3,7 @@ package ui;
 
 import logic.GameEngine;
 import main.*;
-import main.Character;
+import main.GameCharacter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +18,7 @@ public class MainWindow extends JFrame {
     private final BurnPanel burnPanel;
     private final TradePanel tradePanel;
 
-    private Character currentCharacter;
+    private GameCharacter currentCharacter;
 
     public MainWindow(Game game) {
         this.engine = new GameEngine(game);
@@ -48,7 +48,7 @@ public class MainWindow extends JFrame {
         logPanel.dayStart(engine.getGame().day);
     }
 
-    private void handleBurn(Optional<Character> result) {
+    private void handleBurn(Optional<GameCharacter> result) {
         burnPanel.refresh();
 
         if (result.isPresent()) {

@@ -1,7 +1,7 @@
 // ===== LogPanel.java =====
 package ui;
 
-import main.Character;
+import main.GameCharacter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,7 @@ public class LogPanel extends JPanel {
         area.append("What will you burn today?\n");
     }
 
-    public void characterAppears(Character c) {
+    public void characterAppears(GameCharacter c) {
         area.append(c.name + " appears!\n");
         area.append(c.background + "\n");
     }

@@ -1,9 +1,9 @@
+// ===== GameEngine.java =====
 package logic;
 
 import main.*;
-
 import java.util.Optional;
-import main.Character;
+import main.GameCharacter;
 
 public class GameEngine {
 
@@ -12,6 +12,9 @@ public class GameEngine {
     private final TradeService tradeService;
     private final DayService dayService;
 
+    // NEW: active character context
+    private GameCharacter activeCharacter;
+
     public GameEngine(Game game) {
         this.game = game;
         this.burnResolver = new BurnResolver(game);
@@ -19,23 +22,38 @@ public class GameEngine {
         this.dayService = new DayService(game);
     }
 
-    public Optional<Character> burnFuel() {
-        return burnResolver.burnFuel();
+    public Optional<GameCharacter> burnFuel() {
+        Optional<GameCharacter> result = burnResolver.burnFuel();
+        result.ifPresent(c -> activeCharacter = c);
+        return result;
     }
 
-    public Optional<Character> burnItem(Item item) {
-        return burnResolver.burnItem(item);
+    public Optional<GameCharacter> burnItem(Item item) {
+        Optional<GameCharacter> result = burnResolver.burnItem(item);
+        result.ifPresent(c -> activeCharacter = c);
+        return result;
     }
 
+    // NEW API
+    public boolean buy(GameCharacter seller, Item item) {
+        return tradeService.buy(seller, item, 5);
+    }
+
+    public boolean sell(GameCharacter buyer, Item item) {
+        return tradeService.sell(buyer, item, 3);
+    }
+
+    // OLD API (restored)
     public boolean buy(Item item) {
-        return tradeService.buy(item, 5);
+        return tradeService.buy(activeCharacter, item, 5);
     }
 
     public boolean sell(Item item) {
-        return tradeService.sell(item, 3);
+        return tradeService.sell(activeCharacter, item, 3);
     }
 
     public void nextDay() {
+        activeCharacter = null;
         dayService.nextDay();
     }
 
