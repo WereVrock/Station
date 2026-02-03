@@ -17,8 +17,7 @@ public class BurnPanel extends JPanel {
     public BurnPanel(GameEngine engine, Consumer<List<VisitResult>> onBurnVisits) {
         this.engine = engine;
         this.onBurnVisits = onBurnVisits;
-
-        setLayout(new GridLayout(0, 4, 5, 5));
+        setLayout(new GridLayout(0, 1, 5, 5));
     }
 
     public void refresh() {
@@ -39,7 +38,7 @@ public class BurnPanel extends JPanel {
         for (Item item : engine.getGame().player.inventory) {
             if (!item.burnable) continue;
 
-            JButton btn = new JButton(item.name);
+            JButton btn = new JButton("Burn " + item.name);
             btn.addActionListener(e -> onBurnVisits.accept(engine.burnItemVisits(item)));
             add(btn);
         }

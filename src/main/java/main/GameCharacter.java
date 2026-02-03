@@ -30,7 +30,6 @@ public class GameCharacter implements Serializable {
     public List<Item> inventory = new ArrayList<>();
 
     // ===== INVENTORY HELPERS =====
-
     public boolean hasItem(Item item) {
         return inventory.contains(item);
     }
@@ -47,6 +46,17 @@ public class GameCharacter implements Serializable {
         inventory.clear();
     }
 
+    public javax.swing.ImageIcon getPortraitIcon() {
+        String path = "/images/character_placeholder.png";
+
+        java.net.URL url = getClass().getResource(path);
+        if (url == null) {
+            return null;
+        }
+
+        return new javax.swing.ImageIcon(url);
+    }
+
     // ===== TO STRING =====
     @Override
     public String toString() {
@@ -54,16 +64,17 @@ public class GameCharacter implements Serializable {
         sb.append("GameCharacter {\n");
 
         sb.append("  id: ").append(id).append(",\n");
- 
+
         sb.append("  allowScriptedVisits: ").append(allowScriptedVisits).append(",\n");
         sb.append("  allowScheduledVisits: ").append(allowScheduledVisits).append(",\n");
         sb.append("  allowRandomVisits: ").append(allowRandomVisits).append(",\n");
 
-       
         sb.append("  inventory: [");
         for (int i = 0; i < inventory.size(); i++) {
             sb.append(inventory.get(i));
-            if (i < inventory.size() - 1) sb.append(", ");
+            if (i < inventory.size() - 1) {
+                sb.append(", ");
+            }
         }
         sb.append("]\n");
 

@@ -1,4 +1,3 @@
-// ===== StatusPanel.java =====
 package ui;
 
 import logic.GameEngine;
@@ -9,24 +8,29 @@ import java.awt.*;
 public class StatusPanel extends JPanel {
 
     private final GameEngine engine;
-    private final JLabel label;
+    private final JLabel resources;
 
     public StatusPanel(GameEngine engine) {
         this.engine = engine;
-        this.label = new JLabel("", JLabel.CENTER);
+        this.resources = new JLabel();
 
         setLayout(new BorderLayout());
-        add(label, BorderLayout.CENTER);
+
+        JButton inventory = new JButton("I");
+        inventory.addActionListener(e ->
+            InventoryDialog.show(engine.getGame())
+        );
+
+        add(resources, BorderLayout.CENTER);
+        add(inventory, BorderLayout.EAST);
     }
 
     public void refresh() {
-        label.setText(
-            "<html>" +
-                "Day: " + engine.getGame().day + "<br>" +
-                "Food: " + engine.getGame().player.food + "<br>" +
-                "Fuel: " + engine.getGame().player.fuel + "<br>" +
-                "Money: " + engine.getGame().player.money +
-            "</html>"
+        resources.setText(
+            "Day: " + engine.getGame().day +
+            " | Food: " + engine.getGame().player.food +
+            " | Fuel: " + engine.getGame().player.fuel +
+            " | Money: " + engine.getGame().player.money
         );
     }
 }

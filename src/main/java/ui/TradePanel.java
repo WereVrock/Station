@@ -42,7 +42,6 @@ public class TradePanel extends JPanel {
 
         removeAll();
 
-        // BUY
         for (Item item : new ArrayList<>(visit.itemsForSale)) {
             JButton buy = new JButton("Buy " + item.name);
             buy.addActionListener(e -> {
@@ -56,13 +55,12 @@ public class TradePanel extends JPanel {
             add(new JLabel("Price: " + engine.getBuyPrice(item)));
         }
 
-        // SELL (only wanted items)
         rebuildSellButtons();
 
         if (hasNextVisit) {
-            JButton nextVisit = new JButton("Next Visit");
-            nextVisit.addActionListener(e -> onNextVisit.run());
-            add(nextVisit);
+            JButton next = new JButton("Next Visit");
+            next.addActionListener(e -> onNextVisit.run());
+            add(next);
             add(new JLabel(""));
         }
 

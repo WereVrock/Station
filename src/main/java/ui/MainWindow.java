@@ -13,6 +13,7 @@ public class MainWindow extends JFrame {
     private final GameEngine engine;
 
     private final StatusPanel statusPanel;
+    private final MainDisplayPanel displayPanel;
     private final LogPanel logPanel;
     private final BurnPanel burnPanel;
     private final TradePanel tradePanel;
@@ -21,34 +22,42 @@ public class MainWindow extends JFrame {
     private int currentVisitIndex = 0;
 
     public MainWindow(Game game) {
-        this.engine = new GameEngine(game);
+        engine = new GameEngine(game);
 
         setTitle("Cozy Apocalypse");
-        setSize(800, 600);
+        setSize(900, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         statusPanel = new StatusPanel(engine);
+        displayPanel = new MainDisplayPanel();
         logPanel = new LogPanel();
         burnPanel = new BurnPanel(engine, this::handleBurnVisits);
         tradePanel = new TradePanel(engine, this::endDay, this::nextVisit);
-
-        // 🔴 THIS WAS MISSING
         tradePanel.setStatusPanel(statusPanel);
 
+        JPanel center = new JPanel(new BorderLayout());
+        center.add(displayPanel, BorderLayout.CENTER);
+        center.add(logPanel, BorderLayout.SOUTH);
+
+        JPanel right = new JPanel(new BorderLayout());
+        right.add(burnPanel, BorderLayout.NORTH);
+        right.add(tradePanel, BorderLayout.CENTER);
+
         add(statusPanel, BorderLayout.NORTH);
-        add(logPanel, BorderLayout.CENTER);
-        add(burnPanel, BorderLayout.SOUTH);
-        add(tradePanel, BorderLayout.EAST);
+        add(center, BorderLayout.CENTER);
+        add(right, BorderLayout.EAST);
 
         startDay();
+        setVisible(true);
     }
 
     private void startDay() {
         statusPanel.refresh();
         burnPanel.refresh();
         tradePanel.clear();
-        logPanel.dayStart(engine.getGame().day);
+        logPanel.clear();
+        displayPanel.showBurnPhase(engine.getGame());
 
         currentVisits = null;
         currentVisitIndex = 0;
@@ -58,14 +67,13 @@ public class MainWindow extends JFrame {
         burnPanel.refresh();
 
         if (visits.isEmpty()) {
-            logPanel.noOneAppears();
+            logPanel.log("No one appears.");
             tradePanel.showEndDayOnly();
             return;
         }
 
         currentVisits = visits;
         currentVisitIndex = 0;
-
         showCurrentVisit();
     }
 
@@ -76,10 +84,8 @@ public class MainWindow extends JFrame {
         }
 
         VisitResult visit = currentVisits.get(currentVisitIndex);
-
-        System.out.println(visit);
-
-        logPanel.visitAppears(visit);
+        logPanel.log(visit.character.name + " appears.");
+        displayPanel.showVisit(visit);
 
         boolean hasNext = currentVisitIndex < currentVisits.size() - 1;
         tradePanel.showTrade(visit, hasNext);
@@ -92,8 +98,6 @@ public class MainWindow extends JFrame {
 
     private void endDay() {
         engine.nextDay();
-        currentVisits = null;
-        currentVisitIndex = 0;
         startDay();
     }
 }
