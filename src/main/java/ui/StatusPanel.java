@@ -12,17 +12,18 @@ public class StatusPanel extends JPanel {
 
     public StatusPanel(GameEngine engine) {
         this.engine = engine;
-        this.resources = new JLabel();
 
-        setLayout(new BorderLayout());
+        setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
+
+        resources = new JLabel();
 
         JButton inventory = new JButton("I");
         inventory.addActionListener(e ->
             InventoryDialog.show(engine.getGame())
         );
 
-        add(resources, BorderLayout.CENTER);
-        add(inventory, BorderLayout.EAST);
+        add(resources);
+        add(inventory);
     }
 
     public void refresh() {

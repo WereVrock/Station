@@ -14,7 +14,9 @@ public class TradePanel extends JPanel {
     private final GameEngine engine;
     private final Runnable onEndDay;
     private final Runnable onNextVisit;
+
     private StatusPanel statusPanel;
+    private LogPanel logPanel;
 
     private VisitResult currentVisit;
     private boolean hasNextVisit;
@@ -23,11 +25,16 @@ public class TradePanel extends JPanel {
         this.engine = engine;
         this.onEndDay = onEndDay;
         this.onNextVisit = onNextVisit;
-        setLayout(new GridLayout(0, 2, 5, 5));
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
     public void setStatusPanel(StatusPanel statusPanel) {
         this.statusPanel = statusPanel;
+    }
+
+    public void setLogPanel(LogPanel logPanel) {
+        this.logPanel = logPanel;
     }
 
     public void clear() {
@@ -41,30 +48,40 @@ public class TradePanel extends JPanel {
         this.hasNextVisit = hasNextVisit;
 
         removeAll();
+        add(Box.createVerticalGlue());
 
         for (Item item : new ArrayList<>(visit.itemsForSale)) {
-            JButton buy = new JButton("Buy " + item.name);
+            JButton buy = new JButton(
+                "Buy " + item.name + " (" + engine.getBuyPrice(item) + ")"
+            );
+            buy.setAlignmentX(Component.CENTER_ALIGNMENT);
             buy.addActionListener(e -> {
                 if (engine.buyFromVisit(visit, item)) {
+                    if (logPanel != null) {
+                        logPanel.log("Bought " + item.name + ".");
+                    }
                     showTrade(visit, hasNextVisit);
                     refreshStatus();
                 }
             });
-
             add(buy);
-            add(new JLabel("Price: " + engine.getBuyPrice(item)));
+            add(Box.createVerticalStrut(5));
         }
 
         rebuildSellButtons();
 
         if (hasNextVisit) {
             JButton next = new JButton("Next Visit");
+            next.setAlignmentX(Component.CENTER_ALIGNMENT);
             next.addActionListener(e -> onNextVisit.run());
+            add(Box.createVerticalStrut(10));
             add(next);
-            add(new JLabel(""));
         }
 
+        add(Box.createVerticalStrut(10));
         addEndDayButton();
+        add(Box.createVerticalGlue());
+
         refresh();
     }
 
@@ -74,30 +91,39 @@ public class TradePanel extends JPanel {
         for (Item item : inventory) {
             if (!currentVisit.wants(item)) continue;
 
-            JButton sell = new JButton("Sell " + item.name);
+            JButton sell = new JButton(
+                "Sell " + item.name + " (" + engine.getSellPrice(item) + ")"
+            );
+            sell.setAlignmentX(Component.CENTER_ALIGNMENT);
             sell.addActionListener(e -> {
                 if (engine.sellToVisitCharacter(currentVisit, item)) {
+                    if (logPanel != null) {
+                        logPanel.log("Sold " + item.name + ".");
+                    }
                     showTrade(currentVisit, hasNextVisit);
                     refreshStatus();
                 }
             });
 
+            add(Box.createVerticalStrut(5));
             add(sell);
-            add(new JLabel("Price: " + engine.getSellPrice(item)));
         }
     }
 
     public void showEndDayOnly() {
         removeAll();
+        add(Box.createVerticalGlue());
         addEndDayButton();
+        add(Box.createVerticalGlue());
         refresh();
     }
 
-    private void addEndDayButton() {
+    // ---- Restored API (used internally, not compatibility-only) ----
+    public void addEndDayButton() {
         JButton endDay = new JButton("End Day");
+        endDay.setAlignmentX(Component.CENTER_ALIGNMENT);
         endDay.addActionListener(e -> onEndDay.run());
         add(endDay);
-        add(new JLabel(""));
     }
 
     private void refresh() {
@@ -106,6 +132,8 @@ public class TradePanel extends JPanel {
     }
 
     private void refreshStatus() {
-        if (statusPanel != null) statusPanel.refresh();
+        if (statusPanel != null) {
+            statusPanel.refresh();
+        }
     }
 }

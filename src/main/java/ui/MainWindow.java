@@ -32,17 +32,19 @@ public class MainWindow extends JFrame {
         statusPanel = new StatusPanel(engine);
         displayPanel = new MainDisplayPanel();
         logPanel = new LogPanel();
+
         burnPanel = new BurnPanel(engine, this::handleBurnVisits);
         tradePanel = new TradePanel(engine, this::endDay, this::nextVisit);
         tradePanel.setStatusPanel(statusPanel);
+        tradePanel.setLogPanel(logPanel);
 
         JPanel center = new JPanel(new BorderLayout());
         center.add(displayPanel, BorderLayout.CENTER);
         center.add(logPanel, BorderLayout.SOUTH);
 
         JPanel right = new JPanel(new BorderLayout());
-        right.add(burnPanel, BorderLayout.NORTH);
-        right.add(tradePanel, BorderLayout.CENTER);
+        right.add(burnPanel, BorderLayout.CENTER);
+        right.add(tradePanel, BorderLayout.SOUTH);
 
         add(statusPanel, BorderLayout.NORTH);
         add(center, BorderLayout.CENTER);
@@ -67,7 +69,7 @@ public class MainWindow extends JFrame {
         burnPanel.refresh();
 
         if (visits.isEmpty()) {
-            logPanel.log("No one appears.");
+            logPanel.noOneAppears();
             tradePanel.showEndDayOnly();
             return;
         }
@@ -84,7 +86,7 @@ public class MainWindow extends JFrame {
         }
 
         VisitResult visit = currentVisits.get(currentVisitIndex);
-        logPanel.log(visit.character.name + " appears.");
+        logPanel.visitAppears(visit);
         displayPanel.showVisit(visit);
 
         boolean hasNext = currentVisitIndex < currentVisits.size() - 1;
