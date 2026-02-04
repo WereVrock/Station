@@ -27,7 +27,14 @@ public class GameEngine {
         game.player.fuel -= GameConstants.FUEL_BURN_COST;
         game.burnChosen();
 
-        List<VisitResult> visits = burnResolver.resolveFireMultiple("strongClean");
+        FireStatus fireStatus =
+                new FireStatus(FireStatus.Strength.STRONG, "clean");
+
+        game.setFireStatus(fireStatus);
+
+        List<VisitResult> visits =
+                burnResolver.resolveFireMultiple(convertToResolverKey(fireStatus));
+
         pendingVisits.addAll(visits);
         resolveRandomVisitsIfNeeded();
 
@@ -42,15 +49,26 @@ public class GameEngine {
         game.worldTags.addAll(item.tags);
         game.burnChosen();
 
-        String fire = (item.fireEffect == null || item.fireEffect.isBlank())
-                ? "weakClean"
+        String effect = (item.fireEffect == null || item.fireEffect.isBlank())
+                ? "clean"
                 : item.fireEffect;
 
-        List<VisitResult> visits = burnResolver.resolveFireMultiple(fire);
+        FireStatus fireStatus =
+                new FireStatus(FireStatus.Strength.WEAK, effect);
+
+        game.setFireStatus(fireStatus);
+
+        List<VisitResult> visits =
+                burnResolver.resolveFireMultiple(convertToResolverKey(fireStatus));
+
         pendingVisits.addAll(visits);
         resolveRandomVisitsIfNeeded();
 
         return getNextVisits();
+    }
+
+    private String convertToResolverKey(FireStatus fireStatus) {
+        return fireStatus.toString();
     }
 
     private void resolveRandomVisitsIfNeeded() {
@@ -58,6 +76,7 @@ public class GameEngine {
         if (visitsToday >= GameConstants.VISITS_RANDOM_TRIGGER_THRESHOLD) return;
 
         List<VisitResult> randoms = burnResolver.resolveRandomVisits();
+
         for (VisitResult r : randoms) {
             if (pendingVisits.size() + game.visitsToday >= GameConstants.VISITS_MAX_PER_DAY) break;
             pendingVisits.add(r);

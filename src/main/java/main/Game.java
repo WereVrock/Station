@@ -22,7 +22,18 @@ public class Game implements Serializable {
     public int day = GameConstants.DAY_START;
     public boolean waitingForBurnChoice = true;
 
+    private FireStatus fireStatus =
+            new FireStatus(FireStatus.Strength.WEAK, "clean");
+
     private transient Scanner scanner = new Scanner(System.in);
+
+    public FireStatus getFireStatus() {
+        return fireStatus;
+    }
+
+    public void setFireStatus(FireStatus fireStatus) {
+        this.fireStatus = fireStatus;
+    }
 
     public void loadItems(String file) throws IOException {
         Gson gson = new Gson();
