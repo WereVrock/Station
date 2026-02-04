@@ -8,9 +8,9 @@ public class Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public int food = 5;
-    public int fuel = 5;
-    public int money = 20;
+    public int food = GameConstants.PLAYER_START_FOOD;
+    public int fuel = GameConstants.PLAYER_START_FUEL;
+    public int money = GameConstants.PLAYER_START_MONEY;
 
     public List<ItemStack> inventory = new ArrayList<>();
 
@@ -28,9 +28,9 @@ public class Player implements Serializable {
     public void addItem(Item item) {
         ItemStack stack = getStack(item);
         if (stack == null) {
-            inventory.add(new ItemStack(item, 1));
+            inventory.add(new ItemStack(item, GameConstants.STACK_AMOUNT));
         } else {
-            stack.increment(1);
+            stack.increment(GameConstants.STACK_AMOUNT);
         }
     }
 
@@ -38,7 +38,7 @@ public class Player implements Serializable {
         ItemStack stack = getStack(item);
         if (stack == null) return;
 
-        stack.decrement(1);
+        stack.decrement(GameConstants.STACK_AMOUNT);
         if (stack.isEmpty()) {
             inventory.remove(stack);
         }

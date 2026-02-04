@@ -7,10 +7,7 @@ public class VisitItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // item reference by name or id
     public String item;
-
-    // null | coinflip | rare | ultra_rare
     public String rarity;
 
     public boolean isAvailable(Random rng) {
@@ -20,9 +17,9 @@ public class VisitItem implements Serializable {
             case "coinflip":
                 return rng.nextBoolean();
             case "rare":
-                return rng.nextInt(4) == 0;
+                return rng.nextInt(GameConstants.VISITITEM_RARE_CHANCE) == 0;
             case "ultra_rare":
-                return rng.nextInt(10) == 0;
+                return rng.nextInt(GameConstants.VISITITEM_ULTRA_RARE_CHANCE) == 0;
             default:
                 return true;
         }

@@ -20,13 +20,11 @@ public class GameEngine {
         this.dayService = new DayService(game);
     }
 
-    // ---------- BURN FLOW ----------
-
     public List<VisitResult> burnFuelVisits() {
         if (burnedToday || game.player.fuel <= 0) return Collections.emptyList();
 
         burnedToday = true;
-        game.player.fuel--;
+        game.player.fuel -= GameConstants.FUEL_BURN_COST;
         game.burnChosen();
 
         List<VisitResult> visits = burnResolver.resolveFireMultiple("strongClean");
@@ -57,11 +55,11 @@ public class GameEngine {
 
     private void resolveRandomVisitsIfNeeded() {
         int visitsToday = game.visitsToday + pendingVisits.size();
-        if (visitsToday >= 3) return;
+        if (visitsToday >= GameConstants.VISITS_RANDOM_TRIGGER_THRESHOLD) return;
 
         List<VisitResult> randoms = burnResolver.resolveRandomVisits();
         for (VisitResult r : randoms) {
-            if (pendingVisits.size() + game.visitsToday >= 5) break;
+            if (pendingVisits.size() + game.visitsToday >= GameConstants.VISITS_MAX_PER_DAY) break;
             pendingVisits.add(r);
         }
     }
@@ -69,7 +67,8 @@ public class GameEngine {
     private List<VisitResult> getNextVisits() {
         List<VisitResult> result = new ArrayList<>();
 
-        while (!pendingVisits.isEmpty() && result.size() + game.visitsToday < 5) {
+        while (!pendingVisits.isEmpty() &&
+                result.size() + game.visitsToday < GameConstants.VISITS_MAX_PER_DAY) {
             result.add(pendingVisits.poll());
         }
 
@@ -80,8 +79,6 @@ public class GameEngine {
     public boolean hasPendingVisits() {
         return !pendingVisits.isEmpty();
     }
-
-    // ---------- TRADE ----------
 
     public boolean buyFromVisit(VisitResult visit, Item item) {
         int price = tradeService.getBuyPrice(item);
@@ -114,8 +111,6 @@ public class GameEngine {
     public int getSellPrice(Item item) {
         return tradeService.getSellPrice(item);
     }
-
-    // ---------- DAY ----------
 
     public void nextDay() {
         pendingVisits.clear();

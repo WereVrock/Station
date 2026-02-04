@@ -1,4 +1,3 @@
-// ===== DayService.java =====
 package logic;
 
 import main.Game;

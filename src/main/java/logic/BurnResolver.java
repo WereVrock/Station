@@ -4,6 +4,7 @@ import main.Game;
 import main.GameCharacter;
 import main.Item;
 import main.Visit;
+import main.GameConstants;
 
 import java.util.*;
 
@@ -16,7 +17,6 @@ public class BurnResolver {
         this.game = game;
     }
 
-    // Resolve visits triggered by a fire effect (fuel or item)
     public List<VisitResult> resolveFireMultiple(String fireEffect) {
         List<VisitResult> results = new ArrayList<>();
         List<GameCharacter> shuffled = new ArrayList<>(game.characters);
@@ -62,7 +62,6 @@ public class BurnResolver {
                         visit.type
                 ));
 
-                // Apply visit effects
                 game.worldTags.addAll(visit.tagsToAdd);
                 if (visit.allowScriptedVisits != null) character.allowScriptedVisits = visit.allowScriptedVisits;
                 if (visit.allowScheduledVisits != null) character.allowScheduledVisits = visit.allowScheduledVisits;
@@ -73,7 +72,6 @@ public class BurnResolver {
         return results;
     }
 
-    // Resolve 1–2 random visits if fewer than 3 visits occurred today
     public List<VisitResult> resolveRandomVisits() {
         List<GameCharacter> eligible = new ArrayList<>(game.characters);
         Collections.shuffle(eligible);
@@ -118,7 +116,7 @@ public class BurnResolver {
                 break;
             }
 
-            if (results.size() >= 2) break;
+            if (results.size() >= GameConstants.VISITS_RANDOM_MAX) break;
         }
 
         return results;

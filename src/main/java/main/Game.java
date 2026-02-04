@@ -15,17 +15,15 @@ public class Game implements Serializable {
     public List<GameCharacter> characters = new ArrayList<>();
     public Set<String> worldTags = new HashSet<>();
 
-    // per-day visit tracking
     public int visitsToday = 0;
 
     public Player player = new Player();
 
-    public int day = 1;
+    public int day = GameConstants.DAY_START;
     public boolean waitingForBurnChoice = true;
 
     private transient Scanner scanner = new Scanner(System.in);
 
-    // ---------- JSON CONTENT LOAD ----------
     public void loadItems(String file) throws IOException {
         Gson gson = new Gson();
         Type itemListType = new TypeToken<ArrayList<Item>>() {}.getType();
@@ -50,7 +48,6 @@ public class Game implements Serializable {
         }
     }
 
-    // ---------- DAY CONTROL ----------
     public void startNewDay() {
         waitingForBurnChoice = true;
         visitsToday = 0;
@@ -65,7 +62,6 @@ public class Game implements Serializable {
         waitingForBurnChoice = false;
     }
 
-    // ---------- SAVE ----------
     public void saveGame(String filename) throws IOException {
         try (ObjectOutputStream out =
                      new ObjectOutputStream(new FileOutputStream(filename))) {
@@ -73,7 +69,6 @@ public class Game implements Serializable {
         }
     }
 
-    // ---------- LOAD ----------
     public static Game loadGame(String filename)
             throws IOException, ClassNotFoundException {
 

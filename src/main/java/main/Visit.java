@@ -17,10 +17,8 @@ public class Visit {
     public List<VisitItem> sells = new ArrayList<>();
     public List<VisitItem> buys = new ArrayList<>();
 
-    // used ONLY for scripted visits
     public boolean used = false;
 
-    // minimum and maximum delay for scripted/scheduled visits
     public Integer minDays;
     public Integer maxDays;
 
@@ -60,11 +58,11 @@ public class Visit {
     }
 
     private int resolveMin() {
-        return minDays != null ? minDays : 0;
+        return minDays != null ? minDays : GameConstants.SCRIPTED_DEFAULT_MIN_DELAY;
     }
 
     private int resolveMax() {
-        return maxDays != null ? maxDays : 0;
+        return maxDays != null ? maxDays : GameConstants.SCRIPTED_DEFAULT_MAX_DELAY;
     }
 
     public ResolvedTrade resolveTrade(Random rng) {
