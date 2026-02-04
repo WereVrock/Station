@@ -8,6 +8,14 @@ public class Visit {
 
     public String type;
 
+    // NEW condition split
+    public List<String> timerStartFireRequired = new ArrayList<>();
+    public List<String> timerStartTags = new ArrayList<>();
+
+    public List<String> visitFireRequired = new ArrayList<>();
+    public List<String> visitRequiredTags = new ArrayList<>();
+
+    // legacy support (kept)
     public List<String> fireRequired = new ArrayList<>();
     public List<String> requiredTags = new ArrayList<>();
 
@@ -25,6 +33,8 @@ public class Visit {
     public Integer firstEligibleDay = null;
     public Integer triggerDay = null;
 
+    public Integer nextScheduledDay = null;
+
     public Boolean allowScriptedVisits;
     public Boolean allowScheduledVisits;
     public Boolean allowRandomVisits;
@@ -33,28 +43,52 @@ public class Visit {
         return "scripted".equals(type);
     }
 
+    public boolean isScheduled() {
+        return "scheduled".equals(type);
+    }
+
     public void markFirstEligible(int currentDay) {
         if (firstEligibleDay != null) return;
 
         firstEligibleDay = currentDay;
 
-        int min = resolveMin();
-        int max = resolveMax();
-
-        if (min == 0 && max == 0) {
-            triggerDay = currentDay;
-            return;
-        }
-
-        if (min >= 0 && max >= min) {
-            int delay = new Random().nextInt(max - min + 1) + min;
-            triggerDay = currentDay + delay;
-        }
+        int delay = randomDelay();
+        triggerDay = currentDay + delay;
     }
 
     public boolean isReady(int currentDay) {
         if (triggerDay == null) return false;
         return currentDay >= triggerDay;
+    }
+
+    public boolean scheduledReady(int currentDay,
+                                  boolean timerStartConditionsMet,
+                                  boolean visitConditionsMet) {
+
+        // Start timer once
+        if (timerStartConditionsMet && firstEligibleDay == null) {
+            firstEligibleDay = currentDay;
+            nextScheduledDay = currentDay + randomDelay();
+            return false;
+        }
+
+        if (firstEligibleDay == null || nextScheduledDay == null) {
+            return false;
+        }
+
+        // Timer matured but wait for visit conditions
+        if (currentDay >= nextScheduledDay && visitConditionsMet) {
+            nextScheduledDay = currentDay + randomDelay();
+            return true;
+        }
+
+        return false;
+    }
+
+    private int randomDelay() {
+        int min = resolveMin();
+        int max = resolveMax();
+        return new Random().nextInt(max - min + 1) + min;
     }
 
     private int resolveMin() {
@@ -69,15 +103,11 @@ public class Visit {
         ResolvedTrade trade = new ResolvedTrade();
 
         for (VisitItem v : sells) {
-            if (v.isAvailable(rng)) {
-                trade.sells.add(v.item);
-            }
+            if (v.isAvailable(rng)) trade.sells.add(v.item);
         }
 
         for (VisitItem v : buys) {
-            if (v.isAvailable(rng)) {
-                trade.buys.add(v.item);
-            }
+            if (v.isAvailable(rng)) trade.buys.add(v.item);
         }
 
         return trade;
@@ -94,31 +124,16 @@ public class Visit {
 
         sb.append("Visit {\n");
         sb.append("  type: ").append(type).append(",\n");
-        sb.append("  fireRequired: ").append(fireRequired).append(",\n");
-        sb.append("  requiredTags: ").append(requiredTags).append(",\n");
+        sb.append("  timerStartFireRequired: ").append(timerStartFireRequired).append(",\n");
+        sb.append("  timerStartTags: ").append(timerStartTags).append(",\n");
+        sb.append("  visitFireRequired: ").append(visitFireRequired).append(",\n");
+        sb.append("  visitRequiredTags: ").append(visitRequiredTags).append(",\n");
+
         sb.append("  dialogue: ").append(dialogue).append(",\n");
         sb.append("  tagsToAdd: ").append(tagsToAdd).append(",\n");
 
-        sb.append("  sells: [");
-        for (int i = 0; i < sells.size(); i++) {
-            sb.append(sells.get(i));
-            if (i < sells.size() - 1) sb.append(", ");
-        }
-        sb.append("],\n");
-
-        sb.append("  buys: [");
-        for (int i = 0; i < buys.size(); i++) {
-            sb.append(buys.get(i));
-            if (i < buys.size() - 1) sb.append(", ");
-        }
-        sb.append("],\n");
-
         sb.append("  used: ").append(used).append(",\n");
-        sb.append("  minDays: ").append(minDays).append(", maxDays: ").append(maxDays).append(",\n");
-        sb.append("  firstEligibleDay: ").append(firstEligibleDay).append(", triggerDay: ").append(triggerDay).append(",\n");
-        sb.append("  allowScriptedVisits: ").append(allowScriptedVisits).append(",\n");
-        sb.append("  allowScheduledVisits: ").append(allowScheduledVisits).append(",\n");
-        sb.append("  allowRandomVisits: ").append(allowRandomVisits).append("\n");
+        sb.append("  nextScheduledDay: ").append(nextScheduledDay).append("\n");
         sb.append("}");
 
         return sb.toString();
