@@ -13,7 +13,7 @@ public class BurnResolver {
     private final Game game;
     private final Random rng = new Random();
 
-    private boolean debugRejectedVisits = true;
+    private boolean debugRejectedVisits = false;
 
     public BurnResolver(Game game) {
         this.game = game;
@@ -25,6 +25,8 @@ public class BurnResolver {
 
     public List<VisitResult> resolveFireMultiple(String fireEffect) {
 
+        String normalizedFire = FireKeyNormalizer.normalize(fireEffect);
+
         List<VisitResult> results = new ArrayList<>();
         List<GameCharacter> shuffled = new ArrayList<>(game.characters);
         Collections.shuffle(shuffled);
@@ -32,24 +34,24 @@ public class BurnResolver {
         for (GameCharacter character : shuffled) {
 
             if (character.visitedToday) {
-                debugRejected(character, null, "Character already visited today", fireEffect, null);
+                debugRejected(character, null, "Character already visited today", normalizedFire, null);
                 continue;
             }
 
             for (Visit visit : character.visits) {
 
                 if (visit.isOneShot() && visit.used) {
-                    debugRejected(character, visit, "One shot visit already used", fireEffect, null);
+                    debugRejected(character, visit, "One shot visit already used", normalizedFire, null);
                     continue;
                 }
 
                 if (!isVisitTypeAllowed(character, visit)) {
-                    debugRejected(character, visit, "Visit type not allowed for character", fireEffect, null);
+                    debugRejected(character, visit, "Visit type not allowed for character", normalizedFire, null);
                     continue;
                 }
 
                 MatchResult timerMatch = evaluateMatch(
-                        fireEffect,
+                        normalizedFire,
                         game.worldTags,
                         visit.timerStartFireRequired,
                         visit.timerStartTags,
@@ -58,7 +60,7 @@ public class BurnResolver {
                 );
 
                 MatchResult visitMatch = evaluateMatch(
-                        fireEffect,
+                        normalizedFire,
                         game.worldTags,
                         visit.visitFireRequired,
                         visit.visitRequiredTags,
@@ -71,7 +73,7 @@ public class BurnResolver {
                     if (!visitMatch.success) {
                         debugRejected(character, visit,
                                 "Scripted visit conditions not met",
-                                fireEffect,
+                                normalizedFire,
                                 visitMatch);
                         continue;
                     }
@@ -81,7 +83,7 @@ public class BurnResolver {
                     if (!visit.isReady(game.day)) {
                         debugRejected(character, visit,
                                 "Scripted visit timer not ready",
-                                fireEffect,
+                                normalizedFire,
                                 null);
                         continue;
                     }
@@ -101,7 +103,7 @@ public class BurnResolver {
                                 + "(timerStart=" + timerMatch.success
                                 + ", visitConditions=" + visitMatch.success + ")";
 
-                        debugRejected(character, visit, reason, fireEffect, visitMatch);
+                        debugRejected(character, visit, reason, normalizedFire, visitMatch);
                         continue;
                     }
                 }
@@ -110,7 +112,7 @@ public class BurnResolver {
                     if (!visitMatch.success) {
                         debugRejected(character, visit,
                                 "Visit conditions not met",
-                                fireEffect,
+                                normalizedFire,
                                 visitMatch);
                         continue;
                     }
@@ -128,11 +130,11 @@ public class BurnResolver {
                         sells,
                         buys,
                         visit.dialogue,
-                        fireEffect,
+                        normalizedFire,
                         visit.type
                 );
 
-                debugVisit(character, visit, sells, buys, fireEffect);
+                debugVisit(character, visit, sells, buys, normalizedFire);
 
                 results.add(vr);
 
@@ -217,17 +219,22 @@ public class BurnResolver {
                                       List<String> legacyFire,
                                       List<String> legacyTags) {
 
-        List<String> f = fireReq.isEmpty() ? legacyFire : fireReq;
-        List<String> t = tagReq.isEmpty() ? legacyTags : tagReq;
+        List<String> sourceFire = fireReq.isEmpty() ? legacyFire : fireReq;
+        List<String> sourceTags = tagReq.isEmpty() ? legacyTags : tagReq;
+
+        List<String> normalizedRequiredFire = new ArrayList<>();
+        for (String fire : sourceFire) {
+            normalizedRequiredFire.add(FireKeyNormalizer.normalize(fire));
+        }
 
         MatchResult result = new MatchResult();
-        result.requiredFire = new ArrayList<>(f);
-        result.requiredTags = new ArrayList<>(t);
+        result.requiredFire = new ArrayList<>(normalizedRequiredFire);
+        result.requiredTags = new ArrayList<>(sourceTags);
         result.actualFire = fireEffect;
         result.actualTags = new HashSet<>(worldTags);
 
-        result.fireOk = f.isEmpty() || f.contains(fireEffect);
-        result.tagsOk = worldTags.containsAll(t);
+        result.fireOk = normalizedRequiredFire.isEmpty() || normalizedRequiredFire.contains(fireEffect);
+        result.tagsOk = worldTags.containsAll(sourceTags);
         result.success = result.fireOk && result.tagsOk;
 
         return result;

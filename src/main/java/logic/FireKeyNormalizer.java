@@ -7,22 +7,21 @@ public final class FireKeyNormalizer {
     public static String normalize(String key) {
         if (key == null) return null;
 
-        String trimmed = key.trim();
-        if (trimmed.isEmpty()) return trimmed;
+        String s = key.trim();
+        if (s.isEmpty()) return s;
 
-        // convert camelCase strongClean -> strong_clean
-        StringBuilder sb = new StringBuilder();
+        // Replace separators with underscore
+        s = s.replace("-", "_").replace(" ", "_");
 
-        for (int i = 0; i < trimmed.length(); i++) {
-            char c = trimmed.charAt(i);
+        // Convert camelCase or PascalCase -> snake_case
+        s = s.replaceAll("([a-z0-9])([A-Z])", "$1_$2");
 
-            if (Character.isUpperCase(c)) {
-                sb.append("_").append(Character.toLowerCase(c));
-            } else {
-                sb.append(Character.toLowerCase(c));
-            }
-        }
+        // Lowercase everything
+        s = s.toLowerCase();
 
-        return sb.toString();
+        // Collapse accidental double underscores
+        s = s.replaceAll("_+", "_");
+
+        return s;
     }
 }
