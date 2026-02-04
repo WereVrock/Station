@@ -1,5 +1,6 @@
 package main;
 
+import logic.FireKeyNormalizer;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,7 +12,7 @@ public class FireStatus implements Serializable {
     }
 
     private final Strength strength;
-    private final String effect; // "clean" or special item string
+    private final String effect;
 
     public FireStatus(Strength strength, String effect) {
         this.strength = strength;
@@ -32,7 +33,8 @@ public class FireStatus implements Serializable {
 
     @Override
     public String toString() {
-        return strength.name().toLowerCase() + "_" + effect;
+        String normalizedEffect = FireKeyNormalizer.normalize(effect);
+        return strength.name().toLowerCase() + "_" + normalizedEffect;
     }
 
     @Override

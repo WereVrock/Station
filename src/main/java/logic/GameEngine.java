@@ -9,6 +9,7 @@ public class GameEngine {
     private final BurnResolver burnResolver;
     private final TradeService tradeService;
     private final DayService dayService;
+    private final BurnService burnService;
 
     private final Queue<VisitResult> pendingVisits = new LinkedList<>();
     private boolean burnedToday = false;
@@ -18,6 +19,7 @@ public class GameEngine {
         this.burnResolver = new BurnResolver(game);
         this.tradeService = new TradeService(game);
         this.dayService = new DayService(game);
+        this.burnService = new BurnService(game);
     }
 
     public List<VisitResult> burnFuelVisits() {
@@ -27,13 +29,11 @@ public class GameEngine {
         game.player.fuel -= GameConstants.FUEL_BURN_COST;
         game.burnChosen();
 
-        FireStatus fireStatus =
-                new FireStatus(FireStatus.Strength.STRONG, "clean");
-
+        FireStatus fireStatus = burnService.burnFuel();
         game.setFireStatus(fireStatus);
 
         List<VisitResult> visits =
-                burnResolver.resolveFireMultiple(convertToResolverKey(fireStatus));
+                burnResolver.resolveFireMultiple(fireStatus.toString());
 
         pendingVisits.addAll(visits);
         resolveRandomVisitsIfNeeded();
@@ -49,26 +49,16 @@ public class GameEngine {
         game.worldTags.addAll(item.tags);
         game.burnChosen();
 
-        String effect = (item.fireEffect == null || item.fireEffect.isBlank())
-                ? "clean"
-                : item.fireEffect;
-
-        FireStatus fireStatus =
-                new FireStatus(FireStatus.Strength.WEAK, effect);
-
+        FireStatus fireStatus = burnService.burnItem(item);
         game.setFireStatus(fireStatus);
 
         List<VisitResult> visits =
-                burnResolver.resolveFireMultiple(convertToResolverKey(fireStatus));
+                burnResolver.resolveFireMultiple(fireStatus.toString());
 
         pendingVisits.addAll(visits);
         resolveRandomVisitsIfNeeded();
 
         return getNextVisits();
-    }
-
-    private String convertToResolverKey(FireStatus fireStatus) {
-        return fireStatus.toString();
     }
 
     private void resolveRandomVisitsIfNeeded() {
