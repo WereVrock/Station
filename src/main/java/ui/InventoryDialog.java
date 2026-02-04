@@ -17,12 +17,11 @@ public class InventoryDialog {
         sb.append("Money: ").append(game.player.money).append("\n\n");
 
         for (ItemStack stack : game.player.inventory) {
-            sb.append(stack.item.name)
-              .append(" x")
-              .append(stack.count)
-              .append(" | ")
-              .append(stack.item.type)
-              .append("\n");
+            sb.append(stack.item.name);
+            if (stack.count > 1) {
+                sb.append(" x").append(stack.count);
+            }
+            sb.append(" | ").append(stack.item.type).append("\n");
         }
 
         area.setText(sb.toString());

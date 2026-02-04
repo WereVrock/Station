@@ -86,7 +86,6 @@ public class TradePanel extends JPanel {
         refresh();
     }
 
-    // ===== RESTORED METHOD (REAL LOGIC) =====
     private void rebuildSellButtons() {
         List<ItemStack> inventory =
                 new ArrayList<>(engine.getGame().player.inventory);
@@ -94,10 +93,12 @@ public class TradePanel extends JPanel {
         for (ItemStack stack : inventory) {
             if (!currentVisit.wants(stack.item)) continue;
 
+            String label = stack.count > 1
+                    ? stack.item.name + " x" + stack.count
+                    : stack.item.name;
+
             JButton sell = new JButton(
-                "Sell " + stack.item.name +
-                " x" + stack.count +
-                " (" + engine.getSellPrice(stack.item) + ")"
+                "Sell " + label + " (" + engine.getSellPrice(stack.item) + ")"
             );
             sell.setAlignmentX(Component.CENTER_ALIGNMENT);
             sell.addActionListener(e -> {
@@ -115,7 +116,6 @@ public class TradePanel extends JPanel {
         }
     }
 
-    // ===== RESTORED METHOD =====
     public void showEndDayOnly() {
         removeAll();
         add(Box.createVerticalGlue());

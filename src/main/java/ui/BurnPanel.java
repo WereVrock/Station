@@ -34,7 +34,9 @@ public class BurnPanel extends JPanel {
         if (engine.getGame().player.fuel > 0) {
             JButton fuel = new JButton("Burn Fuel");
             fuel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            fuel.addActionListener(e -> onBurnVisits.accept(engine.burnFuelVisits()));
+            fuel.addActionListener(e ->
+                onBurnVisits.accept(engine.burnFuelVisits())
+            );
             add(fuel);
             add(Box.createVerticalStrut(10));
         }
@@ -42,13 +44,16 @@ public class BurnPanel extends JPanel {
         for (ItemStack stack : engine.getGame().player.inventory) {
             if (!stack.item.burnable) continue;
 
-            JButton btn = new JButton(
-                "Burn " + stack.item.name + " x" + stack.count
-            );
+            String label = stack.count > 1
+                    ? stack.item.name + " x" + stack.count
+                    : stack.item.name;
+
+            JButton btn = new JButton("Burn " + label);
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
             btn.addActionListener(e ->
                 onBurnVisits.accept(engine.burnItemVisits(stack.item))
             );
+
             add(btn);
             add(Box.createVerticalStrut(5));
         }

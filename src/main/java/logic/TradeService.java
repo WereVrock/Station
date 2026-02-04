@@ -1,4 +1,3 @@
-// ===== TradeService.java =====
 package logic;
 
 import main.Game;
@@ -12,15 +11,15 @@ public class TradeService {
         this.game = game;
     }
 
-    // Price player pays to buy from character
+    // Price player pays to buy from character (LOW)
     public int getBuyPrice(Item item) {
-        // Can be extended per-item logic, e.g., item.type or rarity
-        return 5;
+        int base = item.basePrice > 0 ? item.basePrice : 5;
+        return Math.max(1, base - 2);
     }
 
-    // Price player gets for selling to character
+    // Price player gets for selling to character (HIGH)
     public int getSellPrice(Item item) {
-        // Can be extended per-item logic
-        return 3;
+        int base = item.basePrice > 0 ? item.basePrice : 5;
+        return base + 2;
     }
 }
