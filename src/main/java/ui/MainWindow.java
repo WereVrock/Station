@@ -66,6 +66,7 @@ public class MainWindow extends JFrame {
     }
 
     private void handleBurnVisits(List<VisitResult> visits) {
+        statusPanel.refresh(); // <-- FIX: refresh fire status immediately
         burnPanel.refresh();
 
         if (visits.isEmpty()) {
