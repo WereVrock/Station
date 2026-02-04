@@ -2,7 +2,7 @@ package ui;
 
 import logic.GameEngine;
 import logic.VisitResult;
-import main.Item;
+import main.ItemStack;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,16 +36,21 @@ public class BurnPanel extends JPanel {
             fuel.setAlignmentX(Component.CENTER_ALIGNMENT);
             fuel.addActionListener(e -> onBurnVisits.accept(engine.burnFuelVisits()));
             add(fuel);
+            add(Box.createVerticalStrut(10));
         }
 
-        for (Item item : engine.getGame().player.inventory) {
-            if (!item.burnable) continue;
+        for (ItemStack stack : engine.getGame().player.inventory) {
+            if (!stack.item.burnable) continue;
 
-            JButton btn = new JButton("Burn " + item.name);
+            JButton btn = new JButton(
+                "Burn " + stack.item.name + " x" + stack.count
+            );
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-            btn.addActionListener(e -> onBurnVisits.accept(engine.burnItemVisits(item)));
-            add(Box.createVerticalStrut(5));
+            btn.addActionListener(e ->
+                onBurnVisits.accept(engine.burnItemVisits(stack.item))
+            );
             add(btn);
+            add(Box.createVerticalStrut(5));
         }
 
         add(Box.createVerticalGlue());

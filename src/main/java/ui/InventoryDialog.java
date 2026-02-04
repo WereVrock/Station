@@ -1,8 +1,7 @@
-// ===== InventoryDialog.java =====
 package ui;
 
 import main.Game;
-import main.Item;
+import main.ItemStack;
 
 import javax.swing.*;
 
@@ -14,12 +13,15 @@ public class InventoryDialog {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Food: ").append(game.player.food).append("\n");
-        sb.append("Fuel: ").append(game.player.fuel).append("\n\n");
+        sb.append("Fuel: ").append(game.player.fuel).append("\n");
+        sb.append("Money: ").append(game.player.money).append("\n\n");
 
-        for (Item item : game.player.inventory) {
-            sb.append(item.name)
+        for (ItemStack stack : game.player.inventory) {
+            sb.append(stack.item.name)
+              .append(" x")
+              .append(stack.count)
               .append(" | ")
-              .append(item.type)
+              .append(stack.item.type)
               .append("\n");
         }
 

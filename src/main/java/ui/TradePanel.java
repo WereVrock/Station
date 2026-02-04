@@ -3,6 +3,7 @@ package ui;
 import logic.GameEngine;
 import logic.VisitResult;
 import main.Item;
+import main.ItemStack;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +26,6 @@ public class TradePanel extends JPanel {
         this.engine = engine;
         this.onEndDay = onEndDay;
         this.onNextVisit = onNextVisit;
-
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
@@ -50,6 +50,7 @@ public class TradePanel extends JPanel {
         removeAll();
         add(Box.createVerticalGlue());
 
+        // ---- BUY ----
         for (Item item : new ArrayList<>(visit.itemsForSale)) {
             JButton buy = new JButton(
                 "Buy " + item.name + " (" + engine.getBuyPrice(item) + ")"
@@ -85,20 +86,24 @@ public class TradePanel extends JPanel {
         refresh();
     }
 
+    // ===== RESTORED METHOD (REAL LOGIC) =====
     private void rebuildSellButtons() {
-        List<Item> inventory = new ArrayList<>(engine.getGame().player.inventory);
+        List<ItemStack> inventory =
+                new ArrayList<>(engine.getGame().player.inventory);
 
-        for (Item item : inventory) {
-            if (!currentVisit.wants(item)) continue;
+        for (ItemStack stack : inventory) {
+            if (!currentVisit.wants(stack.item)) continue;
 
             JButton sell = new JButton(
-                "Sell " + item.name + " (" + engine.getSellPrice(item) + ")"
+                "Sell " + stack.item.name +
+                " x" + stack.count +
+                " (" + engine.getSellPrice(stack.item) + ")"
             );
             sell.setAlignmentX(Component.CENTER_ALIGNMENT);
             sell.addActionListener(e -> {
-                if (engine.sellToVisitCharacter(currentVisit, item)) {
+                if (engine.sellToVisitCharacter(currentVisit, stack.item)) {
                     if (logPanel != null) {
-                        logPanel.log("Sold " + item.name + ".");
+                        logPanel.log("Sold " + stack.item.name + ".");
                     }
                     showTrade(currentVisit, hasNextVisit);
                     refreshStatus();
@@ -110,6 +115,7 @@ public class TradePanel extends JPanel {
         }
     }
 
+    // ===== RESTORED METHOD =====
     public void showEndDayOnly() {
         removeAll();
         add(Box.createVerticalGlue());
@@ -118,7 +124,6 @@ public class TradePanel extends JPanel {
         refresh();
     }
 
-    // ---- Restored API (used internally, not compatibility-only) ----
     public void addEndDayButton() {
         JButton endDay = new JButton("End Day");
         endDay.setAlignmentX(Component.CENTER_ALIGNMENT);
