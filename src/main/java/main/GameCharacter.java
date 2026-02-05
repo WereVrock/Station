@@ -1,8 +1,12 @@
 package main;
 
+import ui.ExhaustionTextFactory.ExhaustionType;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 public class GameCharacter implements Serializable {
 
@@ -28,6 +32,23 @@ public class GameCharacter implements Serializable {
 
     // stacked inventory
     public List<ItemStack> inventory = new ArrayList<>();
+
+    // NEW: exhaustion text (nullable per type)
+    private final Map<ExhaustionType, String> exhaustionText = new EnumMap<>(ExhaustionType.class);
+
+    // ===== EXHAUSTION TEXT =====
+
+    public void setExhaustionText(ExhaustionType type, String text) {
+        if (text == null) {
+            exhaustionText.remove(type);
+        } else {
+            exhaustionText.put(type, text);
+        }
+    }
+
+    public String getExhaustionText(ExhaustionType type) {
+        return exhaustionText.get(type);
+    }
 
     // ===== INVENTORY HELPERS =====
 

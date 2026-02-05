@@ -16,8 +16,9 @@
                 "minDay": 0,
                 "maxDay": 0,
                 "dialogue": [
-                    "Ah… this fire is clean. Rare, these days.",
-                    "I could sit here for hours, just watching it breathe."
+                    "Ah… this fire is clean. Rare, these days. I could sit here for hours, just watching it breathe.",
+                    "Happen to have an ironOre?"
+                    
                 ],
                 "sells": [
                     {
@@ -26,7 +27,7 @@
                 ],
                 "buys": [
                     {
-                        "item": "herbs"
+                        "item": "ironOre"
                     }
                 ],
                 "sellFood": 0,
@@ -97,7 +98,7 @@
                 ],
                 "buys": [
                     {
-                        "item": "ironOre"
+                        
                     }
                 ],
                 "sellFood": 0,
@@ -301,5 +302,67 @@
                 "tagsToAdd": []
             }
         ]
+    },{
+  "id": "cinder_bram",
+  "name": "Cinder Bram",
+  "background": "Once a sapper in the old wars. Now he drags a half-dead bomb through the ashlands, feeding it fuel so it won’t wake up hungry.",
+  "defaultPortrait": "cinder_bram_default",
+  "gold": 18,
+  "scriptedVisitsAllowed": false,
+  "scheduledVisitsAllowed": false,
+  "randomVisitsAllowed": true,
+  "visits": [
+    {
+      "type": "random",
+      "fireRequired": ["strongClean", "weakClean"],
+      "requiredTags": [],
+      "minDay": 0,
+      "maxDay": 0,
+      "dialogue": [
+        "Don’t get close to it.",
+        "It listens when it’s warm.",
+        "Fuel keeps it dreaming."
+      ],
+      "sells": [],
+      "buys": [],
+      "sellFood": 0,
+      "sellFuel": 0,
+      "buyFood": 0,
+      "buyFuel": 2,
+      "exhaustionText": {
+        "BUY_FUEL": "He presses a hand against the bomb’s cracked shell and exhales. \"Enough. It’s sleeping. Pray it stays that way.\""
+      },
+      "goldChange": 0,
+      "portraitOverride": null,
+      "portraitOneTime": false,
+      "allowScriptedVisits": null,
+      "allowScheduledVisits": null,
+      "allowRandomVisits": null
+    },
+    {
+      "type": "random",
+      "fireRequired": ["strongTainted"],
+      "requiredTags": [],
+      "minDay": 0,
+      "maxDay": 0,
+      "dialogue": [
+        "This fire smells wrong.",
+        "If it wakes… we won’t hear it scream."
+      ],
+      "sells": [],
+      "buys": [],
+      "sellFood": 0,
+      "sellFuel": 0,
+      "buyFood": 0,
+      "buyFuel": 1,
+      "goldChange": 0,
+      "portraitOverride": null,
+      "portraitOneTime": false,
+      "allowScriptedVisits": null,
+      "allowScheduledVisits": null,
+      "allowRandomVisits": null
     }
+  ]
+}
+
 ]

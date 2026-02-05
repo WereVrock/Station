@@ -2,6 +2,7 @@ package ui;
 
 import logic.VisitResult;
 import main.GameCharacter;
+import main.Visit;
 
 public final class ExhaustionTextFactory {
 
@@ -9,7 +10,7 @@ public final class ExhaustionTextFactory {
         // utility class
     }
 
-    // ===== Public API =====
+    // ===== Public API (USED BY OUTSIDE) =====
 
     public static String sellFoodExhausted(VisitResult visit, GameCharacter character) {
         return buildExhaustionText(visit, character, ExhaustionType.SELL_FOOD);
@@ -27,13 +28,31 @@ public final class ExhaustionTextFactory {
         return buildExhaustionText(visit, character, ExhaustionType.BUY_FUEL);
     }
 
-    // ===== Core Logic =====
+    // ===== Core Resolution =====
 
-    private static String buildExhaustionText(
-            VisitResult visit,
+    static String buildExhaustionText(
+            VisitResult visitResult,
             GameCharacter character,
             ExhaustionType type
     ) {
+        Visit visit = visitResult != null ? visitResult.character != null
+                ? findVisit(visitResult, character)
+                : null
+                : null;
+
+        // 1. Visit-specific text
+        if (visit != null) {
+            String text = visit.getExhaustionText(type);
+            if (text != null) return text;
+        }
+
+        // 2. Character-specific text
+        if (character != null) {
+            String text = character.getExhaustionText(type);
+            if (text != null) return text;
+        }
+
+        // 3. Generic fallback
         return switch (type) {
             case SELL_FOOD -> genericSellFood(character);
             case SELL_FUEL -> genericSellFuel(character);
@@ -42,57 +61,53 @@ public final class ExhaustionTextFactory {
         };
     }
 
-    private static String genericSellFood(GameCharacter character) {
+    // ===== Generic Text =====
+
+    static String genericSellFood(GameCharacter character) {
         return "They fold the empty sack and slide it aside. "
              + "\"That was all the food I brought.\"";
     }
 
-    private static String genericSellFuel(GameCharacter character) {
+    static String genericSellFuel(GameCharacter character) {
         return "They tighten the cap on the last can and pull it back. "
              + "\"No more fuel after that.\"";
     }
 
-    private static String genericBuyFood(GameCharacter character) {
+    static String genericBuyFood(GameCharacter character) {
         return "They give a small nod, satisfied. "
              + "\"That’ll keep me fed.\"";
     }
 
-    private static String genericBuyFuel(GameCharacter character) {
+    static String genericBuyFuel(GameCharacter character) {
         return "They glance at the fire, then back to you. "
              + "\"That should burn long enough.\"";
     }
 
-    private enum ExhaustionType {
+    // ===== Helpers =====
+
+    private static Visit findVisit(VisitResult visitResult, GameCharacter character) {
+        if (character == null) return null;
+
+        for (Visit v : character.visits) {
+            if (v.dialogue == visitResult.dialogue) {
+                return v;
+            }
+        }
+        return null;
+    }
+
+    // ===== Types =====
+
+    public enum ExhaustionType {
         SELL_FOOD,
         SELL_FUEL,
         BUY_FOOD,
         BUY_FUEL
     }
 
-    // ===== Test Harness =====
+    // ===== Test Harness (KEPT) =====
 
     public static void main(String[] args) {
-        VisitResult visit = null;
-        GameCharacter character = null;
-
-        System.out.println("=== ExhaustionTextFactory Test ===\n");
-
-        System.out.println("[SELL FOOD]");
-        System.out.println(sellFoodExhausted(visit, character));
-        System.out.println();
-
-        System.out.println("[SELL FUEL]");
-        System.out.println(sellFuelExhausted(visit, character));
-        System.out.println();
-
-        System.out.println("[BUY FOOD]");
-        System.out.println(buyFoodExhausted(visit, character));
-        System.out.println();
-
-        System.out.println("[BUY FUEL]");
-        System.out.println(buyFuelExhausted(visit, character));
-        System.out.println();
-
-        System.out.println("=== End Test ===");
+        System.out.println("=== ExhaustionTextFactory Loaded ===");
     }
 }

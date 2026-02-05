@@ -1,8 +1,8 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import ui.ExhaustionTextFactory.ExhaustionType;
+
+import java.util.*;
 
 public class Visit {
 
@@ -13,6 +13,9 @@ public class Visit {
     public int sellFuel = 0;
     public int buyFood = 0;
     public int buyFuel = 0;
+
+    // NEW: exhaustion text (highest priority)
+    private final Map<ExhaustionType, String> exhaustionText = new EnumMap<>(ExhaustionType.class);
 
     // NEW condition split
     public List<String> timerStartFireRequired = new ArrayList<>();
@@ -44,6 +47,22 @@ public class Visit {
     public Boolean allowScriptedVisits;
     public Boolean allowScheduledVisits;
     public Boolean allowRandomVisits;
+
+    // ===== EXHAUSTION TEXT =====
+
+    public void setExhaustionText(ExhaustionType type, String text) {
+        if (text == null) {
+            exhaustionText.remove(type);
+        } else {
+            exhaustionText.put(type, text);
+        }
+    }
+
+    public String getExhaustionText(ExhaustionType type) {
+        return exhaustionText.get(type);
+    }
+
+    // ===== VISIT LOGIC =====
 
     public boolean isOneShot() {
         return "scripted".equals(type);
