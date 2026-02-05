@@ -29,6 +29,10 @@
                         "item": "herbs"
                     }
                 ],
+                "sellFood": 0,
+                "sellFuel": 0,
+                "buyFood": 1,
+                "buyFuel": 0,
                 "goldChange": 0,
                 "portraitOverride": null,
                 "portraitOneTime": false,
@@ -96,6 +100,10 @@
                         "item": "ironOre"
                     }
                 ],
+                "sellFood": 0,
+                "sellFuel": 0,
+                "buyFood": 1,
+                "buyFuel": 0,
                 "goldChange": 0,
                 "portraitOverride": null,
                 "portraitOneTime": false,

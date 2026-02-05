@@ -35,8 +35,10 @@ public class MainWindow extends JFrame {
 
         burnPanel = new BurnPanel(engine, this::handleBurnVisits);
         tradePanel = new TradePanel(engine, this::endDay, this::nextVisit);
+
         tradePanel.setStatusPanel(statusPanel);
         tradePanel.setLogPanel(logPanel);
+        tradePanel.setDisplayPanel(displayPanel);
 
         JPanel center = new JPanel(new BorderLayout());
         center.add(displayPanel, BorderLayout.CENTER);
@@ -66,7 +68,7 @@ public class MainWindow extends JFrame {
     }
 
     private void handleBurnVisits(List<VisitResult> visits) {
-        statusPanel.refresh(); // <-- FIX: refresh fire status immediately
+        statusPanel.refresh();
         burnPanel.refresh();
 
         if (visits.isEmpty()) {

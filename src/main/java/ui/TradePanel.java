@@ -19,6 +19,7 @@ public class TradePanel extends JPanel {
 
     private StatusPanel statusPanel;
     private LogPanel logPanel;
+    private MainDisplayPanel displayPanel;
 
     private VisitResult currentVisit;
     private boolean hasNextVisit;
@@ -38,6 +39,10 @@ public class TradePanel extends JPanel {
         this.logPanel = logPanel;
     }
 
+    public void setDisplayPanel(MainDisplayPanel displayPanel) {
+        this.displayPanel = displayPanel;
+    }
+
     public void clear() {
         removeAll();
         currentVisit = null;
@@ -51,7 +56,6 @@ public class TradePanel extends JPanel {
         removeAll();
         add(Box.createVerticalGlue());
 
-        // ===== BUY ITEMS =====
         for (Item item : new ArrayList<>(visit.itemsForSale)) {
             JButton buy = new JButton(
                 "Buy " + item.name + " (" + engine.getBuyPrice(item) + ")"
@@ -59,9 +63,7 @@ public class TradePanel extends JPanel {
             buy.setAlignmentX(Component.CENTER_ALIGNMENT);
             buy.addActionListener(e -> {
                 if (engine.buyFromVisit(visit, item)) {
-                    if (logPanel != null) {
-                        logPanel.log("Bought " + item.name + ".");
-                    }
+                    logPanel.log("Bought " + item.name + ".");
                     showTrade(visit, hasNextVisit);
                     refreshStatus();
                 }
@@ -70,13 +72,8 @@ public class TradePanel extends JPanel {
             add(Box.createVerticalStrut(5));
         }
 
-        // ===== BUY FOOD / FUEL =====
         addResourceBuyButtons();
-
-        // ===== SELL ITEMS =====
         rebuildSellButtons();
-
-        // ===== SELL FOOD / FUEL =====
         addResourceSellButtons();
 
         if (hasNextVisit) {
@@ -101,8 +98,15 @@ public class TradePanel extends JPanel {
             );
             buyFood.setAlignmentX(Component.CENTER_ALIGNMENT);
             buyFood.addActionListener(e -> {
+                boolean wasLast = currentVisit.sellFood == 1;
+
                 if (engine.buyFoodFromVisit(currentVisit, 1)) {
                     logPanel.log("Bought food.");
+
+                    if (wasLast) {
+                        displayPanel.appendDialogue(exhaustedSellText());
+                    }
+
                     showTrade(currentVisit, hasNextVisit);
                     refreshStatus();
                 }
@@ -117,8 +121,15 @@ public class TradePanel extends JPanel {
             );
             buyFuel.setAlignmentX(Component.CENTER_ALIGNMENT);
             buyFuel.addActionListener(e -> {
+                boolean wasLast = currentVisit.sellFuel == 1;
+
                 if (engine.buyFuelFromVisit(currentVisit, 1)) {
                     logPanel.log("Bought fuel.");
+
+                    if (wasLast) {
+                        displayPanel.appendDialogue(exhaustedSellText());
+                    }
+
                     showTrade(currentVisit, hasNextVisit);
                     refreshStatus();
                 }
@@ -145,9 +156,7 @@ public class TradePanel extends JPanel {
             sell.setAlignmentX(Component.CENTER_ALIGNMENT);
             sell.addActionListener(e -> {
                 if (engine.sellToVisitCharacter(currentVisit, stack.item)) {
-                    if (logPanel != null) {
-                        logPanel.log("Sold " + stack.item.name + ".");
-                    }
+                    logPanel.log("Sold " + stack.item.name + ".");
                     showTrade(currentVisit, hasNextVisit);
                     refreshStatus();
                 }
@@ -159,14 +168,21 @@ public class TradePanel extends JPanel {
     }
 
     private void addResourceSellButtons() {
-        if (currentVisit.buyFood > 0 && engine.getGame().player.food > 0) {
+        if (currentVisit.buyFood > 0) {
             JButton sellFood = new JButton(
                 "Sell Food x1 (" + GameConstants.FOOD_PRICE + ")"
             );
             sellFood.setAlignmentX(Component.CENTER_ALIGNMENT);
             sellFood.addActionListener(e -> {
+                boolean wasLast = currentVisit.buyFood == 1;
+
                 if (engine.sellFoodToVisit(currentVisit, 1)) {
                     logPanel.log("Sold food.");
+
+                    if (wasLast) {
+                        displayPanel.appendDialogue(exhaustedBuyText());
+                    }
+
                     showTrade(currentVisit, hasNextVisit);
                     refreshStatus();
                 }
@@ -175,14 +191,21 @@ public class TradePanel extends JPanel {
             add(sellFood);
         }
 
-        if (currentVisit.buyFuel > 0 && engine.getGame().player.fuel > 0) {
+        if (currentVisit.buyFuel > 0) {
             JButton sellFuel = new JButton(
                 "Sell Fuel x1 (" + GameConstants.FUEL_PRICE + ")"
             );
             sellFuel.setAlignmentX(Component.CENTER_ALIGNMENT);
             sellFuel.addActionListener(e -> {
+                boolean wasLast = currentVisit.buyFuel == 1;
+
                 if (engine.sellFuelToVisit(currentVisit, 1)) {
                     logPanel.log("Sold fuel.");
+
+                    if (wasLast) {
+                        displayPanel.appendDialogue(exhaustedBuyText());
+                    }
+
                     showTrade(currentVisit, hasNextVisit);
                     refreshStatus();
                 }
@@ -190,6 +213,14 @@ public class TradePanel extends JPanel {
             add(Box.createVerticalStrut(5));
             add(sellFuel);
         }
+    }
+
+    private String exhaustedSellText() {
+        return "They tuck the last of it away. \"That’s everything I had.\"";
+    }
+
+    private String exhaustedBuyText() {
+        return "They nod, satisfied. \"That’ll do.\"";
     }
 
     public void showEndDayOnly() {

@@ -54,12 +54,18 @@ public class MainDisplayPanel extends JPanel {
             imageLabel.setText("Character Image");
         }
 
-        StringBuilder sb = new StringBuilder();
-        for (String line : visit.dialogue) {
-            sb.append(line).append("\n");
-        }
+        dialogueArea.setText("");
 
-        dialogueArea.setText(sb.toString());
+        for (String line : visit.dialogue) {
+            appendDialogue(line);
+        }
+    }
+
+    public void appendDialogue(String line) {
+        if (!dialogueArea.getText().isEmpty()) {
+            dialogueArea.append("\n");
+        }
+        dialogueArea.append(line);
     }
 
     public void clear() {
