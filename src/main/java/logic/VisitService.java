@@ -28,7 +28,7 @@ public class VisitService {
         FireStatus fireStatus = burnService.burnFuel();
         game.setFireStatus(fireStatus);
 
-        enqueueResolvedVisits(fireStatus.toString());
+        enqueueResolvedVisits(FireVisitKey.from(fireStatus).legacyKey());
         return drainVisitsForToday();
     }
 
@@ -45,7 +45,7 @@ public class VisitService {
         FireStatus fireStatus = burnService.burnItem(item);
         game.setFireStatus(fireStatus);
 
-        enqueueResolvedVisits(fireStatus.toString());
+        enqueueResolvedVisits(FireVisitKey.from(fireStatus).legacyKey());
         return drainVisitsForToday();
     }
 
