@@ -21,23 +21,19 @@ public class BurnService {
     }
 
     public FireStatus burnItem(Item item) {
-
-        String raw = (item.fireEffect == null || item.fireEffect.isBlank())
-                ? "clean"
-                : FireKeyNormalizer.normalize(item.fireEffect);
-
-        FireStatus.Strength strength = FireStatus.Strength.WEAK;
-        String effect = raw;
-
-        // Allow item fireEffect to encode strength
-        if (raw.startsWith("strong_")) {
-            strength = FireStatus.Strength.STRONG;
-            effect = raw.substring("strong_".length());
+        if (item == null || !item.burnable) {
+            return new FireStatus(FireStatus.Strength.WEAK, "clean");
         }
-        else if (raw.startsWith("weak_")) {
-            strength = FireStatus.Strength.WEAK;
-            effect = raw.substring("weak_".length());
-        }
+
+        FireStatus.Strength strength =
+                item.fireStrength != null
+                        ? item.fireStrength
+                        : FireStatus.Strength.WEAK;
+
+        String effect =
+                (item.fireEffect == null || item.fireEffect.isBlank())
+                        ? "clean"
+                        : item.fireEffect;
 
         return new FireStatus(strength, effect);
     }

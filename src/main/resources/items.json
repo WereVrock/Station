@@ -3,7 +3,8 @@
     "id": "firewood",
     "name": "Firewood Bundle",
     "type": "fuel",
-    "fireEffect": "strongClean",
+    "fireStrength": "STRONG",
+    "fireEffect": "clean",
     "burnable": true,
     "tags": ["essential", "warmth"]
   },
@@ -11,7 +12,8 @@
     "id": "bread",
     "name": "Loaf of Bread",
     "type": "food",
-    "fireEffect": "weakClean",
+    "fireStrength": "WEAK",
+    "fireEffect": "clean",
     "burnable": true,
     "tags": ["dailyUse", "cozy"]
   },
@@ -19,7 +21,8 @@
     "id": "silkCloth",
     "name": "Silk Cloth",
     "type": "goods",
-    "fireEffect": "weakClean",
+    "fireStrength": "WEAK",
+    "fireEffect": "clean",
     "burnable": true,
     "tags": ["luxury"]
   },
@@ -27,7 +30,8 @@
     "id": "ancientTalisman",
     "name": "Ancient Talisman",
     "type": "relic",
-    "fireEffect": "strongEffect",
+    "fireStrength": "STRONG",
+    "fireEffect": "effect",
     "burnable": true,
     "tags": ["magical", "ritual"]
   },
@@ -35,7 +39,8 @@
     "id": "ironOre",
     "name": "Iron Ore",
     "type": "goods",
-    "fireEffect": "weakEffect",
+    "fireStrength": "WEAK",
+    "fireEffect": "effect",
     "burnable": true,
     "tags": ["metal", "smithing"]
   },
@@ -43,7 +48,8 @@
     "id": "herbs",
     "name": "Bundle of Rare Herbs",
     "type": "goods",
-    "fireEffect": "weakClean",
+    "fireStrength": "WEAK",
+    "fireEffect": "clean",
     "burnable": true,
     "tags": ["healing", "aromatic"]
   },
@@ -51,18 +57,17 @@
     "id": "mysticScroll",
     "name": "Mystic Scroll",
     "type": "relic",
-    "fireEffect": "strongEffect",
+    "fireStrength": "STRONG",
+    "fireEffect": "effect",
     "burnable": true,
     "tags": ["arcane", "ritual"]
   },
-
-
-
   {
     "id": "bone_charm",
     "name": "Bone Charm",
     "type": "trinket",
-    "fireEffect": "strongEffect",
+    "fireStrength": "STRONG",
+    "fireEffect": "effect",
     "burnable": true,
     "tags": ["smells_of_death", "ritual"]
   },
@@ -70,7 +75,8 @@
     "id": "ashen_ring",
     "name": "Ashen Ring",
     "type": "ring",
-    "fireEffect": "weakEffect",
+    "fireStrength": "WEAK",
+    "fireEffect": "effect",
     "burnable": true,
     "tags": ["ashes", "worn"]
   },
@@ -78,7 +84,8 @@
     "id": "herbal_pouch",
     "name": "Herbal Pouch",
     "type": "consumable",
-    "fireEffect": "weakClean",
+    "fireStrength": "WEAK",
+    "fireEffect": "clean",
     "burnable": true,
     "tags": ["herbal_smell", "medicine"]
   }

@@ -14,7 +14,10 @@ public class Item implements Serializable {
 
     public int basePrice = GameConstants.DEFAULT_ITEM_BASE_PRICE;
 
-    public String fireEffect;
+    // NEW: split fire data
+    public FireStatus.Strength fireStrength = FireStatus.Strength.WEAK;
+    public String fireEffect = "clean";
+
     public boolean burnable = true;
 
     public List<String> tags = new ArrayList<>();
@@ -26,6 +29,7 @@ public class Item implements Serializable {
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", basePrice=" + basePrice +
+                ", fireStrength=" + fireStrength +
                 ", fireEffect='" + fireEffect + '\'' +
                 ", burnable=" + burnable +
                 ", tags=" + tags +
