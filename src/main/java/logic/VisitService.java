@@ -50,22 +50,26 @@ public class VisitService {
     }
 
     private void enqueueResolvedVisits(String fireEffect) {
-        List<VisitResult> resolved =
-                visitResolver.resolveVisitsByFire(fireEffect);
 
-        pendingVisits.addAll(resolved);
-        resolveRandomVisitsIfNeeded();
-    }
+        List<VisitResult> results = new ArrayList<>();
 
-    private void resolveRandomVisitsIfNeeded() {
-        int visitsToday = game.visitsToday + pendingVisits.size();
-        if (visitsToday >= GameConstants.VISITS_RANDOM_TRIGGER_THRESHOLD) return;
+        // 1. scripted
+        results.addAll(visitResolver.resolveByType("scripted", fireEffect));
 
-        List<VisitResult> randoms = visitResolver.resolveRandomVisits();
-        for (VisitResult r : randoms) {
-            if (pendingVisits.size() + game.visitsToday >= GameConstants.VISITS_MAX_PER_DAY) break;
-            pendingVisits.add(r);
+        // 2. scheduled
+        results.addAll(visitResolver.resolveByType("scheduled", fireEffect));
+
+        // 3. normal (non-random)
+        results.addAll(visitResolver.resolveByType("normal", fireEffect));
+
+        // 4. random if total < 3
+        if (results.size() < 3) {
+            int want = new Random().nextBoolean() ? 1 : 2;
+            want = Math.min(want, GameConstants.VISITS_MAX_PER_DAY - results.size());
+            results.addAll(visitResolver.resolveRandomVisits(want));
         }
+
+        pendingVisits.addAll(results);
     }
 
     private List<VisitResult> drainVisitsForToday() {

@@ -18,29 +18,26 @@ public class VisitResolver {
         this.debugger.setDebugRejected(debugRejectedVisits);
     }
 
-    public List<VisitResult> resolveVisitsByFire(String fireEffect) {
+    public List<VisitResult> resolveByType(String mode, String fireEffect) {
+
         String normalizedFire = FireKeyNormalizer.normalize(fireEffect);
         List<VisitResult> results = new ArrayList<>();
+
         List<GameCharacter> shuffled = new ArrayList<>(game.characters);
         Collections.shuffle(shuffled);
 
         for (GameCharacter character : shuffled) {
-            if (character.visitedToday) {
-                debugger.debugRejected(character, null, "Character already visited today", normalizedFire, null);
-                continue;
-            }
+
+            if (character.visitedToday) continue;
 
             for (Visit visit : character.visits) {
 
-                if (visit.isOneShot() && visit.used) {
-                    debugger.debugRejected(character, visit, "One shot visit already used", normalizedFire, null);
-                    continue;
-                }
+                if (visit.used && visit.isOneShot()) continue;
 
-                if (!isVisitTypeAllowed(character, visit)) {
-                    debugger.debugRejected(character, visit, "Visit type not allowed for character", normalizedFire, null);
-                    continue;
-                }
+                if ("normal".equals(mode) && "random".equals(visit.type)) continue;
+                if (!"normal".equals(mode) && !mode.equals(visit.type)) continue;
+
+                if (!isVisitTypeAllowed(character, visit)) continue;
 
                 MatchResult timerMatch = evaluateVisitConditions(
                         normalizedFire,
@@ -60,33 +57,24 @@ public class VisitResolver {
                         visit.requiredTags
                 );
 
+                boolean ok = false;
+
                 if ("scripted".equals(visit.type)) {
-                    if (!visitMatch.success) {
-                        debugger.debugRejected(character, visit, "Scripted visit conditions not met", normalizedFire, visitMatch);
-                        continue;
-                    }
+                    if (!visitMatch.success) continue;
                     visit.markFirstEligible(game.day);
-                    if (!visit.isReady(game.day)) {
-                        debugger.debugRejected(character, visit, "Scripted visit timer not ready", normalizedFire, null);
-                        continue;
-                    }
-                    visit.used = true;
-
-                } else if ("scheduled".equals(visit.type)) {
-                    if (!visit.scheduledReady(game.day, timerMatch.success, visitMatch.success)) {
-                        String reason = "Scheduled visit not ready "
-                                + "(timerStart=" + timerMatch.success
-                                + ", visitConditions=" + visitMatch.success + ")";
-                        debugger.debugRejected(character, visit, reason, normalizedFire, visitMatch);
-                        continue;
-                    }
-
-                } else {
-                    if (!visitMatch.success) {
-                        debugger.debugRejected(character, visit, "Visit conditions not met", normalizedFire, visitMatch);
-                        continue;
-                    }
+                    ok = visit.isReady(game.day);
+                    if (ok) visit.used = true;
                 }
+
+                else if ("scheduled".equals(visit.type)) {
+                    ok = visit.scheduledReady(game.day, timerMatch.success, visitMatch.success);
+                }
+
+                else {
+                    ok = visitMatch.success;
+                }
+
+                if (!ok) continue;
 
                 character.visitedToday = true;
 
@@ -114,35 +102,35 @@ public class VisitResolver {
                 if (visit.allowScriptedVisits != null) character.allowScriptedVisits = visit.allowScriptedVisits;
                 if (visit.allowScheduledVisits != null) character.allowScheduledVisits = visit.allowScheduledVisits;
                 if (visit.allowRandomVisits != null) character.allowRandomVisits = visit.allowRandomVisits;
+
+                break;
             }
         }
 
         return results;
     }
 
-    public List<VisitResult> resolveRandomVisits() {
+    public List<VisitResult> resolveRandomVisits(int count) {
+
         List<GameCharacter> eligible = new ArrayList<>(game.characters);
         Collections.shuffle(eligible);
         List<VisitResult> results = new ArrayList<>();
 
         for (GameCharacter character : eligible) {
-            if (character.visitedToday) {
-                debugger.debugRejected(character, null, "Character already visited today (random)", "random", null);
-                continue;
-            }
+
+            if (character.visitedToday) continue;
 
             List<Visit> randomVisits = new ArrayList<>();
             for (Visit v : character.visits) {
-                if (!"random".equals(v.type)) continue;
-                if (!isVisitTypeAllowed(character, v)) {
-                    debugger.debugRejected(character, v, "Random visit type not allowed", "random", null);
-                    continue;
+                if ("random".equals(v.type) && isVisitTypeAllowed(character, v)) {
+                    randomVisits.add(v);
                 }
-                randomVisits.add(v);
             }
 
             Collections.shuffle(randomVisits);
+
             for (Visit visit : randomVisits) {
+
                 character.visitedToday = true;
 
                 Visit.ResolvedTrade trade = visit.resolveTrade(rng);
@@ -167,18 +155,18 @@ public class VisitResolver {
                 break;
             }
 
-            if (results.size() >= GameConstants.VISITS_RANDOM_MAX) break;
+            if (results.size() >= count) break;
         }
 
         return results;
     }
 
     private MatchResult evaluateVisitConditions(String fireEffect,
-                                      Set<String> worldTags,
-                                      List<String> fireReq,
-                                      List<String> tagReq,
-                                      List<String> legacyFire,
-                                      List<String> legacyTags) {
+                                                Set<String> worldTags,
+                                                List<String> fireReq,
+                                                List<String> tagReq,
+                                                List<String> legacyFire,
+                                                List<String> legacyTags) {
 
         List<String> sourceFire = fireReq.isEmpty() ? legacyFire : fireReq;
         List<String> sourceTags = tagReq.isEmpty() ? legacyTags : tagReq;
