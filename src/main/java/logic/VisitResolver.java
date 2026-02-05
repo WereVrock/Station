@@ -205,6 +205,22 @@ public class VisitResolver {
             default: return true;
         }
     }
+public MatchResult evaluateDeferred(String fireEffect,
+                                    Set<String> worldTags,
+                                    List<String> fireReq,
+                                    List<String> tagReq,
+                                    List<String> legacyFire,
+                                    List<String> legacyTags) {
+
+    return evaluateVisitConditions(
+            fireEffect,
+            worldTags,
+            fireReq,
+            tagReq,
+            legacyFire,
+            legacyTags
+    );
+}
 
     private Item findItem(String ref) {
         for (Item i : game.items) {
