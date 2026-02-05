@@ -5,6 +5,7 @@ import logic.VisitResult;
 import main.GameConstants;
 import main.Item;
 import main.ItemStack;
+import main.GameCharacter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -92,6 +93,8 @@ public class TradePanel extends JPanel {
     }
 
     private void addResourceBuyButtons() {
+        GameCharacter character = currentVisit.character;
+
         if (currentVisit.sellFood > 0) {
             JButton buyFood = new JButton(
                 "Buy Food x1 (" + GameConstants.FOOD_PRICE + ")"
@@ -104,7 +107,12 @@ public class TradePanel extends JPanel {
                     logPanel.log("Bought food.");
 
                     if (wasLast) {
-                        displayPanel.appendDialogue(exhaustedSellText());
+                        displayPanel.appendDialogue(
+                            ExhaustionTextFactory.sellFoodExhausted(
+                                currentVisit,
+                                character
+                            )
+                        );
                     }
 
                     showTrade(currentVisit, hasNextVisit);
@@ -127,7 +135,12 @@ public class TradePanel extends JPanel {
                     logPanel.log("Bought fuel.");
 
                     if (wasLast) {
-                        displayPanel.appendDialogue(exhaustedSellText());
+                        displayPanel.appendDialogue(
+                            ExhaustionTextFactory.sellFuelExhausted(
+                                currentVisit,
+                                character
+                            )
+                        );
                     }
 
                     showTrade(currentVisit, hasNextVisit);
@@ -168,6 +181,8 @@ public class TradePanel extends JPanel {
     }
 
     private void addResourceSellButtons() {
+        GameCharacter character = currentVisit.character;
+
         if (currentVisit.buyFood > 0) {
             JButton sellFood = new JButton(
                 "Sell Food x1 (" + GameConstants.FOOD_PRICE + ")"
@@ -180,7 +195,12 @@ public class TradePanel extends JPanel {
                     logPanel.log("Sold food.");
 
                     if (wasLast) {
-                        displayPanel.appendDialogue(exhaustedBuyText());
+                        displayPanel.appendDialogue(
+                            ExhaustionTextFactory.buyFoodExhausted(
+                                currentVisit,
+                                character
+                            )
+                        );
                     }
 
                     showTrade(currentVisit, hasNextVisit);
@@ -203,7 +223,12 @@ public class TradePanel extends JPanel {
                     logPanel.log("Sold fuel.");
 
                     if (wasLast) {
-                        displayPanel.appendDialogue(exhaustedBuyText());
+                        displayPanel.appendDialogue(
+                            ExhaustionTextFactory.buyFuelExhausted(
+                                currentVisit,
+                                character
+                            )
+                        );
                     }
 
                     showTrade(currentVisit, hasNextVisit);
@@ -213,14 +238,6 @@ public class TradePanel extends JPanel {
             add(Box.createVerticalStrut(5));
             add(sellFuel);
         }
-    }
-
-    private String exhaustedSellText() {
-        return "They tuck the last of it away. \"That’s everything I had.\"";
-    }
-
-    private String exhaustedBuyText() {
-        return "They nod, satisfied. \"That’ll do.\"";
     }
 
     public void showEndDayOnly() {
