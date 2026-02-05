@@ -6,92 +6,37 @@ import java.util.*;
 public class GameEngine {
 
     private final Game game;
-    private final VisitResolver burnResolver;
-    private final TradeService tradeService;
-    private final DayService dayService;
-    private final BurnService burnService;
-    private final ResourceTradeService resourceTradeService;
 
-    private final Queue<VisitResult> pendingVisits = new LinkedList<>();
-    private boolean burnedToday = false;
+    private final VisitService visitService;
+    private final TradeService tradeService;
+    private final ResourceTradeService resourceTradeService;
 
     public GameEngine(Game game) {
         this.game = game;
-        this.burnResolver = new VisitResolver(game);
+        this.visitService = new VisitService(game);
         this.tradeService = new TradeService(game);
-        this.dayService = new DayService(game);
-        this.burnService = new BurnService();
         this.resourceTradeService = new ResourceTradeService(game);
     }
 
+    // ===== VISITS =====
+
     public List<VisitResult> burnFuelVisits() {
-        if (burnedToday || game.player.fuel <= 0) return Collections.emptyList();
-
-        burnedToday = true;
-        game.player.fuel -= GameConstants.FUEL_BURN_COST;
-        game.burnChosen();
-
-        FireStatus fireStatus = burnService.burnFuel();
-        game.setFireStatus(fireStatus);
-
-        List<VisitResult> visits =
-                burnResolver.resolveVisitsByFire(fireStatus.toString());
-
-        pendingVisits.addAll(visits);
-        resolveRandomVisitsIfNeeded();
-
-        return getNextVisits();
+        return visitService.burnFuel();
     }
 
     public List<VisitResult> burnItemVisits(Item item) {
-        if (burnedToday || !game.player.hasItem(item)) return Collections.emptyList();
-
-        burnedToday = true;
-        game.player.removeItem(item);
-        game.worldTags.addAll(item.tags);
-        game.burnChosen();
-
-        FireStatus fireStatus = burnService.burnItem(item);
-        game.setFireStatus(fireStatus);
-
-        List<VisitResult> visits =
-                burnResolver.resolveVisitsByFire(fireStatus.toString());
-
-        pendingVisits.addAll(visits);
-        resolveRandomVisitsIfNeeded();
-
-        return getNextVisits();
-    }
-
-    private void resolveRandomVisitsIfNeeded() {
-        int visitsToday = game.visitsToday + pendingVisits.size();
-        if (visitsToday >= GameConstants.VISITS_RANDOM_TRIGGER_THRESHOLD) return;
-
-        List<VisitResult> randoms = burnResolver.resolveRandomVisits();
-
-        for (VisitResult r : randoms) {
-            if (pendingVisits.size() + game.visitsToday >= GameConstants.VISITS_MAX_PER_DAY) break;
-            pendingVisits.add(r);
-        }
-    }
-
-    private List<VisitResult> getNextVisits() {
-        List<VisitResult> result = new ArrayList<>();
-
-        while (!pendingVisits.isEmpty() &&
-                result.size() + game.visitsToday < GameConstants.VISITS_MAX_PER_DAY) {
-            result.add(pendingVisits.poll());
-        }
-
-        game.visitsToday += result.size();
-        return result;
+        return visitService.burnItem(item);
     }
 
     public boolean hasPendingVisits() {
-        return !pendingVisits.isEmpty();
+        return visitService.hasPendingVisits();
     }
 
-    // ===== ITEM TRADING (UNCHANGED) =====
+    public void nextDay() {
+        visitService.nextDay();
+    }
+
+    // ===== ITEM TRADING =====
 
     public boolean buyFromVisit(VisitResult visit, Item item) {
         int price = tradeService.getBuyPrice(item);
@@ -117,7 +62,7 @@ public class GameEngine {
         return true;
     }
 
-    // ===== FOOD / FUEL TRADING =====
+    // ===== FOOD / FUEL =====
 
     public boolean buyFoodFromVisit(VisitResult visit, int amount) {
         return resourceTradeService.buyFoodFromVisit(visit, amount);
@@ -141,13 +86,6 @@ public class GameEngine {
 
     public int getSellPrice(Item item) {
         return tradeService.getSellPrice(item);
-    }
-
-    public void nextDay() {
-        pendingVisits.clear();
-        burnedToday = false;
-        game.visitsToday = 0;
-        dayService.nextDay();
     }
 
     public Game getGame() {
