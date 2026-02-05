@@ -42,13 +42,23 @@ public class BurnResolver {
                     continue;
                 }
 
-                MatchResult timerMatch = evaluateMatch(normalizedFire, game.worldTags,
-                        visit.timerStartFireRequired, visit.timerStartTags,
-                        visit.fireRequired, visit.requiredTags);
+                MatchResult timerMatch = evaluateMatch(
+                        normalizedFire,
+                        game.worldTags,
+                        visit.timerStartFireRequired,
+                        visit.timerStartTags,
+                        visit.fireRequired,
+                        visit.requiredTags
+                );
 
-                MatchResult visitMatch = evaluateMatch(normalizedFire, game.worldTags,
-                        visit.visitFireRequired, visit.visitRequiredTags,
-                        visit.fireRequired, visit.requiredTags);
+                MatchResult visitMatch = evaluateMatch(
+                        normalizedFire,
+                        game.worldTags,
+                        visit.visitFireRequired,
+                        visit.visitRequiredTags,
+                        visit.fireRequired,
+                        visit.requiredTags
+                );
 
                 if ("scripted".equals(visit.type)) {
                     if (!visitMatch.success) {
@@ -61,6 +71,7 @@ public class BurnResolver {
                         continue;
                     }
                     visit.used = true;
+
                 } else if ("scheduled".equals(visit.type)) {
                     if (!visit.scheduledReady(game.day, timerMatch.success, visitMatch.success)) {
                         String reason = "Scheduled visit not ready "
@@ -69,6 +80,7 @@ public class BurnResolver {
                         debugger.debugRejected(character, visit, reason, normalizedFire, visitMatch);
                         continue;
                     }
+
                 } else {
                     if (!visitMatch.success) {
                         debugger.debugRejected(character, visit, "Visit conditions not met", normalizedFire, visitMatch);
@@ -82,7 +94,19 @@ public class BurnResolver {
                 List<Item> sells = resolveItems(trade.sells);
                 List<Item> buys = resolveItems(trade.buys);
 
-                VisitResult vr = new VisitResult(character, sells, buys, visit.dialogue, normalizedFire, visit.type);
+                VisitResult vr = new VisitResult(
+                        character,
+                        sells,
+                        buys,
+                        visit.dialogue,
+                        normalizedFire,
+                        visit.type,
+                        visit.sellFood,
+                        visit.sellFuel,
+                        visit.buyFood,
+                        visit.buyFuel
+                );
+
                 debugger.debugVisit(character, visit, sells, buys, normalizedFire);
                 results.add(vr);
 
@@ -120,11 +144,24 @@ public class BurnResolver {
             Collections.shuffle(randomVisits);
             for (Visit visit : randomVisits) {
                 character.visitedToday = true;
+
                 Visit.ResolvedTrade trade = visit.resolveTrade(rng);
                 List<Item> sells = resolveItems(trade.sells);
                 List<Item> buys = resolveItems(trade.buys);
 
-                VisitResult vr = new VisitResult(character, sells, buys, visit.dialogue, "random", visit.type);
+                VisitResult vr = new VisitResult(
+                        character,
+                        sells,
+                        buys,
+                        visit.dialogue,
+                        "random",
+                        visit.type,
+                        visit.sellFood,
+                        visit.sellFuel,
+                        visit.buyFood,
+                        visit.buyFuel
+                );
+
                 debugger.debugVisit(character, visit, sells, buys, "random");
                 results.add(vr);
                 break;
@@ -136,9 +173,12 @@ public class BurnResolver {
         return results;
     }
 
-    private MatchResult evaluateMatch(String fireEffect, Set<String> worldTags,
-                                      List<String> fireReq, List<String> tagReq,
-                                      List<String> legacyFire, List<String> legacyTags) {
+    private MatchResult evaluateMatch(String fireEffect,
+                                      Set<String> worldTags,
+                                      List<String> fireReq,
+                                      List<String> tagReq,
+                                      List<String> legacyFire,
+                                      List<String> legacyTags) {
 
         List<String> sourceFire = fireReq.isEmpty() ? legacyFire : fireReq;
         List<String> sourceTags = tagReq.isEmpty() ? legacyTags : tagReq;

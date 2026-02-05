@@ -183,6 +183,8 @@
         "requiredTags": [],
         "minDay": 0,
         "maxDay": 0,
+                "sellFood": 3,
+
         "dialogue": [
           "Oh, this is nice.",
           "I could sell here."
@@ -241,7 +243,7 @@
 
         "timerStartFireRequired": [],
         "timerStartTags": [],
-
+                "sellsFuel": 3,
         "visitFireRequired": [],
         "visitRequiredTags": [],
 
@@ -261,6 +263,7 @@
 
         "tagsToAdd": []
       }
+      
     ]
   }
 ]

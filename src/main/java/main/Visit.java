@@ -8,6 +8,12 @@ public class Visit {
 
     public String type;
 
+    // NEW: absolute resource trade
+    public int sellFood = 0;
+    public int sellFuel = 0;
+    public int buyFood = 0;
+    public int buyFuel = 0;
+
     // NEW condition split
     public List<String> timerStartFireRequired = new ArrayList<>();
     public List<String> timerStartTags = new ArrayList<>();
@@ -65,7 +71,6 @@ public class Visit {
                                   boolean timerStartConditionsMet,
                                   boolean visitConditionsMet) {
 
-        // Start timer once
         if (timerStartConditionsMet && firstEligibleDay == null) {
             firstEligibleDay = currentDay;
             nextScheduledDay = currentDay + randomDelay();
@@ -76,7 +81,6 @@ public class Visit {
             return false;
         }
 
-        // Timer matured but wait for visit conditions
         if (currentDay >= nextScheduledDay && visitConditionsMet) {
             nextScheduledDay = currentDay + randomDelay();
             return true;
@@ -124,14 +128,16 @@ public class Visit {
 
         sb.append("Visit {\n");
         sb.append("  type: ").append(type).append(",\n");
+        sb.append("  sellFood: ").append(sellFood).append(",\n");
+        sb.append("  sellFuel: ").append(sellFuel).append(",\n");
+        sb.append("  buyFood: ").append(buyFood).append(",\n");
+        sb.append("  buyFuel: ").append(buyFuel).append(",\n");
         sb.append("  timerStartFireRequired: ").append(timerStartFireRequired).append(",\n");
         sb.append("  timerStartTags: ").append(timerStartTags).append(",\n");
         sb.append("  visitFireRequired: ").append(visitFireRequired).append(",\n");
         sb.append("  visitRequiredTags: ").append(visitRequiredTags).append(",\n");
-
         sb.append("  dialogue: ").append(dialogue).append(",\n");
         sb.append("  tagsToAdd: ").append(tagsToAdd).append(",\n");
-
         sb.append("  used: ").append(used).append(",\n");
         sb.append("  nextScheduledDay: ").append(nextScheduledDay).append("\n");
         sb.append("}");

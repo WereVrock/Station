@@ -6,7 +6,7 @@ import java.util.List;
 public class VisitDebugger {
 
     private final Game game;
-    private boolean debugRejected = true;
+    private boolean debugRejected = false;
 
     public VisitDebugger(Game game) {
         this.game = game;
@@ -16,7 +16,12 @@ public class VisitDebugger {
         this.debugRejected = debugRejected;
     }
 
-    public void debugVisit(GameCharacter character, Visit visit, List<Item> sells, List<Item> buys, String fireEffect) {
+    public void debugVisit(GameCharacter character,
+                           Visit visit,
+                           List<Item> sells,
+                           List<Item> buys,
+                           String fireEffect) {
+
         System.out.println("===== VISIT TRIGGERED =====");
         System.out.println("Character: " + character.name);
         System.out.println("Type: " + visit.type);
@@ -30,10 +35,21 @@ public class VisitDebugger {
         if (buys.isEmpty()) System.out.println("  none");
         else buys.forEach(i -> System.out.println("  " + i.name));
 
+        System.out.println("Food / Fuel Trade:");
+        System.out.println("  Sells Food: " + visit.sellFood);
+        System.out.println("  Sells Fuel: " + visit.sellFuel);
+        System.out.println("  Buys Food: " + visit.buyFood);
+        System.out.println("  Buys Fuel: " + visit.buyFuel);
+
         System.out.println("===========================");
     }
 
-    public void debugRejected(GameCharacter character, Visit visit, String reason, String fireEffect, MatchResult match) {
+    public void debugRejected(GameCharacter character,
+                              Visit visit,
+                              String reason,
+                              String fireEffect,
+                              MatchResult match) {
+
         if (!debugRejected) return;
 
         System.out.println("----- VISIT REJECTED -----");
@@ -48,6 +64,14 @@ public class VisitDebugger {
             System.out.println("Required Tags: " + match.requiredTags);
             System.out.println("Fire Match: " + match.fireOk);
             System.out.println("Tag Match: " + match.tagsOk);
+        }
+
+        if (visit != null) {
+            System.out.println("Food / Fuel Intent:");
+            System.out.println("  Wants to Sell Food: " + visit.sellFood);
+            System.out.println("  Wants to Sell Fuel: " + visit.sellFuel);
+            System.out.println("  Wants to Buy Food: " + visit.buyFood);
+            System.out.println("  Wants to Buy Fuel: " + visit.buyFuel);
         }
 
         System.out.println("--------------------------");
