@@ -10,6 +10,7 @@ public class GameEngine {
     private final TradeService tradeService;
     private final DayService dayService;
     private final BurnService burnService;
+    private final ResourceTradeService resourceTradeService;
 
     private final Queue<VisitResult> pendingVisits = new LinkedList<>();
     private boolean burnedToday = false;
@@ -20,6 +21,7 @@ public class GameEngine {
         this.tradeService = new TradeService(game);
         this.dayService = new DayService(game);
         this.burnService = new BurnService(game);
+        this.resourceTradeService = new ResourceTradeService(game);
     }
 
     public List<VisitResult> burnFuelVisits() {
@@ -89,6 +91,8 @@ public class GameEngine {
         return !pendingVisits.isEmpty();
     }
 
+    // ===== ITEM TRADING (UNCHANGED) =====
+
     public boolean buyFromVisit(VisitResult visit, Item item) {
         int price = tradeService.getBuyPrice(item);
 
@@ -111,6 +115,24 @@ public class GameEngine {
         game.player.removeItem(item);
         visit.character.addItem(item);
         return true;
+    }
+
+    // ===== FOOD / FUEL TRADING =====
+
+    public boolean buyFoodFromVisit(VisitResult visit, int amount) {
+        return resourceTradeService.buyFoodFromVisit(visit, amount);
+    }
+
+    public boolean buyFuelFromVisit(VisitResult visit, int amount) {
+        return resourceTradeService.buyFuelFromVisit(visit, amount);
+    }
+
+    public boolean sellFoodToVisit(VisitResult visit, int amount) {
+        return resourceTradeService.sellFoodToVisit(visit, amount);
+    }
+
+    public boolean sellFuelToVisit(VisitResult visit, int amount) {
+        return resourceTradeService.sellFuelToVisit(visit, amount);
     }
 
     public int getBuyPrice(Item item) {

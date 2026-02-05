@@ -35,4 +35,7 @@ public final class GameConstants {
 
     public static final int VISITITEM_RARE_CHANCE = 4; // Chance denominator for rare visit items (1 in N chance)
     public static final int VISITITEM_ULTRA_RARE_CHANCE = 10; // Chance denominator for ultra rare visit items (1 in N chance)
+    
+    public static final int FOOD_PRICE = 3;
+public static final int FUEL_PRICE = 5;
 }

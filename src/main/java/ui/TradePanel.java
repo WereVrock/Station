@@ -2,6 +2,7 @@ package ui;
 
 import logic.GameEngine;
 import logic.VisitResult;
+import main.GameConstants;
 import main.Item;
 import main.ItemStack;
 
@@ -50,7 +51,7 @@ public class TradePanel extends JPanel {
         removeAll();
         add(Box.createVerticalGlue());
 
-        // ---- BUY ----
+        // ===== BUY ITEMS =====
         for (Item item : new ArrayList<>(visit.itemsForSale)) {
             JButton buy = new JButton(
                 "Buy " + item.name + " (" + engine.getBuyPrice(item) + ")"
@@ -69,7 +70,14 @@ public class TradePanel extends JPanel {
             add(Box.createVerticalStrut(5));
         }
 
+        // ===== BUY FOOD / FUEL =====
+        addResourceBuyButtons();
+
+        // ===== SELL ITEMS =====
         rebuildSellButtons();
+
+        // ===== SELL FOOD / FUEL =====
+        addResourceSellButtons();
 
         if (hasNextVisit) {
             JButton next = new JButton("Next Visit");
@@ -84,6 +92,40 @@ public class TradePanel extends JPanel {
         add(Box.createVerticalGlue());
 
         refresh();
+    }
+
+    private void addResourceBuyButtons() {
+        if (currentVisit.sellFood > 0) {
+            JButton buyFood = new JButton(
+                "Buy Food x1 (" + GameConstants.FOOD_PRICE + ")"
+            );
+            buyFood.setAlignmentX(Component.CENTER_ALIGNMENT);
+            buyFood.addActionListener(e -> {
+                if (engine.buyFoodFromVisit(currentVisit, 1)) {
+                    logPanel.log("Bought food.");
+                    showTrade(currentVisit, hasNextVisit);
+                    refreshStatus();
+                }
+            });
+            add(Box.createVerticalStrut(5));
+            add(buyFood);
+        }
+
+        if (currentVisit.sellFuel > 0) {
+            JButton buyFuel = new JButton(
+                "Buy Fuel x1 (" + GameConstants.FUEL_PRICE + ")"
+            );
+            buyFuel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            buyFuel.addActionListener(e -> {
+                if (engine.buyFuelFromVisit(currentVisit, 1)) {
+                    logPanel.log("Bought fuel.");
+                    showTrade(currentVisit, hasNextVisit);
+                    refreshStatus();
+                }
+            });
+            add(Box.createVerticalStrut(5));
+            add(buyFuel);
+        }
     }
 
     private void rebuildSellButtons() {
@@ -113,6 +155,40 @@ public class TradePanel extends JPanel {
 
             add(Box.createVerticalStrut(5));
             add(sell);
+        }
+    }
+
+    private void addResourceSellButtons() {
+        if (currentVisit.buyFood > 0 && engine.getGame().player.food > 0) {
+            JButton sellFood = new JButton(
+                "Sell Food x1 (" + GameConstants.FOOD_PRICE + ")"
+            );
+            sellFood.setAlignmentX(Component.CENTER_ALIGNMENT);
+            sellFood.addActionListener(e -> {
+                if (engine.sellFoodToVisit(currentVisit, 1)) {
+                    logPanel.log("Sold food.");
+                    showTrade(currentVisit, hasNextVisit);
+                    refreshStatus();
+                }
+            });
+            add(Box.createVerticalStrut(5));
+            add(sellFood);
+        }
+
+        if (currentVisit.buyFuel > 0 && engine.getGame().player.fuel > 0) {
+            JButton sellFuel = new JButton(
+                "Sell Fuel x1 (" + GameConstants.FUEL_PRICE + ")"
+            );
+            sellFuel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            sellFuel.addActionListener(e -> {
+                if (engine.sellFuelToVisit(currentVisit, 1)) {
+                    logPanel.log("Sold fuel.");
+                    showTrade(currentVisit, hasNextVisit);
+                    refreshStatus();
+                }
+            });
+            add(Box.createVerticalStrut(5));
+            add(sellFuel);
         }
     }
 
