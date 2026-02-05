@@ -1,15 +1,15 @@
 package logic;
 
 import main.FireStatus;
-import main.Game;
+
 import main.Item;
 
 public class BurnService {
 
-    private final Game game;
+    
 
-    public BurnService(Game game) {
-        this.game = game;
+    public BurnService() {
+        
     }
 
     public FireStatus burnFuel() {

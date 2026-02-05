@@ -6,7 +6,7 @@ import java.util.*;
 public class GameEngine {
 
     private final Game game;
-    private final BurnResolver burnResolver;
+    private final VisitResolver burnResolver;
     private final TradeService tradeService;
     private final DayService dayService;
     private final BurnService burnService;
@@ -17,10 +17,10 @@ public class GameEngine {
 
     public GameEngine(Game game) {
         this.game = game;
-        this.burnResolver = new BurnResolver(game);
+        this.burnResolver = new VisitResolver(game);
         this.tradeService = new TradeService(game);
         this.dayService = new DayService(game);
-        this.burnService = new BurnService(game);
+        this.burnService = new BurnService();
         this.resourceTradeService = new ResourceTradeService(game);
     }
 
@@ -35,7 +35,7 @@ public class GameEngine {
         game.setFireStatus(fireStatus);
 
         List<VisitResult> visits =
-                burnResolver.resolveFireMultiple(fireStatus.toString());
+                burnResolver.resolveVisitsByFire(fireStatus.toString());
 
         pendingVisits.addAll(visits);
         resolveRandomVisitsIfNeeded();
@@ -55,7 +55,7 @@ public class GameEngine {
         game.setFireStatus(fireStatus);
 
         List<VisitResult> visits =
-                burnResolver.resolveFireMultiple(fireStatus.toString());
+                burnResolver.resolveVisitsByFire(fireStatus.toString());
 
         pendingVisits.addAll(visits);
         resolveRandomVisitsIfNeeded();
