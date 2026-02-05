@@ -13,11 +13,16 @@ public class VisitResult {
     public List<Item> itemsForSale = new ArrayList<>();
     public List<Item> itemsWanted = new ArrayList<>();
 
-    // NEW: resolved resource trade
     public int sellFood;
     public int sellFuel;
     public int buyFood;
     public int buyFuel;
+
+    // NEW resolved prices
+    public int sellFoodPrice;
+    public int sellFuelPrice;
+    public int buyFoodPrice;
+    public int buyFuelPrice;
 
     public List<String> dialogue = new ArrayList<>();
     public String fireEffect;
@@ -32,7 +37,11 @@ public class VisitResult {
                        int sellFood,
                        int sellFuel,
                        int buyFood,
-                       int buyFuel) {
+                       int buyFuel,
+                       int sellFoodPrice,
+                       int sellFuelPrice,
+                       int buyFoodPrice,
+                       int buyFuelPrice) {
 
         this.character = character;
         this.itemsForSale = itemsForSale != null ? itemsForSale : new ArrayList<>();
@@ -45,20 +54,12 @@ public class VisitResult {
         this.sellFuel = sellFuel;
         this.buyFood = buyFood;
         this.buyFuel = buyFuel;
+
+        this.sellFoodPrice = sellFoodPrice;
+        this.sellFuelPrice = sellFuelPrice;
+        this.buyFoodPrice = buyFoodPrice;
+        this.buyFuelPrice = buyFuelPrice;
     }
-
-    // BACKWARD-COMPAT constructor (kept)
-    public VisitResult(GameCharacter character,
-                       List<Item> itemsForSale,
-                       List<String> dialogue,
-                       String fireEffect,
-                       String type) {
-
-        this(character, itemsForSale, new ArrayList<>(), dialogue, fireEffect, type,
-                0, 0, 0, 0);
-    }
-
-    public VisitResult() {}
 
     public boolean wants(Item item) {
         return itemsWanted.contains(item);
@@ -74,6 +75,10 @@ public class VisitResult {
                 "  sellFuel=" + sellFuel + ",\n" +
                 "  buyFood=" + buyFood + ",\n" +
                 "  buyFuel=" + buyFuel + ",\n" +
+                "  sellFoodPrice=" + sellFoodPrice + ",\n" +
+                "  sellFuelPrice=" + sellFuelPrice + ",\n" +
+                "  buyFoodPrice=" + buyFoodPrice + ",\n" +
+                "  buyFuelPrice=" + buyFuelPrice + ",\n" +
                 "  dialogue=" + dialogue + ",\n" +
                 "  fireEffect=" + fireEffect + ",\n" +
                 "  type=" + type + "\n" +

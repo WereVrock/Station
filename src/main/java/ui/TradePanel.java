@@ -97,7 +97,7 @@ public class TradePanel extends JPanel {
 
         if (currentVisit.sellFood > 0) {
             JButton buyFood = new JButton(
-                "Buy Food x1 (" + GameConstants.FOOD_PRICE + ")"
+                "Buy Food x1 (" + currentVisit.sellFoodPrice + ")"
             );
             buyFood.setAlignmentX(Component.CENTER_ALIGNMENT);
             buyFood.addActionListener(e -> {
@@ -125,7 +125,7 @@ public class TradePanel extends JPanel {
 
         if (currentVisit.sellFuel > 0) {
             JButton buyFuel = new JButton(
-                "Buy Fuel x1 (" + GameConstants.FUEL_PRICE + ")"
+                "Buy Fuel x1 (" + currentVisit.sellFuelPrice + ")"
             );
             buyFuel.setAlignmentX(Component.CENTER_ALIGNMENT);
             buyFuel.addActionListener(e -> {
@@ -185,7 +185,7 @@ public class TradePanel extends JPanel {
 
         if (currentVisit.buyFood > 0) {
             JButton sellFood = new JButton(
-                "Sell Food x1 (" + GameConstants.FOOD_PRICE + ")"
+                "Sell Food x1 (" + currentVisit.buyFoodPrice + ")"
             );
             sellFood.setAlignmentX(Component.CENTER_ALIGNMENT);
             sellFood.addActionListener(e -> {
@@ -213,7 +213,7 @@ public class TradePanel extends JPanel {
 
         if (currentVisit.buyFuel > 0) {
             JButton sellFuel = new JButton(
-                "Sell Fuel x1 (" + GameConstants.FUEL_PRICE + ")"
+                "Sell Fuel x1 (" + currentVisit.buyFuelPrice + ")"
             );
             sellFuel.setAlignmentX(Component.CENTER_ALIGNMENT);
             sellFuel.addActionListener(e -> {

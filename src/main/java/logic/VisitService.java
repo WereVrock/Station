@@ -124,6 +124,8 @@ public class VisitService {
                 List<Item> sells = lookUpItems(trade.sells);
                 List<Item> buys = lookUpItems(trade.buys);
 
+                VisitTradePricing p = dv.visit.pricing;
+
                 VisitResult vr = new VisitResult(
                         dv.character,
                         sells,
@@ -134,7 +136,11 @@ public class VisitService {
                         dv.visit.sellFood,
                         dv.visit.sellFuel,
                         dv.visit.buyFood,
-                        dv.visit.buyFuel
+                        dv.visit.buyFuel,
+                        p.resolveSellFood(),
+                        p.resolveSellFuel(),
+                        p.resolveBuyFood(),
+                        p.resolveBuyFuel()
                 );
 
                 pendingVisits.add(vr);

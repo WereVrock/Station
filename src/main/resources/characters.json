@@ -361,6 +361,85 @@
       "allowRandomVisits": null
     }
   ]
+},
+{
+  "id": "ragged_merchant",
+  "name": "Ragged Merchant",
+  "background": "A gaunt trader who walks from ruin to ruin with sacks of grain. Every visit costs him something he cannot replace.",
+  "defaultPortrait": "ragged_merchant_default",
+  "gold": 60,
+
+  "allowScriptedVisits": false,
+  "allowScheduledVisits": true,
+  "allowRandomVisits": false,
+
+  "visits": [
+    {
+      "type": "scheduled",
+
+      "timerStartFireRequired": ["strongClean", "strongTainted"],
+      "timerStartTags": [],
+      "visitFireRequired": ["strongClean", "strongTainted"],
+      "visitRequiredTags": [],
+
+      "minDays": 1,
+      "maxDays": 2,
+
+      "dialogue": [
+        "I paid for this food with days of my life.",
+        "If you can burn it… then you can afford it.",
+        "Don’t ask what it cost me to carry it this far."
+      ],
+
+      "sells": [],
+      "buys": [],
+
+      "sellFood": 25,
+      "sellFuel": 0,
+      "buyFood": 0,
+      "buyFuel": 0,
+
+      "pricing": {
+        "sellFoodMin": 6,
+        "sellFoodMax": 8
+      },
+
+      "tagsToAdd": []
+    },
+    {
+      "type": "scheduled",
+
+      "timerStartFireRequired": ["strongClean", "strongTainted"],
+      "timerStartTags": [],
+      "visitFireRequired": ["strongClean", "strongTainted"],
+      "visitRequiredTags": [],
+
+      "minDays": 5,
+      "maxDays": 10,
+
+      "dialogue": [
+        "This is all I have left.",
+        "I barely made it here. Another night on the road and I wouldn’t.",
+        "Take it. Or I starve with it."
+      ],
+
+      "sells": [],
+      "buys": [],
+
+      "sellFood": 10,
+      "sellFuel": 0,
+      "buyFood": 0,
+      "buyFuel": 0,
+
+      "pricing": {
+        "sellFoodMin": 9,
+        "sellFoodMax": 12
+      },
+
+      "tagsToAdd": []
+    }
+  ]
 }
+
 
 ]

@@ -1,6 +1,7 @@
 package main;
 
 import ui.ExhaustionTextFactory.ExhaustionType;
+import logic.VisitTradePricing;
 
 import java.util.*;
 
@@ -8,23 +9,23 @@ public class Visit {
 
     public String type;
 
-    // NEW: absolute resource trade
+    // absolute resource volumes
     public int sellFood = 0;
     public int sellFuel = 0;
     public int buyFood = 0;
     public int buyFuel = 0;
 
-    // NEW: exhaustion text (highest priority)
+    // per-visit pricing (optional)
+    public VisitTradePricing pricing = new VisitTradePricing();
+
     private final Map<ExhaustionType, String> exhaustionText = new EnumMap<>(ExhaustionType.class);
 
-    // NEW condition split
     public List<String> timerStartFireRequired = new ArrayList<>();
     public List<String> timerStartTags = new ArrayList<>();
 
     public List<String> visitFireRequired = new ArrayList<>();
     public List<String> visitRequiredTags = new ArrayList<>();
 
-    // legacy support (kept)
     public List<String> fireRequired = new ArrayList<>();
     public List<String> requiredTags = new ArrayList<>();
 
@@ -51,11 +52,8 @@ public class Visit {
     // ===== EXHAUSTION TEXT =====
 
     public void setExhaustionText(ExhaustionType type, String text) {
-        if (text == null) {
-            exhaustionText.remove(type);
-        } else {
-            exhaustionText.put(type, text);
-        }
+        if (text == null) exhaustionText.remove(type);
+        else exhaustionText.put(type, text);
     }
 
     public String getExhaustionText(ExhaustionType type) {
@@ -76,9 +74,7 @@ public class Visit {
         if (firstEligibleDay != null) return;
 
         firstEligibleDay = currentDay;
-
-        int delay = randomDelay();
-        triggerDay = currentDay + delay;
+        triggerDay = currentDay + randomDelay();
     }
 
     public boolean isReady(int currentDay) {
@@ -108,19 +104,23 @@ public class Visit {
         return false;
     }
 
+    // ===== DELAY RESOLUTION =====
+
     private int randomDelay() {
         int min = resolveMin();
         int max = resolveMax();
         return new Random().nextInt(max - min + 1) + min;
     }
 
-    private int resolveMin() {
+    public int resolveMin() {
         return minDays != null ? minDays : GameConstants.SCRIPTED_DEFAULT_MIN_DELAY;
     }
 
-    private int resolveMax() {
+    public int resolveMax() {
         return maxDays != null ? maxDays : GameConstants.SCRIPTED_DEFAULT_MAX_DELAY;
     }
+
+    // ===== TRADING =====
 
     public ResolvedTrade resolveTrade(Random rng) {
         ResolvedTrade trade = new ResolvedTrade();
@@ -143,24 +143,21 @@ public class Visit {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("Visit {\n");
-        sb.append("  type: ").append(type).append(",\n");
-        sb.append("  sellFood: ").append(sellFood).append(",\n");
-        sb.append("  sellFuel: ").append(sellFuel).append(",\n");
-        sb.append("  buyFood: ").append(buyFood).append(",\n");
-        sb.append("  buyFuel: ").append(buyFuel).append(",\n");
-        sb.append("  timerStartFireRequired: ").append(timerStartFireRequired).append(",\n");
-        sb.append("  timerStartTags: ").append(timerStartTags).append(",\n");
-        sb.append("  visitFireRequired: ").append(visitFireRequired).append(",\n");
-        sb.append("  visitRequiredTags: ").append(visitRequiredTags).append(",\n");
-        sb.append("  dialogue: ").append(dialogue).append(",\n");
-        sb.append("  tagsToAdd: ").append(tagsToAdd).append(",\n");
-        sb.append("  used: ").append(used).append(",\n");
-        sb.append("  nextScheduledDay: ").append(nextScheduledDay).append("\n");
-        sb.append("}");
-
-        return sb.toString();
+        return "Visit {\n" +
+                "  type: " + type + ",\n" +
+                "  sellFood: " + sellFood + ",\n" +
+                "  sellFuel: " + sellFuel + ",\n" +
+                "  buyFood: " + buyFood + ",\n" +
+                "  buyFuel: " + buyFuel + ",\n" +
+                "  pricing: " + pricing + ",\n" +
+                "  timerStartFireRequired: " + timerStartFireRequired + ",\n" +
+                "  timerStartTags: " + timerStartTags + ",\n" +
+                "  visitFireRequired: " + visitFireRequired + ",\n" +
+                "  visitRequiredTags: " + visitRequiredTags + ",\n" +
+                "  dialogue: " + dialogue + ",\n" +
+                "  tagsToAdd: " + tagsToAdd + ",\n" +
+                "  used: " + used + ",\n" +
+                "  nextScheduledDay: " + nextScheduledDay + "\n" +
+                "}";
     }
 }

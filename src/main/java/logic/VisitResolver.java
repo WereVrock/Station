@@ -82,6 +82,8 @@ public class VisitResolver {
                 List<Item> sells = lookUpItems(trade.sells);
                 List<Item> buys = lookUpItems(trade.buys);
 
+                VisitTradePricing p = visit.pricing;
+
                 VisitResult vr = new VisitResult(
                         character,
                         sells,
@@ -92,7 +94,11 @@ public class VisitResolver {
                         visit.sellFood,
                         visit.sellFuel,
                         visit.buyFood,
-                        visit.buyFuel
+                        visit.buyFuel,
+                        p.resolveSellFood(),
+                        p.resolveSellFuel(),
+                        p.resolveBuyFood(),
+                        p.resolveBuyFuel()
                 );
 
                 debugger.debugVisit(character, visit, sells, buys, normalizedFire);
@@ -137,6 +143,8 @@ public class VisitResolver {
                 List<Item> sells = lookUpItems(trade.sells);
                 List<Item> buys = lookUpItems(trade.buys);
 
+                VisitTradePricing p = visit.pricing;
+
                 VisitResult vr = new VisitResult(
                         character,
                         sells,
@@ -147,7 +155,11 @@ public class VisitResolver {
                         visit.sellFood,
                         visit.sellFuel,
                         visit.buyFood,
-                        visit.buyFuel
+                        visit.buyFuel,
+                        p.resolveSellFood(),
+                        p.resolveSellFuel(),
+                        p.resolveBuyFood(),
+                        p.resolveBuyFuel()
                 );
 
                 debugger.debugVisit(character, visit, sells, buys, "random");
@@ -205,22 +217,23 @@ public class VisitResolver {
             default: return true;
         }
     }
-public MatchResult evaluateDeferred(String fireEffect,
-                                    Set<String> worldTags,
-                                    List<String> fireReq,
-                                    List<String> tagReq,
-                                    List<String> legacyFire,
-                                    List<String> legacyTags) {
 
-    return evaluateVisitConditions(
-            fireEffect,
-            worldTags,
-            fireReq,
-            tagReq,
-            legacyFire,
-            legacyTags
-    );
-}
+    public MatchResult evaluateDeferred(String fireEffect,
+                                        Set<String> worldTags,
+                                        List<String> fireReq,
+                                        List<String> tagReq,
+                                        List<String> legacyFire,
+                                        List<String> legacyTags) {
+
+        return evaluateVisitConditions(
+                fireEffect,
+                worldTags,
+                fireReq,
+                tagReq,
+                legacyFire,
+                legacyTags
+        );
+    }
 
     private Item findItem(String ref) {
         for (Item i : game.items) {
