@@ -1,5 +1,6 @@
 package logic;
 
+import main.Game;
 import main.*;
 import java.util.List;
 

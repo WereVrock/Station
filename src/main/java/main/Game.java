@@ -6,6 +6,11 @@ import com.google.gson.reflect.TypeToken;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
+import main.FireStatus;
+import main.GameCharacter;
+import main.GameConstants;
+import main.Item;
+import main.Player;
 
 public class Game implements Serializable {
 
