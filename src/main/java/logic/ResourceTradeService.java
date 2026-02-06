@@ -1,5 +1,6 @@
 package logic;
 
+import logic.visit.VisitResult;
 import main.Game;
 import main.GameCharacter;
 

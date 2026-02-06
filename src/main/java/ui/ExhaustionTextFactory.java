@@ -1,6 +1,6 @@
 package ui;
 
-import logic.VisitResult;
+import logic.visit.VisitResult;
 import main.GameCharacter;
 import main.Visit;
 

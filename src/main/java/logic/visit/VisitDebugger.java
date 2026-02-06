@@ -1,5 +1,6 @@
-package logic;
+package logic.visit;
 
+import logic.visit.MatchResult;
 import main.Game;
 import main.*;
 import java.util.List;

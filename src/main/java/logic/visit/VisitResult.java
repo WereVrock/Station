@@ -1,4 +1,4 @@
-package logic;
+package logic.visit;
 
 import main.GameCharacter;
 import main.Item;

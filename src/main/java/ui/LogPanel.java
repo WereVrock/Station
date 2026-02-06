@@ -1,6 +1,6 @@
 package ui;
 
-import logic.VisitResult;
+import logic.visit.VisitResult;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package logic;
+package logic.visit;
 
 import java.util.List;
 import java.util.Set;

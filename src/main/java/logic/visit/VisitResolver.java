@@ -1,22 +1,39 @@
-package logic;
+package logic.visit;
 
-import main.Game;
+import logic.FireKeyNormalizer;
+import logic.visit.trade.*;
+import logic.visit.resolve.VisitEligibility;
+import logic.visit.resolve.VisitMatcher;
+import logic.visit.resolve.VisitSelector;
 import main.*;
+
 import java.util.*;
+import logic.VisitTradePricing;
 
 public class VisitResolver {
 
     private final Game game;
     private final Random rng = new Random();
+
+    private final VisitMatcher matcher;
+    private final VisitEligibility eligibility;
+    private final VisitSelector selector;
+    private final VisitTradeResolver tradeResolver;
+    private final ItemLookup itemLookup;
     private final VisitDebugger debugger;
 
     public VisitResolver(Game game) {
         this.game = game;
+        this.matcher = new VisitMatcher();
+        this.eligibility = new VisitEligibility();
+        this.selector = new VisitSelector();
+        this.tradeResolver = new VisitTradeResolver(rng);
+        this.itemLookup = new ItemLookup(game);
         this.debugger = new VisitDebugger(game);
     }
 
     public void setDebugRejectedVisits(boolean debugRejectedVisits) {
-        this.debugger.setDebugRejected(debugRejectedVisits);
+        debugger.setDebugRejected(debugRejectedVisits);
     }
 
     public List<VisitResult> resolveByType(String mode, String fireEffect) {
@@ -24,23 +41,19 @@ public class VisitResolver {
         String normalizedFire = FireKeyNormalizer.normalize(fireEffect);
         List<VisitResult> results = new ArrayList<>();
 
-        List<GameCharacter> shuffled = new ArrayList<>(game.characters);
-        Collections.shuffle(shuffled);
-
-        for (GameCharacter character : shuffled) {
+        for (GameCharacter character : selector.shuffledCharacters(game, rng)) {
 
             if (character.visitedToday) continue;
 
             for (Visit visit : character.visits) {
 
                 if (visit.used && visit.isOneShot()) continue;
+                if (!eligibility.isAllowed(character, visit)) continue;
 
                 if ("normal".equals(mode) && "random".equals(visit.type)) continue;
                 if (!"normal".equals(mode) && !mode.equals(visit.type)) continue;
 
-                if (!isVisitTypeAllowed(character, visit)) continue;
-
-                MatchResult timerMatch = evaluateVisitConditions(
+                MatchResult timerMatch = matcher.evaluate(
                         normalizedFire,
                         game.worldTags,
                         visit.timerStartFireRequired,
@@ -49,7 +62,7 @@ public class VisitResolver {
                         visit.requiredTags
                 );
 
-                MatchResult visitMatch = evaluateVisitConditions(
+                MatchResult visitMatch = matcher.evaluate(
                         normalizedFire,
                         game.worldTags,
                         visit.visitFireRequired,
@@ -58,32 +71,26 @@ public class VisitResolver {
                         visit.requiredTags
                 );
 
-                boolean ok = false;
+                boolean ok;
 
                 if ("scripted".equals(visit.type)) {
                     if (!visitMatch.success) continue;
                     visit.markFirstEligible(game.day);
                     ok = visit.isReady(game.day);
                     if (ok) visit.used = true;
-                }
-
-                else if ("scheduled".equals(visit.type)) {
+                } else if ("scheduled".equals(visit.type)) {
                     ok = visit.scheduledReady(game.day, timerMatch.success, visitMatch.success);
-                }
-
-                else {
+                } else {
                     ok = visitMatch.success;
                 }
 
                 if (!ok) continue;
 
-                character.visitedToday = true;
+                Visit.ResolvedTrade trade = tradeResolver.resolve(visit);
+                VisitTradePricing p = tradeResolver.pricing(visit);
 
-                Visit.ResolvedTrade trade = visit.resolveTrade(rng);
-                List<Item> sells = lookUpItems(trade.sells);
-                List<Item> buys = lookUpItems(trade.buys);
-
-                VisitTradePricing p = visit.pricing;
+                List<Item> sells = itemLookup.resolve(trade.sells);
+                List<Item> buys = itemLookup.resolve(trade.buys);
 
                 VisitResult vr = new VisitResult(
                         character,
@@ -119,37 +126,23 @@ public class VisitResolver {
 
     public List<VisitResult> resolveRandomVisits(int count) {
 
-        List<GameCharacter> eligible = new ArrayList<>(game.characters);
-        Collections.shuffle(eligible);
         List<VisitResult> results = new ArrayList<>();
 
-        for (GameCharacter character : eligible) {
+        for (GameCharacter character : selector.shuffledCharacters(game, rng)) {
 
             if (character.visitedToday) continue;
 
-            List<Visit> randomVisits = new ArrayList<>();
-            for (Visit v : character.visits) {
-                if ("random".equals(v.type) && isVisitTypeAllowed(character, v)) {
-                    randomVisits.add(v);
-                }
-            }
+            for (Visit visit : selector.randomVisits(character)) {
 
-            Collections.shuffle(randomVisits);
+                if (!eligibility.isAllowed(character, visit)) continue;
 
-            for (Visit visit : randomVisits) {
-
-                character.visitedToday = true;
-
-                Visit.ResolvedTrade trade = visit.resolveTrade(rng);
-                List<Item> sells = lookUpItems(trade.sells);
-                List<Item> buys = lookUpItems(trade.buys);
-
-                VisitTradePricing p = visit.pricing;
+                Visit.ResolvedTrade trade = tradeResolver.resolve(visit);
+                VisitTradePricing p = tradeResolver.pricing(visit);
 
                 VisitResult vr = new VisitResult(
                         character,
-                        sells,
-                        buys,
+                        itemLookup.resolve(trade.sells),
+                        itemLookup.resolve(trade.buys),
                         visit.dialogue,
                         "random",
                         visit.type,
@@ -163,7 +156,7 @@ public class VisitResolver {
                         p.resolveBuyFuel()
                 );
 
-                debugger.debugVisit(character, visit, sells, buys, "random");
+                debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, "random");
                 results.add(vr);
                 break;
             }
@@ -174,51 +167,6 @@ public class VisitResolver {
         return results;
     }
 
-    private MatchResult evaluateVisitConditions(String fireEffect,
-                                                Set<String> worldTags,
-                                                List<String> fireReq,
-                                                List<String> tagReq,
-                                                List<String> legacyFire,
-                                                List<String> legacyTags) {
-
-        List<String> sourceFire = fireReq.isEmpty() ? legacyFire : fireReq;
-        List<String> sourceTags = tagReq.isEmpty() ? legacyTags : tagReq;
-
-        List<String> normalizedRequiredFire = new ArrayList<>();
-        for (String fire : sourceFire) {
-            normalizedRequiredFire.add(FireKeyNormalizer.normalize(fire));
-        }
-
-        MatchResult result = new MatchResult();
-        result.requiredFire = new ArrayList<>(normalizedRequiredFire);
-        result.requiredTags = new ArrayList<>(sourceTags);
-        result.actualFire = fireEffect;
-        result.actualTags = new HashSet<>(worldTags);
-        result.fireOk = normalizedRequiredFire.isEmpty() || normalizedRequiredFire.contains(fireEffect);
-        result.tagsOk = worldTags.containsAll(sourceTags);
-        result.success = result.fireOk && result.tagsOk;
-
-        return result;
-    }
-
-    private List<Item> lookUpItems(List<String> refs) {
-        List<Item> items = new ArrayList<>();
-        for (String ref : refs) {
-            Item item = findItem(ref);
-            if (item != null) items.add(item);
-        }
-        return items;
-    }
-
-    public boolean isVisitTypeAllowed(GameCharacter character, Visit visit) {
-        switch (visit.type) {
-            case "scripted": return character.allowScriptedVisits;
-            case "scheduled": return character.allowScheduledVisits;
-            case "random": return character.allowRandomVisits;
-            default: return true;
-        }
-    }
-
     public MatchResult evaluateDeferred(String fireEffect,
                                         Set<String> worldTags,
                                         List<String> fireReq,
@@ -226,7 +174,7 @@ public class VisitResolver {
                                         List<String> legacyFire,
                                         List<String> legacyTags) {
 
-        return evaluateVisitConditions(
+        return matcher.evaluate(
                 fireEffect,
                 worldTags,
                 fireReq,
@@ -234,12 +182,5 @@ public class VisitResolver {
                 legacyFire,
                 legacyTags
         );
-    }
-
-    private Item findItem(String ref) {
-        for (Item i : game.items) {
-            if (ref.equals(i.id) || ref.equals(i.name)) return i;
-        }
-        return null;
     }
 }

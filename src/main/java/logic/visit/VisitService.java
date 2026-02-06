@@ -1,8 +1,11 @@
-package logic;
+package logic.visit;
 
 import main.Game;
 import main.*;
 import java.util.*;
+import logic.BurnService;
+import logic.FireVisitKey;
+import logic.VisitTradePricing;
 
 public class VisitService {
 
