@@ -55,16 +55,16 @@ public class VisitResolver {
                 if ("normal".equals(mode) && "random".equals(visit.type)) continue;
                 if (!"normal".equals(mode) && !mode.equals(visit.type)) continue;
 
-                MatchResult timerMatch = matcher.evaluate(normalizedFire,
-                        
+                MatchResult timerMatch = matcher.evaluate(
+                        normalizedFire,
                         visit.timerStartFireRequired,
                         visit.timerStartTags,
                         visit.fireRequired,
                         visit.requiredTags
                 );
 
-                MatchResult visitMatch = matcher.evaluate(normalizedFire,
-                        
+                MatchResult visitMatch = matcher.evaluate(
+                        normalizedFire,
                         visit.visitFireRequired,
                         visit.visitRequiredTags,
                         visit.fireRequired,
@@ -120,6 +120,7 @@ public class VisitResolver {
                 if (visit.allowScheduledVisits != null) character.allowScheduledVisits = visit.allowScheduledVisits;
                 if (visit.allowRandomVisits != null) character.allowRandomVisits = visit.allowRandomVisits;
 
+                character.visitedToday = true;
                 break;
             }
         }
@@ -161,6 +162,8 @@ public class VisitResolver {
 
                 debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, "random");
                 results.add(vr);
+
+                character.visitedToday = true;
                 break;
             }
 
@@ -170,16 +173,15 @@ public class VisitResolver {
         return results;
     }
 
-    public MatchResult evaluateDeferred(String fireEffect,
-                                        
-                                        List<String> fireReq,
-                                        List<String> tagReq,
-                                        List<String> legacyFire,
-                                        List<String> legacyTags) {
+    public MatchResult evaluateDeferred(
+            String fireEffect,
+            List<String> fireReq,
+            List<String> tagReq,
+            List<String> legacyFire,
+            List<String> legacyTags) {
 
         return matcher.evaluate(
                 fireEffect,
-                
                 fireReq,
                 tagReq,
                 legacyFire,
