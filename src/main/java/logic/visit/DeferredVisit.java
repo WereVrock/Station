@@ -1,10 +1,8 @@
 package logic.visit;
 
-import logic.visit.VisitResolver;
 import main.Game;
 import main.*;
 import java.io.Serializable;
-import java.util.Set;
 
 public class DeferredVisit implements Serializable {
 

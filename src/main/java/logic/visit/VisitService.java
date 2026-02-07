@@ -6,6 +6,7 @@ import java.util.*;
 import logic.BurnService;
 import logic.FireVisitKey;
 import logic.VisitTradePricing;
+import tag.Tag;
 
 public class VisitService {
 
@@ -45,7 +46,11 @@ public class VisitService {
 
         burnedToday = true;
         game.player.removeItem(item);
-        game.worldTags.addAll(item.tags);
+
+        for (String tagName : item.tags) {
+            game.worldTags.add(new Tag(tagName));
+        }
+
         game.burnChosen();
 
         FireStatus fireStatus = burnService.burnItem(item);
@@ -106,6 +111,8 @@ public class VisitService {
 
         game.day++;
         game.waitingForBurnChoice = true;
+
+        game.worldTags.onNewDay();
 
         for (GameCharacter c : game.characters) {
             c.visitedToday = false;

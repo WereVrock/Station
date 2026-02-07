@@ -9,6 +9,7 @@ import main.*;
 
 import java.util.*;
 import logic.VisitTradePricing;
+import tag.Tag;
 
 public class VisitResolver {
 
@@ -112,7 +113,10 @@ public class VisitResolver {
                 debugger.debugVisit(character, visit, sells, buys, normalizedFire);
                 results.add(vr);
 
-                game.worldTags.addAll(visit.tagsToAdd);
+                for (String tagName : visit.tagsToAdd) {
+                    game.worldTags.add(new Tag(tagName));
+                }
+
                 if (visit.allowScriptedVisits != null) character.allowScriptedVisits = visit.allowScriptedVisits;
                 if (visit.allowScheduledVisits != null) character.allowScheduledVisits = visit.allowScheduledVisits;
                 if (visit.allowRandomVisits != null) character.allowRandomVisits = visit.allowRandomVisits;
@@ -168,7 +172,7 @@ public class VisitResolver {
     }
 
     public MatchResult evaluateDeferred(String fireEffect,
-                                        Set<String> worldTags,
+                                        tag.TagManager worldTags,
                                         List<String> fireReq,
                                         List<String> tagReq,
                                         List<String> legacyFire,

@@ -8,7 +8,7 @@ import java.util.List;
 public class VisitDebugger {
 
     private final Game game;
-    private boolean debugRejected = false;
+    private boolean debugRejected = true;
 
     public VisitDebugger(Game game) {
         this.game = game;

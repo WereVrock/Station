@@ -2,14 +2,15 @@ package logic.visit.resolve;
 
 import logic.FireKeyNormalizer;
 import logic.visit.MatchResult;
+import tag.Tag;
+import tag.TagManager;
 
 import java.util.*;
-import logic.visit.MatchResult;
 
 public class VisitMatcher {
 
     public MatchResult evaluate(String fireEffect,
-                                Set<String> worldTags,
+                                TagManager worldTags,
                                 List<String> fireReq,
                                 List<String> tagReq,
                                 List<String> legacyFire,
@@ -27,12 +28,36 @@ public class VisitMatcher {
         result.requiredFire = new ArrayList<>(normalizedFire);
         result.requiredTags = new ArrayList<>(sourceTags);
         result.actualFire = fireEffect;
-        result.actualTags = new HashSet<>(worldTags);
+        result.actualTags = collectTagNames(worldTags);
 
         result.fireOk = normalizedFire.isEmpty() || normalizedFire.contains(fireEffect);
-        result.tagsOk = worldTags.containsAll(sourceTags);
+        result.tagsOk = hasAllTags(worldTags, sourceTags);
         result.success = result.fireOk && result.tagsOk;
 
         return result;
+    }
+
+    private boolean hasAllTags(TagManager manager, List<String> required) {
+
+        if (required.isEmpty()) return true;
+
+        Set<String> present = collectTagNames(manager);
+
+        for (String req : required) {
+            if (!present.contains(req)) return false;
+        }
+
+        return true;
+    }
+
+    private Set<String> collectTagNames(TagManager manager) {
+
+        Set<String> names = new HashSet<>();
+
+        for (Tag tag : manager.view()) {
+            names.add(tag.getName());
+        }
+
+        return names;
     }
 }

@@ -53,4 +53,7 @@ public class TagManager implements Serializable {
     public String toString() {
         return "TagManager{tags=" + tagList.view() + "}";
     }
+
+    public boolean hasTag(String tagID) {
+       return tagList.contains(tagID);  }
 }

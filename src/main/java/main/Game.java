@@ -2,6 +2,7 @@ package main;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import tag.TagManager;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -18,7 +19,8 @@ public class Game implements Serializable {
 
     public List<Item> items = new ArrayList<>();
     public List<GameCharacter> characters = new ArrayList<>();
-    public Set<String> worldTags = new HashSet<>();
+
+    public TagManager worldTags = new TagManager();
 
     public int visitsToday = 0;
 
@@ -68,6 +70,8 @@ public class Game implements Serializable {
         waitingForBurnChoice = true;
         visitsToday = 0;
         day++;
+
+        worldTags.onNewDay();
 
         for (GameCharacter c : characters) {
             c.visitedToday = false;

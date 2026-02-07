@@ -14,7 +14,6 @@ public class Item implements Serializable {
 
     public int basePrice = GameConstants.DEFAULT_ITEM_BASE_PRICE;
 
-    // NEW: split fire data
     public FireStatus.Strength fireStrength = FireStatus.Strength.WEAK;
     public String fireEffect = "clean";
 
