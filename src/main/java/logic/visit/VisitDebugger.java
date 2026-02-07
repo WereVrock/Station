@@ -59,7 +59,7 @@ public class VisitDebugger {
         if (visit != null) System.out.println("Type: " + visit.type);
         System.out.println("Reason: " + reason);
         System.out.println("Current Fire: " + fireEffect);
-        System.out.println("World Tags: " + game.worldTags);
+        System.out.println("World Tags: " + game.tagManager);
 
         if (match != null) {
             System.out.println("Required Fire: " + match.requiredFire);

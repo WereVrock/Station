@@ -441,5 +441,79 @@
   ]
 }
 
+,{
+  "id": "ember_wretch",
+  "name": "Ember Wretch",
+  "background": "A hollow-eyed survivor who claims the fire noticed him first. He comes once in terror, then only when it remembers you.",
+  "defaultPortrait": "ember_wretch_default",
+  "gold": 5,
+
+  "scriptedVisitsAllowed": true,
+  "scheduledVisitsAllowed": false,
+  "randomVisitsAllowed": true,
+
+  "visits": [
+    {
+      "type": "scripted",
+      "fireRequired": [],
+      "requiredTags": [],
+      "minDay": 0,
+      "maxDay": 0,
+
+      "dialogue": [
+        "It’s wrong that it burns this steady.",
+        "It watched me before I watched it.",
+        "If I don’t leave something behind… it follows."
+      ],
+
+      "sells": [],
+      "buys": [],
+
+      "sellFood": 1,
+      "sellFuel": 0,
+      "buyFood": 0,
+      "buyFuel": 0,
+
+      "goldChange": 0,
+
+      "tagsToAdd": ["emberWretchSeen"],
+
+      "portraitOverride": null,
+      "portraitOneTime": false,
+      "allowScriptedVisits": null,
+      "allowScheduledVisits": null,
+      "allowRandomVisits": null
+    },
+    {
+      "type": "random",
+      "fireRequired": [],
+      "requiredTags": ["emberWretchSeen"],
+      "minDay": 1,
+      "maxDay": 0,
+
+      "dialogue": [
+        "You felt it too, didn’t you?",
+        "That pause in the flame.",
+        "It remembers places where it was fed."
+      ],
+
+      "sells": [],
+      "buys": [],
+
+      "sellFood": 1,
+      "sellFuel": 0,
+      "buyFood": 0,
+      "buyFuel": 0,
+
+      "goldChange": 0,
+
+      "portraitOverride": null,
+      "portraitOneTime": false,
+      "allowScriptedVisits": null,
+      "allowScheduledVisits": null,
+      "allowRandomVisits": null
+    }
+  ]
+}
 
 ]

@@ -54,18 +54,16 @@ public class VisitResolver {
                 if ("normal".equals(mode) && "random".equals(visit.type)) continue;
                 if (!"normal".equals(mode) && !mode.equals(visit.type)) continue;
 
-                MatchResult timerMatch = matcher.evaluate(
-                        normalizedFire,
-                        game.worldTags,
+                MatchResult timerMatch = matcher.evaluate(normalizedFire,
+                        game.tagManager,
                         visit.timerStartFireRequired,
                         visit.timerStartTags,
                         visit.fireRequired,
                         visit.requiredTags
                 );
 
-                MatchResult visitMatch = matcher.evaluate(
-                        normalizedFire,
-                        game.worldTags,
+                MatchResult visitMatch = matcher.evaluate(normalizedFire,
+                        game.tagManager,
                         visit.visitFireRequired,
                         visit.visitRequiredTags,
                         visit.fireRequired,
@@ -114,7 +112,7 @@ public class VisitResolver {
                 results.add(vr);
 
                 for (String tagName : visit.tagsToAdd) {
-                    game.worldTags.add(new Tag(tagName));
+                    game.tagManager.add(new Tag(tagName));
                 }
 
                 if (visit.allowScriptedVisits != null) character.allowScriptedVisits = visit.allowScriptedVisits;

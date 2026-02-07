@@ -48,7 +48,7 @@ public class VisitService {
         game.player.removeItem(item);
 
         for (String tagName : item.tags) {
-            game.worldTags.add(new Tag(tagName));
+            game.tagManager.add(new Tag(tagName));
         }
 
         game.burnChosen();
@@ -112,7 +112,7 @@ public class VisitService {
         game.day++;
         game.waitingForBurnChoice = true;
 
-        game.worldTags.onNewDay();
+        game.tagManager.onNewDay();
 
         for (GameCharacter c : game.characters) {
             c.visitedToday = false;

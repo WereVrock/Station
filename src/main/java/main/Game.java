@@ -20,7 +20,7 @@ public class Game implements Serializable {
     public List<Item> items = new ArrayList<>();
     public List<GameCharacter> characters = new ArrayList<>();
 
-    public TagManager worldTags = new TagManager();
+    public TagManager tagManager = new TagManager();
 
     public int visitsToday = 0;
 
@@ -71,7 +71,7 @@ public class Game implements Serializable {
         visitsToday = 0;
         day++;
 
-        worldTags.onNewDay();
+        tagManager.onNewDay();
 
         for (GameCharacter c : characters) {
             c.visitedToday = false;

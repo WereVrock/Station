@@ -1,16 +1,45 @@
 package logic.visit;
 
-import java.util.List;
-import java.util.Set;
+import tag.Tag;
+import java.util.*;
 
 public class MatchResult {
-    public boolean success;
+
+    // --- Required conditions ---
+    public List<String> requiredFire = Collections.emptyList();
+    public List<String> requiredTags = Collections.emptyList();
+
+    // --- Actual world state ---
+    public String actualFire;
+    public List<Tag> actualTags = Collections.emptyList();
+
+    // --- Evaluation flags ---
     public boolean fireOk;
     public boolean tagsOk;
+    public boolean success;
 
-    public List<String> requiredFire;
-    public List<String> requiredTags;
+    /**
+     * Convenience view for logs / UI.
+     * Do NOT use for logic.
+     */
+    public Set<String> actualTagNames() {
+        Set<String> names = new HashSet<>();
+        for (Tag tag : actualTags) {
+            names.add(tag.getName());
+        }
+        return names;
+    }
 
-    public String actualFire;
-    public Set<String> actualTags;
+    @Override
+    public String toString() {
+        return "MatchResult{" +
+                "fireOk=" + fireOk +
+                ", tagsOk=" + tagsOk +
+                ", success=" + success +
+                ", requiredFire=" + requiredFire +
+                ", requiredTags=" + requiredTags +
+                ", actualFire='" + actualFire + '\'' +
+                ", actualTags=" + actualTagNames() +
+                '}';
+    }
 }

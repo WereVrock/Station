@@ -19,45 +19,48 @@ public class VisitMatcher {
         List<String> sourceFire = fireReq.isEmpty() ? legacyFire : fireReq;
         List<String> sourceTags = tagReq.isEmpty() ? legacyTags : tagReq;
 
-        List<String> normalizedFire = new ArrayList<>();
-        for (String fire : sourceFire) {
-            normalizedFire.add(FireKeyNormalizer.normalize(fire));
-        }
+        List<String> normalizedFire = normalizeFire(sourceFire);
 
         MatchResult result = new MatchResult();
-        result.requiredFire = new ArrayList<>(normalizedFire);
+        result.requiredFire = normalizedFire;
         result.requiredTags = new ArrayList<>(sourceTags);
         result.actualFire = fireEffect;
-        result.actualTags = collectTagNames(worldTags);
+        result.actualTags = new ArrayList<>(worldTags.view());
 
-        result.fireOk = normalizedFire.isEmpty() || normalizedFire.contains(fireEffect);
-        result.tagsOk = hasAllTags(worldTags, sourceTags);
+        result.fireOk = fireMatches(normalizedFire, fireEffect);
+        result.tagsOk = tagsMatch(sourceTags, worldTags);
         result.success = result.fireOk && result.tagsOk;
 
         return result;
     }
 
-    private boolean hasAllTags(TagManager manager, List<String> required) {
+    // ---------------- helpers ----------------
+
+    private List<String> normalizeFire(List<String> fireReq) {
+        List<String> out = new ArrayList<>();
+        for (String f : fireReq) {
+            out.add(FireKeyNormalizer.normalize(f));
+        }
+        return out;
+    }
+
+    private boolean fireMatches(List<String> required, String actual) {
+        return required.isEmpty() || required.contains(actual);
+    }
+
+    private boolean tagsMatch(List<String> required, TagManager worldTags) {
 
         if (required.isEmpty()) return true;
 
-        Set<String> present = collectTagNames(manager);
+        Set<String> present = new HashSet<>();
+        for (Tag tag : worldTags.view()) {
+            present.add(tag.getName());
+        }
 
         for (String req : required) {
             if (!present.contains(req)) return false;
         }
 
         return true;
-    }
-
-    private Set<String> collectTagNames(TagManager manager) {
-
-        Set<String> names = new HashSet<>();
-
-        for (Tag tag : manager.view()) {
-            names.add(tag.getName());
-        }
-
-        return names;
     }
 }
