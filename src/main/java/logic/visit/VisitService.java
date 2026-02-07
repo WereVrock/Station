@@ -7,6 +7,7 @@ import logic.BurnService;
 import logic.FireVisitKey;
 import logic.VisitTradePricing;
 import tag.Tag;
+import tag.TagManager;
 
 public class VisitService {
 
@@ -48,7 +49,7 @@ public class VisitService {
         game.player.removeItem(item);
 
         for (String tagName : item.tags) {
-            game.tagManager.add(new Tag(tagName));
+            TagManager.add(new Tag(tagName));
         }
 
         game.burnChosen();
@@ -112,7 +113,7 @@ public class VisitService {
         game.day++;
         game.waitingForBurnChoice = true;
 
-        game.tagManager.onNewDay();
+        TagManager.onNewDay();
 
         for (GameCharacter c : game.characters) {
             c.visitedToday = false;

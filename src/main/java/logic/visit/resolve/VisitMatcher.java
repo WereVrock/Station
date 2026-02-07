@@ -6,11 +6,12 @@ import tag.Tag;
 import tag.TagManager;
 
 import java.util.*;
+import tag.TagManager;
 
 public class VisitMatcher {
 
     public MatchResult evaluate(String fireEffect,
-                                TagManager worldTags,
+                                
                                 List<String> fireReq,
                                 List<String> tagReq,
                                 List<String> legacyFire,
@@ -25,10 +26,10 @@ public class VisitMatcher {
         result.requiredFire = normalizedFire;
         result.requiredTags = new ArrayList<>(sourceTags);
         result.actualFire = fireEffect;
-        result.actualTags = new ArrayList<>(worldTags.view());
+        result.actualTags = new ArrayList<>(TagManager.view());
 
         result.fireOk = fireMatches(normalizedFire, fireEffect);
-        result.tagsOk = tagsMatch(sourceTags, worldTags);
+        result.tagsOk = tagsMatch(sourceTags);
         result.success = result.fireOk && result.tagsOk;
 
         return result;
@@ -48,12 +49,12 @@ public class VisitMatcher {
         return required.isEmpty() || required.contains(actual);
     }
 
-    private boolean tagsMatch(List<String> required, TagManager worldTags) {
+    private boolean tagsMatch(List<String> required) {
 
         if (required.isEmpty()) return true;
 
         Set<String> present = new HashSet<>();
-        for (Tag tag : worldTags.view()) {
+        for (Tag tag : TagManager.view()) {
             present.add(tag.getName());
         }
 

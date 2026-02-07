@@ -25,7 +25,7 @@ public class DeferredVisit implements Serializable {
     public boolean stillValid(Game game, VisitResolver resolver) {
 
         MatchResult match = resolver.evaluateDeferred(fireEffect,
-                game.tagManager,
+                
                 visit.visitFireRequired,
                 visit.visitRequiredTags,
                 visit.fireRequired,

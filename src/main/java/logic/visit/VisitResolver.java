@@ -10,6 +10,7 @@ import main.*;
 import java.util.*;
 import logic.VisitTradePricing;
 import tag.Tag;
+import tag.TagManager;
 
 public class VisitResolver {
 
@@ -55,7 +56,7 @@ public class VisitResolver {
                 if (!"normal".equals(mode) && !mode.equals(visit.type)) continue;
 
                 MatchResult timerMatch = matcher.evaluate(normalizedFire,
-                        game.tagManager,
+                        
                         visit.timerStartFireRequired,
                         visit.timerStartTags,
                         visit.fireRequired,
@@ -63,7 +64,7 @@ public class VisitResolver {
                 );
 
                 MatchResult visitMatch = matcher.evaluate(normalizedFire,
-                        game.tagManager,
+                        
                         visit.visitFireRequired,
                         visit.visitRequiredTags,
                         visit.fireRequired,
@@ -112,7 +113,7 @@ public class VisitResolver {
                 results.add(vr);
 
                 for (String tagName : visit.tagsToAdd) {
-                    game.tagManager.add(new Tag(tagName));
+                    TagManager.add(new Tag(tagName));
                 }
 
                 if (visit.allowScriptedVisits != null) character.allowScriptedVisits = visit.allowScriptedVisits;
@@ -170,7 +171,7 @@ public class VisitResolver {
     }
 
     public MatchResult evaluateDeferred(String fireEffect,
-                                        tag.TagManager worldTags,
+                                        
                                         List<String> fireReq,
                                         List<String> tagReq,
                                         List<String> legacyFire,
@@ -178,7 +179,7 @@ public class VisitResolver {
 
         return matcher.evaluate(
                 fireEffect,
-                worldTags,
+                
                 fireReq,
                 tagReq,
                 legacyFire,

@@ -1,59 +1,87 @@
 package tag;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
- * Public interface for all tag operations.
- * Internally uses TagList and TagUpdater for modularity.
+ * Global static access point for all tag operations.
+ * Backed by a single internal TagManager instance.
+ *
+ * Note:
+ * - This class itself is NOT serialized.
+ * - Persistence is handled via exportTags() / importTags().
  */
-public class TagManager implements Serializable {
-    private static final long serialVersionUID = 1L;
+public final class TagManager {
 
+    // ===== Single Internal Instance =====
+    private static final TagManager INSTANCE = new TagManager();
+
+    // ===== Internal State =====
     private final TagList tagList = new TagList();
+
+    /**
+     * Stateless helper responsible for day-based tag updates
+     * (e.g. expiration countdown).
+     */
     private final TagUpdater updater = new TagUpdater();
 
-    public boolean add(Tag tag) {
-        return tagList.add(tag);
+    // ===== Constructor =====
+    private TagManager() {
+        // no external instantiation
     }
 
-    public boolean remove(String uniqueId) {
-        return tagList.remove(uniqueId);
+    // ===== Static API =====
+
+    public static boolean add(Tag tag) {
+        return INSTANCE.tagList.add(tag);
     }
 
-    public boolean has(String uniqueId) {
-        return tagList.contains(uniqueId);
+    public static boolean remove(String uniqueId) {
+        return INSTANCE.tagList.remove(uniqueId);
     }
 
-    public void onNewDay() {
-        tagList.update(updater);
+    public static boolean has(String uniqueId) {
+        return INSTANCE.tagList.contains(uniqueId);
     }
 
-    public List<Tag> exportTags() {
-        return tagList.export();
+    /**
+     * Advances time-dependent tag logic by one day.
+     * Should be called exactly once per game day.
+     */
+    public static void onNewDay() {
+        INSTANCE.tagList.update(INSTANCE.updater);
     }
 
-    public void importTags(List<Tag> importedTags) {
-        tagList.importTags(importedTags);
+    /**
+     * Returns a copy of all tags for persistence.
+     */
+    public static List<Tag> exportTags() {
+        return INSTANCE.tagList.export();
     }
 
-    public List<Tag> view() {
-        return tagList.view();
+    /**
+     * Replaces all current tags with imported ones.
+     */
+    public static void importTags(List<Tag> importedTags) {
+        INSTANCE.tagList.importTags(importedTags);
     }
 
-    public int size() {
-        return tagList.size();
+    /**
+     * Read-only view of current tags.
+     */
+    public static List<Tag> view() {
+        return INSTANCE.tagList.view();
     }
 
-    public void clear() {
-        tagList.clear();
+    public static int size() {
+        return INSTANCE.tagList.size();
+    }
+
+    public static void clear() {
+        INSTANCE.tagList.clear();
     }
 
     @Override
     public String toString() {
         return "TagManager{tags=" + tagList.view() + "}";
     }
-
-    public boolean hasTag(String tagID) {
-       return tagList.contains(tagID);  }
 }
