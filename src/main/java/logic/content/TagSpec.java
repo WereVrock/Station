@@ -5,17 +5,17 @@ import tag.Tag;
 public class TagSpec {
 
     public String name;
-    public Integer duration;
+    public Integer days;
 
     public Tag toTag() {
-        if (duration == null) {
+        if (days == null) {
             return new Tag(name);
         }
-        return new Tag(name, duration);
+        return new Tag(name, days);
     }
 
     @Override
     public String toString() {
-        return "TagSpec{name='" + name + "', duration=" + duration + "}";
+        return "TagSpec{name='" + name + "', duration=" + days + "}";
     }
 }

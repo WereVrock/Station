@@ -64,33 +64,28 @@ public class VisitResolver {
 
             if (character.visitedToday) continue;
 
-            for (Visit visit : character.visits) {
-
+            for (Iterator<Visit> it = character.visits.iterator(); it.hasNext();) {
+                Visit visit = it.next();
                 if (visit.used && visit.isOneShot()) {
                     debugger.debugRejected(character, visit, "One-shot already used", normalizedFire, null);
                     continue;
                 }
-
                 if (!eligibility.isAllowed(character, visit)) {
                     debugger.debugRejected(character, visit, "Eligibility blocked", normalizedFire, null);
                     continue;
                 }
-
                 if ("normal".equals(mode) && "random".equals(visit.type)) {
                     debugger.debugRejected(character, visit, "Type mismatch", normalizedFire, null);
                     continue;
                 }
-
                 if (!"normal".equals(mode) && !mode.equals(visit.type)) {
                     debugger.debugRejected(character, visit, "Type mismatch", normalizedFire, null);
                     continue;
                 }
-
                 if (hasExcludedTag(visit.excludedTags)) {
                     debugger.debugRejected(character, visit, "Excluded tag present", normalizedFire, null);
                     continue;
                 }
-
                 MatchResult timerMatch = matcher.evaluate(
                         normalizedFire,
                         visit.timerStartFireRequired,
@@ -98,7 +93,6 @@ public class VisitResolver {
                         visit.fireRequired,
                         visit.requiredTags
                 );
-
                 MatchResult visitMatch = matcher.evaluate(
                         normalizedFire,
                         visit.visitFireRequired,
@@ -106,9 +100,7 @@ public class VisitResolver {
                         visit.fireRequired,
                         visit.requiredTags
                 );
-
                 boolean ok;
-
                 if ("scripted".equals(visit.type)) {
                     if (!visitMatch.success) {
                         debugger.debugRejected(character, visit, "Visit conditions failed", normalizedFire, visitMatch);
@@ -130,13 +122,10 @@ public class VisitResolver {
                         continue;
                     }
                 }
-
                 Visit.ResolvedTrade trade = tradeResolver.resolve(visit);
                 VisitTradePricing p = tradeResolver.pricing(visit);
-
                 List<Item> sells = itemLookup.resolve(trade.sells);
                 List<Item> buys = itemLookup.resolve(trade.buys);
-
                 VisitResult vr = new VisitResult(
                         character,
                         sells,
@@ -153,14 +142,13 @@ public class VisitResolver {
                         p.resolveBuyFood(),
                         p.resolveBuyFuel()
                 );
-
                 debugger.debugVisit(character, visit, sells, buys, normalizedFire);
                 results.add(vr);
-
-                for (TagSpec spec : visit.tagsToAdd) {
+                if (visit.isOneShot()) {
+                    it.remove(); 
+                }               for (TagSpec spec : visit.tagsToAdd) {
                     TagManager.add(spec.toTag());
                 }
-
                 if (visit.allowScriptedVisits != null) {
                     character.allowScriptedVisits = visit.allowScriptedVisits;
                 }
@@ -170,7 +158,6 @@ public class VisitResolver {
                 if (visit.allowRandomVisits != null) {
                     character.allowRandomVisits = visit.allowRandomVisits;
                 }
-
                 character.visitedToday = true;
                 break;
             }
