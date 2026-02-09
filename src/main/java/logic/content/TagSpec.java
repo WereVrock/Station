@@ -13,4 +13,9 @@ public class TagSpec {
         }
         return new Tag(name, duration);
     }
+
+    @Override
+    public String toString() {
+        return "TagSpec{name='" + name + "', duration=" + duration + "}";
+    }
 }

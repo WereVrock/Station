@@ -1,9 +1,12 @@
+// ===== Visit.java =====
 package main;
 
 import ui.ExhaustionTextFactory.ExhaustionType;
 import logic.VisitTradePricing;
+import logic.content.TagSpec;
 
 import java.util.*;
+import main.GameConstants;
 
 public class Visit {
 
@@ -18,7 +21,8 @@ public class Visit {
     // per-visit pricing (optional)
     public VisitTradePricing pricing = new VisitTradePricing();
 
-    private final Map<ExhaustionType, String> exhaustionText = new EnumMap<>(ExhaustionType.class);
+    private final Map<ExhaustionType, String> exhaustionText =
+            new EnumMap<>(ExhaustionType.class);
 
     public List<String> timerStartFireRequired = new ArrayList<>();
     public List<String> timerStartTags = new ArrayList<>();
@@ -30,7 +34,9 @@ public class Visit {
     public List<String> requiredTags = new ArrayList<>();
 
     public List<String> dialogue = new ArrayList<>();
-    public List<String> tagsToAdd = new ArrayList<>();
+
+    // structured tag definitions (supports timed tags)
+    public List<TagSpec> tagsToAdd = new ArrayList<>();
 
     public List<VisitItem> sells = new ArrayList<>();
     public List<VisitItem> buys = new ArrayList<>();
@@ -113,11 +119,15 @@ public class Visit {
     }
 
     public int resolveMin() {
-        return minDays != null ? minDays : GameConstants.SCRIPTED_DEFAULT_MIN_DELAY;
+        return minDays != null
+                ? minDays
+                : GameConstants.SCRIPTED_DEFAULT_MIN_DELAY;
     }
 
     public int resolveMax() {
-        return maxDays != null ? maxDays : GameConstants.SCRIPTED_DEFAULT_MAX_DELAY;
+        return maxDays != null
+                ? maxDays
+                : GameConstants.SCRIPTED_DEFAULT_MAX_DELAY;
     }
 
     // ===== TRADING =====

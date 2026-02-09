@@ -5,11 +5,11 @@ import logic.visit.trade.*;
 import logic.visit.resolve.VisitEligibility;
 import logic.visit.resolve.VisitMatcher;
 import logic.visit.resolve.VisitSelector;
+import logic.content.TagSpec;
 import main.*;
 
 import java.util.*;
 import logic.VisitTradePricing;
-import tag.Tag;
 import tag.TagManager;
 
 public class VisitResolver {
@@ -112,13 +112,20 @@ public class VisitResolver {
                 debugger.debugVisit(character, visit, sells, buys, normalizedFire);
                 results.add(vr);
 
-                for (String tagName : visit.tagsToAdd) {
-                    TagManager.add(new Tag(tagName));
+                // ===== FIXED: TAG APPLICATION =====
+                for (TagSpec spec : visit.tagsToAdd) {
+                    TagManager.add(spec.toTag());
                 }
 
-                if (visit.allowScriptedVisits != null) character.allowScriptedVisits = visit.allowScriptedVisits;
-                if (visit.allowScheduledVisits != null) character.allowScheduledVisits = visit.allowScheduledVisits;
-                if (visit.allowRandomVisits != null) character.allowRandomVisits = visit.allowRandomVisits;
+                if (visit.allowScriptedVisits != null) {
+                    character.allowScriptedVisits = visit.allowScriptedVisits;
+                }
+                if (visit.allowScheduledVisits != null) {
+                    character.allowScheduledVisits = visit.allowScheduledVisits;
+                }
+                if (visit.allowRandomVisits != null) {
+                    character.allowRandomVisits = visit.allowRandomVisits;
+                }
 
                 character.visitedToday = true;
                 break;
@@ -160,7 +167,14 @@ public class VisitResolver {
                         p.resolveBuyFuel()
                 );
 
-                debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, "random");
+                debugger.debugVisit(
+                        character,
+                        visit,
+                        vr.itemsForSale,
+                        vr.itemsWanted,
+                        "random"
+                );
+
                 results.add(vr);
 
                 character.visitedToday = true;
