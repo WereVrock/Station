@@ -111,6 +111,7 @@ public class VisitService {
         game.visitsToday = 0;
 
         game.day++;
+        System.out.println("DAY: "+ game.day);
         game.waitingForBurnChoice = true;
 
         TagManager.onNewDay();

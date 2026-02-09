@@ -31,11 +31,13 @@ public class TagContentLoader {
         }
 
         try (InputStreamReader reader = new InputStreamReader(is)) {
+
             List<TagSpec> specs = gson.fromJson(reader, listType);
 
+            if (specs == null) return;
+
             for (TagSpec spec : specs) {
-                Tag tag = spec.toTag();
-                TagManager.add(tag);
+                TagManager.add(spec.toTag());
             }
         }
     }

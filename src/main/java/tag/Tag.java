@@ -6,11 +6,12 @@ import java.util.UUID;
 
 public class Tag implements Serializable, Comparable<Tag> {
     private static final long serialVersionUID = 1L;
+    public static boolean showIDOnToString=false;
 
     private final String name;
     private final String uniqueId;
     private final int expirationDays; // -1 = never expires
-    private int ageInDays = 0;
+    private int ageInDays;
 
     public Tag(String name) {
         this(name, -1);
@@ -20,6 +21,9 @@ public class Tag implements Serializable, Comparable<Tag> {
         this.name = Objects.requireNonNull(name);
         this.expirationDays = expirationDays;
         this.uniqueId = UUID.randomUUID().toString();
+
+        // Permanent tags are timeless
+        this.ageInDays = (expirationDays < 0) ? -1 : 0;
     }
 
     public String getName() {
@@ -39,7 +43,9 @@ public class Tag implements Serializable, Comparable<Tag> {
     }
 
     void advanceDay() {
-        if (expirationDays >= 0) ageInDays++;
+        if (expirationDays >= 0) {
+            ageInDays++;
+        }
     }
 
     boolean isExpired() {
@@ -66,6 +72,11 @@ public class Tag implements Serializable, Comparable<Tag> {
 
     @Override
     public String toString() {
-        return "Tag[name=" + name + ", id=" + uniqueId + ", age=" + ageInDays + "]";
+        String ageStr;
+        if(ageInDays==-1)ageStr="non-expiring";
+        else ageStr = ageInDays+"";
+        String idStr="";
+        if(showIDOnToString)idStr=" id=" + uniqueId;
+        return "Tag[name=" + name +  ", age=" + ageStr + idStr+"]";
     }
 }

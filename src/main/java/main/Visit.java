@@ -1,4 +1,3 @@
-// ===== Visit.java =====
 package main;
 
 import ui.ExhaustionTextFactory.ExhaustionType;
@@ -33,9 +32,11 @@ public class Visit {
     public List<String> fireRequired = new ArrayList<>();
     public List<String> requiredTags = new ArrayList<>();
 
+ 
+    public List<String> excludedTags = new ArrayList<>();
+
     public List<String> dialogue = new ArrayList<>();
 
-    // structured tag definitions (supports timed tags)
     public List<TagSpec> tagsToAdd = new ArrayList<>();
 
     public List<VisitItem> sells = new ArrayList<>();
@@ -55,8 +56,6 @@ public class Visit {
     public Boolean allowScheduledVisits;
     public Boolean allowRandomVisits;
 
-    // ===== EXHAUSTION TEXT =====
-
     public void setExhaustionText(ExhaustionType type, String text) {
         if (text == null) exhaustionText.remove(type);
         else exhaustionText.put(type, text);
@@ -65,8 +64,6 @@ public class Visit {
     public String getExhaustionText(ExhaustionType type) {
         return exhaustionText.get(type);
     }
-
-    // ===== VISIT LOGIC =====
 
     public boolean isOneShot() {
         return "scripted".equals(type);
@@ -110,8 +107,6 @@ public class Visit {
         return false;
     }
 
-    // ===== DELAY RESOLUTION =====
-
     private int randomDelay() {
         int min = resolveMin();
         int max = resolveMax();
@@ -129,8 +124,6 @@ public class Visit {
                 ? maxDays
                 : GameConstants.SCRIPTED_DEFAULT_MAX_DELAY;
     }
-
-    // ===== TRADING =====
 
     public ResolvedTrade resolveTrade(Random rng) {
         ResolvedTrade trade = new ResolvedTrade();
@@ -164,6 +157,7 @@ public class Visit {
                 "  timerStartTags: " + timerStartTags + ",\n" +
                 "  visitFireRequired: " + visitFireRequired + ",\n" +
                 "  visitRequiredTags: " + visitRequiredTags + ",\n" +
+                "  excludedTags: " + excludedTags + ",\n" +
                 "  dialogue: " + dialogue + ",\n" +
                 "  tagsToAdd: " + tagsToAdd + ",\n" +
                 "  used: " + used + ",\n" +

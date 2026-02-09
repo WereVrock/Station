@@ -10,6 +10,7 @@ import main.*;
 
 import java.util.*;
 import logic.VisitTradePricing;
+import tag.Tag;
 import tag.TagManager;
 
 public class VisitResolver {
@@ -38,6 +39,22 @@ public class VisitResolver {
         debugger.setDebugRejected(debugRejectedVisits);
     }
 
+    private boolean hasExcludedTag(List<String> excluded) {
+        if (excluded == null || excluded.isEmpty()) return false;
+
+        Set<String> present = new HashSet<>();
+        for (Tag t : TagManager.view()) {
+            present.add(t.getName());
+        }
+
+        for (String ex : excluded) {
+            if (present.contains(ex)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<VisitResult> resolveByType(String mode, String fireEffect) {
 
         String normalizedFire = FireKeyNormalizer.normalize(fireEffect);
@@ -49,11 +66,30 @@ public class VisitResolver {
 
             for (Visit visit : character.visits) {
 
-                if (visit.used && visit.isOneShot()) continue;
-                if (!eligibility.isAllowed(character, visit)) continue;
+                if (visit.used && visit.isOneShot()) {
+                    debugger.debugRejected(character, visit, "One-shot already used", normalizedFire, null);
+                    continue;
+                }
 
-                if ("normal".equals(mode) && "random".equals(visit.type)) continue;
-                if (!"normal".equals(mode) && !mode.equals(visit.type)) continue;
+                if (!eligibility.isAllowed(character, visit)) {
+                    debugger.debugRejected(character, visit, "Eligibility blocked", normalizedFire, null);
+                    continue;
+                }
+
+                if ("normal".equals(mode) && "random".equals(visit.type)) {
+                    debugger.debugRejected(character, visit, "Type mismatch", normalizedFire, null);
+                    continue;
+                }
+
+                if (!"normal".equals(mode) && !mode.equals(visit.type)) {
+                    debugger.debugRejected(character, visit, "Type mismatch", normalizedFire, null);
+                    continue;
+                }
+
+                if (hasExcludedTag(visit.excludedTags)) {
+                    debugger.debugRejected(character, visit, "Excluded tag present", normalizedFire, null);
+                    continue;
+                }
 
                 MatchResult timerMatch = matcher.evaluate(
                         normalizedFire,
@@ -74,17 +110,26 @@ public class VisitResolver {
                 boolean ok;
 
                 if ("scripted".equals(visit.type)) {
-                    if (!visitMatch.success) continue;
+                    if (!visitMatch.success) {
+                        debugger.debugRejected(character, visit, "Visit conditions failed", normalizedFire, visitMatch);
+                        continue;
+                    }
                     visit.markFirstEligible(game.day);
                     ok = visit.isReady(game.day);
                     if (ok) visit.used = true;
                 } else if ("scheduled".equals(visit.type)) {
                     ok = visit.scheduledReady(game.day, timerMatch.success, visitMatch.success);
+                    if (!ok) {
+                        debugger.debugRejected(character, visit, "Scheduled conditions not ready", normalizedFire, visitMatch);
+                        continue;
+                    }
                 } else {
                     ok = visitMatch.success;
+                    if (!ok) {
+                        debugger.debugRejected(character, visit, "Visit conditions failed", normalizedFire, visitMatch);
+                        continue;
+                    }
                 }
-
-                if (!ok) continue;
 
                 Visit.ResolvedTrade trade = tradeResolver.resolve(visit);
                 VisitTradePricing p = tradeResolver.pricing(visit);
@@ -112,7 +157,6 @@ public class VisitResolver {
                 debugger.debugVisit(character, visit, sells, buys, normalizedFire);
                 results.add(vr);
 
-                // ===== FIXED: TAG APPLICATION =====
                 for (TagSpec spec : visit.tagsToAdd) {
                     TagManager.add(spec.toTag());
                 }
@@ -145,7 +189,15 @@ public class VisitResolver {
 
             for (Visit visit : selector.randomVisits(character)) {
 
-                if (!eligibility.isAllowed(character, visit)) continue;
+                if (!eligibility.isAllowed(character, visit)) {
+                    debugger.debugRejected(character, visit, "Eligibility blocked", "random", null);
+                    continue;
+                }
+
+                if (hasExcludedTag(visit.excludedTags)) {
+                    debugger.debugRejected(character, visit, "Excluded tag present", "random", null);
+                    continue;
+                }
 
                 Visit.ResolvedTrade trade = tradeResolver.resolve(visit);
                 VisitTradePricing p = tradeResolver.pricing(visit);

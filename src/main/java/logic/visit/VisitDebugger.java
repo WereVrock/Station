@@ -2,7 +2,8 @@ package logic.visit;
 
 import main.Game;
 import main.*;
-import java.util.List;
+import java.util.*;
+import tag.Tag;
 import tag.TagManager;
 
 public class VisitDebugger {
@@ -60,6 +61,23 @@ public class VisitDebugger {
         System.out.println("Reason: " + reason);
         System.out.println("Current Fire: " + fireEffect);
         System.out.println("World Tags: " + TagManager.view());
+
+        if (visit != null && visit.excludedTags != null && !visit.excludedTags.isEmpty()) {
+            Set<String> world = new HashSet<>();
+            for (Tag t : TagManager.view()) {
+                world.add(t.getName());
+            }
+
+            List<String> matched = new ArrayList<>();
+            for (String ex : visit.excludedTags) {
+                if (world.contains(ex)) {
+                    matched.add(ex);
+                }
+            }
+
+            System.out.println("Excluded Tags (visit): " + visit.excludedTags);
+            System.out.println("Matched Excluded Tags: " + matched);
+        }
 
         if (match != null) {
             System.out.println("Required Fire: " + match.requiredFire);

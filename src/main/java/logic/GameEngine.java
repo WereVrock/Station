@@ -36,7 +36,9 @@ public class GameEngine {
     }
 
     public void nextDay() {
+        
         visitService.nextDay();
+        
     }
 
     // ===== ITEM TRADING =====
