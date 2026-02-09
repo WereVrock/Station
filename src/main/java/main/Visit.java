@@ -32,7 +32,6 @@ public class Visit {
     public List<String> fireRequired = new ArrayList<>();
     public List<String> requiredTags = new ArrayList<>();
 
- 
     public List<String> excludedTags = new ArrayList<>();
 
     public List<String> dialogue = new ArrayList<>();
@@ -44,8 +43,13 @@ public class Visit {
 
     public boolean used = false;
 
-    public Integer minDays;
-    public Integer maxDays;
+    // ---- Absolute calendar window ----
+    public Integer minDay;
+    public Integer maxDay;
+
+    // ---- Trigger delay window ----
+    public Integer delayMinDays;
+    public Integer delayMaxDays;
 
     public Integer firstEligibleDay = null;
     public Integer triggerDay = null;
@@ -71,6 +75,12 @@ public class Visit {
 
     public boolean isScheduled() {
         return "scheduled".equals(type);
+    }
+
+    public boolean isWithinDayWindow(int currentDay) {
+        if (minDay != null && currentDay < minDay) return false;
+        if (maxDay != null && maxDay > 0 && currentDay > maxDay) return false;
+        return true;
     }
 
     public void markFirstEligible(int currentDay) {
@@ -108,20 +118,20 @@ public class Visit {
     }
 
     private int randomDelay() {
-        int min = resolveMin();
-        int max = resolveMax();
+        int min = resolveDelayMin();
+        int max = resolveDelayMax();
         return new Random().nextInt(max - min + 1) + min;
     }
 
-    public int resolveMin() {
-        return minDays != null
-                ? minDays
+    public int resolveDelayMin() {
+        return delayMinDays != null
+                ? delayMinDays
                 : GameConstants.SCRIPTED_DEFAULT_MIN_DELAY;
     }
 
-    public int resolveMax() {
-        return maxDays != null
-                ? maxDays
+    public int resolveDelayMax() {
+        return delayMaxDays != null
+                ? delayMaxDays
                 : GameConstants.SCRIPTED_DEFAULT_MAX_DELAY;
     }
 

@@ -7,7 +7,6 @@ import logic.visit.resolve.VisitMatcher;
 import logic.visit.resolve.VisitSelector;
 import logic.content.TagSpec;
 import main.*;
-
 import java.util.*;
 import logic.VisitTradePricing;
 import tag.Tag;
@@ -39,6 +38,8 @@ public class VisitResolver {
         debugger.setDebugRejected(debugRejectedVisits);
     }
 
+    // --------------------------------------------------
+
     private boolean hasExcludedTag(List<String> excluded) {
         if (excluded == null || excluded.isEmpty()) return false;
 
@@ -48,51 +49,76 @@ public class VisitResolver {
         }
 
         for (String ex : excluded) {
-            if (present.contains(ex)) {
-                return true;
-            }
+            if (present.contains(ex)) return true;
         }
         return false;
     }
 
+    // --------------------------------------------------
+    // Legacy entry point (now priority-safe)
+    // --------------------------------------------------
     public List<VisitResult> resolveByType(String mode, String fireEffect) {
+
+        List<VisitResult> results = new ArrayList<>();
+
+        if ("scripted".equals(mode)) {
+            results.addAll(resolveByTypeOrdered("scripted", fireEffect));
+        }
+        else if ("scheduled".equals(mode)) {
+            results.addAll(resolveByTypeOrdered("scripted", fireEffect));
+            if (results.isEmpty()) {
+                results.addAll(resolveByTypeOrdered("scheduled", fireEffect));
+            }
+        }
+        else { // normal / random / anything else
+            results.addAll(resolveByTypeOrdered("scripted", fireEffect));
+            results.addAll(resolveByTypeOrdered("scheduled", fireEffect));
+            if (results.isEmpty()) {
+                results.addAll(resolveRandomVisits(Integer.MAX_VALUE));
+            }
+        }
+
+        return results;
+    }
+
+    // --------------------------------------------------
+    // Ordered (scripted / scheduled)
+    // --------------------------------------------------
+
+    private List<VisitResult> resolveByTypeOrdered(String mode, String fireEffect) {
 
         String normalizedFire = FireKeyNormalizer.normalize(fireEffect);
         List<VisitResult> results = new ArrayList<>();
 
-        for (GameCharacter character : selector.shuffledCharacters(game, rng)) {
+        for (GameCharacter character : game.characters) {
 
             if (character.visitedToday) continue;
 
             for (Iterator<Visit> it = character.visits.iterator(); it.hasNext();) {
                 Visit visit = it.next();
+
                 if (visit.used && visit.isOneShot()) {
                     debugger.debugRejected(character, visit, "One-shot already used", normalizedFire, null);
                     continue;
                 }
+
                 if (!eligibility.isAllowed(character, visit)) {
                     debugger.debugRejected(character, visit, "Eligibility blocked", normalizedFire, null);
                     continue;
                 }
-                if ("normal".equals(mode) && "random".equals(visit.type)) {
-                    debugger.debugRejected(character, visit, "Type mismatch", normalizedFire, null);
-                    continue;
-                }
-                if (!"normal".equals(mode) && !mode.equals(visit.type)) {
-                    debugger.debugRejected(character, visit, "Type mismatch", normalizedFire, null);
-                    continue;
-                }
+
+                if (!mode.equals(visit.type)) continue;
+
                 if (hasExcludedTag(visit.excludedTags)) {
                     debugger.debugRejected(character, visit, "Excluded tag present", normalizedFire, null);
                     continue;
                 }
-                MatchResult timerMatch = matcher.evaluate(
-                        normalizedFire,
-                        visit.timerStartFireRequired,
-                        visit.timerStartTags,
-                        visit.fireRequired,
-                        visit.requiredTags
-                );
+
+                if (!visit.isWithinDayWindow(game.day)) {
+                    debugger.debugRejected(character, visit, "Outside day window", normalizedFire, null);
+                    continue;
+                }
+
                 MatchResult visitMatch = matcher.evaluate(
                         normalizedFire,
                         visit.visitFireRequired,
@@ -100,7 +126,9 @@ public class VisitResolver {
                         visit.fireRequired,
                         visit.requiredTags
                 );
+
                 boolean ok;
+
                 if ("scripted".equals(visit.type)) {
                     if (!visitMatch.success) {
                         debugger.debugRejected(character, visit, "Visit conditions failed", normalizedFire, visitMatch);
@@ -108,28 +136,24 @@ public class VisitResolver {
                     }
                     visit.markFirstEligible(game.day);
                     ok = visit.isReady(game.day);
-                    if (ok) visit.used = true;
-                } else if ("scheduled".equals(visit.type)) {
-                    ok = visit.scheduledReady(game.day, timerMatch.success, visitMatch.success);
+                    if (!ok) continue;
+                    visit.used = true;
+
+                } else { // scheduled
+                    ok = visit.scheduledReady(game.day, true, visitMatch.success);
                     if (!ok) {
                         debugger.debugRejected(character, visit, "Scheduled conditions not ready", normalizedFire, visitMatch);
                         continue;
                     }
-                } else {
-                    ok = visitMatch.success;
-                    if (!ok) {
-                        debugger.debugRejected(character, visit, "Visit conditions failed", normalizedFire, visitMatch);
-                        continue;
-                    }
                 }
+
                 Visit.ResolvedTrade trade = tradeResolver.resolve(visit);
                 VisitTradePricing p = tradeResolver.pricing(visit);
-                List<Item> sells = itemLookup.resolve(trade.sells);
-                List<Item> buys = itemLookup.resolve(trade.buys);
+
                 VisitResult vr = new VisitResult(
                         character,
-                        sells,
-                        buys,
+                        itemLookup.resolve(trade.sells),
+                        itemLookup.resolve(trade.buys),
                         visit.dialogue,
                         normalizedFire,
                         visit.type,
@@ -142,22 +166,20 @@ public class VisitResolver {
                         p.resolveBuyFood(),
                         p.resolveBuyFuel()
                 );
-                debugger.debugVisit(character, visit, sells, buys, normalizedFire);
+
+                debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, normalizedFire);
                 results.add(vr);
-                if (visit.isOneShot()) {
-                    it.remove(); 
-                }               for (TagSpec spec : visit.tagsToAdd) {
+
+                if (visit.isOneShot()) it.remove();
+
+                for (TagSpec spec : visit.tagsToAdd) {
                     TagManager.add(spec.toTag());
                 }
-                if (visit.allowScriptedVisits != null) {
-                    character.allowScriptedVisits = visit.allowScriptedVisits;
-                }
-                if (visit.allowScheduledVisits != null) {
-                    character.allowScheduledVisits = visit.allowScheduledVisits;
-                }
-                if (visit.allowRandomVisits != null) {
-                    character.allowRandomVisits = visit.allowRandomVisits;
-                }
+
+                if (visit.allowScriptedVisits != null) character.allowScriptedVisits = visit.allowScriptedVisits;
+                if (visit.allowScheduledVisits != null) character.allowScheduledVisits = visit.allowScheduledVisits;
+                if (visit.allowRandomVisits != null) character.allowRandomVisits = visit.allowRandomVisits;
+
                 character.visitedToday = true;
                 break;
             }
@@ -165,6 +187,10 @@ public class VisitResolver {
 
         return results;
     }
+
+    // --------------------------------------------------
+    // Random (shuffled)
+    // --------------------------------------------------
 
     public List<VisitResult> resolveRandomVisits(int count) {
 
@@ -183,6 +209,11 @@ public class VisitResolver {
 
                 if (hasExcludedTag(visit.excludedTags)) {
                     debugger.debugRejected(character, visit, "Excluded tag present", "random", null);
+                    continue;
+                }
+
+                if (!visit.isWithinDayWindow(game.day)) {
+                    debugger.debugRejected(character, visit, "Outside day window", "random", null);
                     continue;
                 }
 
@@ -206,16 +237,9 @@ public class VisitResolver {
                         p.resolveBuyFuel()
                 );
 
-                debugger.debugVisit(
-                        character,
-                        visit,
-                        vr.itemsForSale,
-                        vr.itemsWanted,
-                        "random"
-                );
+                debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, "random");
 
                 results.add(vr);
-
                 character.visitedToday = true;
                 break;
             }
@@ -225,6 +249,8 @@ public class VisitResolver {
 
         return results;
     }
+
+    // --------------------------------------------------
 
     public MatchResult evaluateDeferred(
             String fireEffect,
