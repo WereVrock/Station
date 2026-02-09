@@ -2,6 +2,7 @@ package main;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import logic.content.GameContentLoader;
 import tag.TagManager;
 
 import java.io.*;
@@ -19,8 +20,6 @@ public class Game implements Serializable {
 
     public List<Item> items = new ArrayList<>();
     public List<GameCharacter> characters = new ArrayList<>();
-
-   
 
     public int visitsToday = 0;
 
@@ -54,6 +53,13 @@ public class Game implements Serializable {
         }
     }
 
+    // ===== NEW CONTENT LOADING ENTRY POINT =====
+    public void loadContent(String characterFile, String tagFile) throws IOException {
+        GameContentLoader loader = new GameContentLoader();
+        loader.loadAll(this, characterFile, tagFile);
+    }
+
+    // ===== LEGACY (still available if needed) =====
     public void loadCharacters(String file) throws IOException {
         Gson gson = new Gson();
         Type charListType = new TypeToken<ArrayList<GameCharacter>>() {}.getType();
