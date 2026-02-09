@@ -1,4 +1,4 @@
-package logic.content;
+package content;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

@@ -2,7 +2,7 @@ package main;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import logic.content.GameContentLoader;
+import content.GameContentLoader;
 import tag.TagManager;
 
 import java.io.*;
@@ -72,17 +72,7 @@ public class Game implements Serializable {
         }
     }
 
-    public void startNewDay() {
-        waitingForBurnChoice = true;
-        visitsToday = 0;
-        day++;
-
-        TagManager.onNewDay();
-
-        for (GameCharacter c : characters) {
-            c.visitedToday = false;
-        }
-    }
+   
 
     public void burnChosen() {
         waitingForBurnChoice = false;

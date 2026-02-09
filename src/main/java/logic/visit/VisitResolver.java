@@ -5,7 +5,7 @@ import logic.visit.trade.*;
 import logic.visit.resolve.VisitEligibility;
 import logic.visit.resolve.VisitMatcher;
 import logic.visit.resolve.VisitSelector;
-import logic.content.TagSpec;
+import content.TagSpec;
 import main.*;
 import java.util.*;
 import logic.VisitTradePricing;

@@ -8,7 +8,7 @@ public class TagManagerTest {
 
         System.out.println("=== Adding Tags ===");
         Tag t1 = new Tag("Alpha");
-        Tag t2 = new Tag("Beta", 2); // expires after 2 days
+        Tag t2 = new Tag("Beta", 1); // expires after 2 days
         Tag t3 = new Tag("Gamma");
         TagManager.add(t1);
         TagManager.add(t2);

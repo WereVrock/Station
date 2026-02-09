@@ -2,7 +2,7 @@ package main;
 
 import ui.ExhaustionTextFactory.ExhaustionType;
 import logic.VisitTradePricing;
-import logic.content.TagSpec;
+import content.TagSpec;
 
 import java.util.*;
 import main.GameConstants;
