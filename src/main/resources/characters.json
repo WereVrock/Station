@@ -552,15 +552,15 @@
             "sellFood": 0,
             "sellFuel": 0,
             "buyFood": 0,
-            "buyFuel": 0
+            "buyFuel": 1
         },
         {
             "type": "scripted",
             "fireRequired": [],
             "requiredTags": [],
             "excludedTags": ["emberWretchMark"],
-            "minDay": 4,
-            "maxDay": 4,
+            "minDays": 4,
+            "maxDays": 4,
 
             "dialogue": [
                 "It’s gone.",
@@ -573,7 +573,7 @@
 
             "sellFood": 0,
             "sellFuel": 0,
-            "buyFood": 0,
+            "buyFood": 12,
             "buyFuel": 0
         }
     ]

@@ -82,6 +82,7 @@ public class VisitDebugger {
         if (match != null) {
             System.out.println("Required Fire: " + match.requiredFire);
             System.out.println("Required Tags: " + match.requiredTags);
+           
             System.out.println("Fire Match: " + match.fireOk);
             System.out.println("Tag Match: " + match.tagsOk);
         }
