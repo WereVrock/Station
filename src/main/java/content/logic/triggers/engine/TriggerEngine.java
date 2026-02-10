@@ -1,21 +1,14 @@
 package content.logic.triggers.engine;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class TriggerEngine {
+public final class TriggerEngine {
 
-    private final List<Trigger> triggers = new ArrayList<>();
+    private TriggerEngine() {}
 
-    public void addTrigger(Trigger trigger) {
-        triggers.add(trigger);
-    }
+    public static void evaluate(List<Trigger> triggers,
+                                TriggerContext context) {
 
-    public void clear() {
-        triggers.clear();
-    }
-
-    public void evaluate(TriggerContext context) {
         for (Trigger trigger : triggers) {
             if (trigger.check(context)) {
                 trigger.execute(context);

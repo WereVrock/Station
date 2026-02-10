@@ -6,15 +6,27 @@ import java.util.function.Function;
 
 public final class ConditionRegistry {
 
-    private static final Map<String, Function<SpecNode, Condition>> registry = new HashMap<>();
-
     private ConditionRegistry() {}
 
-    public static void register(String type, Function<SpecNode, Condition> builder) {
-        registry.put(type, builder);
+    public static void register(String keyword,
+                                Function<SpecNode, Condition> builder) {
+        instance().map.put(keyword, builder);
     }
 
-    public static Function<SpecNode, Condition> get(String type) {
-        return registry.get(type);
+    static Function<SpecNode, Condition> get(String keyword) {
+        return instance().map.get(keyword);
+    }
+
+    private static Registry instance() {
+        return Holder.INSTANCE;
+    }
+
+    private static final class Holder {
+        private static final Registry INSTANCE = new Registry();
+    }
+
+    private static final class Registry {
+        private final Map<String, Function<SpecNode, Condition>> map =
+                new HashMap<>();
     }
 }

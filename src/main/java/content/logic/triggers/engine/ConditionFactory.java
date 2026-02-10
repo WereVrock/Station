@@ -1,19 +1,22 @@
 package content.logic.triggers.engine;
 
-import java.util.function.Function;
+public final class ConditionFactory {
 
-public class ConditionFactory {
+    private ConditionFactory() {}
 
     public static Condition create(SpecNode spec) {
+
+        TriggerEngineBootstrap.ensureInitialized();
+
         if (spec == null || spec.type == null) {
             throw new IllegalArgumentException("Condition spec missing type");
         }
 
-        Function<SpecNode, Condition> builder =
-                ConditionRegistry.get(spec.type);
+        var builder = ConditionRegistry.get(spec.type);
 
         if (builder == null) {
-            throw new IllegalStateException("No condition registered: " + spec.type);
+            throw new IllegalStateException(
+                    "No condition registered: " + spec.type);
         }
 
         return builder.apply(spec);

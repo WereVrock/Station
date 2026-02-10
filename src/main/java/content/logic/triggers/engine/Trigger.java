@@ -2,7 +2,7 @@ package content.logic.triggers.engine;
 
 import java.util.Objects;
 
-public class Trigger {
+public final class Trigger {
 
     private final Condition condition;
     private final Effect effect;
@@ -12,19 +12,11 @@ public class Trigger {
         this.effect = Objects.requireNonNull(effect);
     }
 
-    public boolean check(TriggerContext context) {
+    boolean check(TriggerContext context) {
         return condition.isTrue(context);
     }
 
-    public void execute(TriggerContext context) {
+    void execute(TriggerContext context) {
         effect.apply(context);
-    }
-
-    public Condition getCondition() {
-        return condition;
-    }
-
-    public Effect getEffect() {
-        return effect;
     }
 }
