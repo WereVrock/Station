@@ -1,7 +1,5 @@
 package content.logic.triggers.engine;
 
-import content.logic.triggers.engine.*;
-
 import java.util.*;
 
 /**
@@ -9,6 +7,12 @@ import java.util.*;
  * No internal classes are accessed.
  */
 public class TriggerEngineTest {
+
+    enum TestEvent {
+        TICK,
+        BATTLE,
+        VISIT
+    }
 
     // -------------------- TEST CONTEXT --------------------
 
@@ -116,7 +120,6 @@ public class TriggerEngineTest {
 
     public static void main(String[] args) {
 
-        // manual registration ONCE for test-only logic
         ConditionRegistry.register("hasTag", HasTagCondition::fromSpec);
         ConditionRegistry.register("scoreAtLeast", ScoreAtLeastCondition::fromSpec);
 
@@ -125,18 +128,22 @@ public class TriggerEngineTest {
 
         List<Trigger> triggers = List.of(
                 build(
+                        TestEvent.TICK,
                         cond("hasTag", "tag", "A"),
                         eff("addScore", "value", 10)
                 ),
                 build(
+                        TestEvent.TICK,
                         cond("scoreAtLeast", "min", 10),
                         eff("addTag", "tag", "B")
                 ),
                 build(
+                        TestEvent.TICK,
                         cond("hasTag", "tag", "B"),
                         eff("addScore", "value", 50)
                 ),
                 build(
+                        TestEvent.TICK,
                         cond("scoreAtLeast", "min", 60),
                         eff("addTag", "tag", "WIN")
                 )
@@ -149,15 +156,19 @@ public class TriggerEngineTest {
 
         for (int i = 1; i <= 3; i++) {
             System.out.println("\nTick " + i);
-            TriggerEngine.evaluate(triggers, ctx);
+            TriggerEngine.evaluate(triggers, TestEvent.TICK, ctx);
             System.out.println(ctx);
         }
     }
 
     // -------------------- HELPERS --------------------
 
-    private static Trigger build(SpecNode c, SpecNode e) {
+    private static Trigger build(Enum<?> event,
+                                 SpecNode c,
+                                 SpecNode e) {
+
         return new Trigger(
+                event,
                 ConditionFactory.create(c),
                 EffectFactory.create(e)
         );
