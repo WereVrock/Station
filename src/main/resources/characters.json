@@ -17,6 +17,7 @@
                 "maxDay": 0,
                 "triggers": [
                     {
+                        "event": "VISIT_START",
                         "condition": {
                             "type": "randomChance",
                             "args": {

@@ -2,10 +2,6 @@ package content.logic.triggers.engine;
 
 import java.util.*;
 
-/**
- * Black-box test for the trigger engine.
- * No internal classes are accessed.
- */
 public class TriggerEngineTest {
 
     enum TestEvent {
@@ -13,8 +9,6 @@ public class TriggerEngineTest {
         BATTLE,
         VISIT
     }
-
-    // -------------------- TEST CONTEXT --------------------
 
     static class TestContext implements TriggerContext {
         private final Set<String> tags = new HashSet<>();
@@ -37,8 +31,6 @@ public class TriggerEngineTest {
             return "Tags=" + tags + " Score=" + score;
         }
     }
-
-    // -------------------- CONDITIONS --------------------
 
     static class HasTagCondition implements Condition {
 
@@ -77,8 +69,6 @@ public class TriggerEngineTest {
         }
     }
 
-    // -------------------- EFFECTS --------------------
-
     static class AddTagEffect implements Effect {
 
         private final String tag;
@@ -116,8 +106,6 @@ public class TriggerEngineTest {
         }
     }
 
-    // -------------------- TEST --------------------
-
     public static void main(String[] args) {
 
         ConditionRegistry.register("hasTag", HasTagCondition::fromSpec);
@@ -128,22 +116,22 @@ public class TriggerEngineTest {
 
         List<Trigger> triggers = List.of(
                 build(
-                        TestEvent.TICK,
+                        "TICK",
                         cond("hasTag", "tag", "A"),
                         eff("addScore", "value", 10)
                 ),
                 build(
-                        TestEvent.TICK,
+                        "TICK",
                         cond("scoreAtLeast", "min", 10),
                         eff("addTag", "tag", "B")
                 ),
                 build(
-                        TestEvent.TICK,
+                        "TICK",
                         cond("hasTag", "tag", "B"),
                         eff("addScore", "value", 50)
                 ),
                 build(
-                        TestEvent.TICK,
+                        "TICK",
                         cond("scoreAtLeast", "min", 60),
                         eff("addTag", "tag", "WIN")
                 )
@@ -156,14 +144,12 @@ public class TriggerEngineTest {
 
         for (int i = 1; i <= 3; i++) {
             System.out.println("\nTick " + i);
-            TriggerEngine.evaluate(triggers, TestEvent.TICK, ctx);
+            TriggerEngine.evaluate(triggers, "TICK", ctx);
             System.out.println(ctx);
         }
     }
 
-    // -------------------- HELPERS --------------------
-
-    private static Trigger build(Enum<?> event,
+    private static Trigger build(String event,
                                  SpecNode c,
                                  SpecNode e) {
 

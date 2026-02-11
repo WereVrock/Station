@@ -4,11 +4,11 @@ import java.util.Objects;
 
 public final class Trigger {
 
-    private final Enum<?> event;
+    private final String event;
     private final Condition condition;
     private final Effect effect;
 
-    public Trigger(Enum<?> event,
+    public Trigger(String event,
                    Condition condition,
                    Effect effect) {
 
@@ -17,7 +17,7 @@ public final class Trigger {
         this.effect = Objects.requireNonNull(effect);
     }
 
-    Enum<?> getEvent() {
+    String getEvent() {
         return event;
     }
 
