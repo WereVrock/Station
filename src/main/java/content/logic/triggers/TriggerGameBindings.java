@@ -2,6 +2,7 @@ package content.logic.triggers;
 
 import content.logic.triggers.effects.PrintEffect;
 import content.logic.triggers.conditions.RandomChanceCondition;
+import content.logic.triggers.conditions.NotCondition;
 import content.logic.triggers.effects.AddDialogueEffect;
 import content.logic.triggers.engine.ConditionRegistry;
 import content.logic.triggers.engine.EffectRegistry;
@@ -21,6 +22,7 @@ public final class TriggerGameBindings {
 
         // CONDITIONS
         ConditionRegistry.register("randomChance", RandomChanceCondition::fromSpec);
+        ConditionRegistry.register("not", NotCondition::fromSpec);
 
         // EFFECTS
         EffectRegistry.register("print", PrintEffect::fromSpec);
