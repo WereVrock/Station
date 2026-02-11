@@ -2,7 +2,6 @@ package content;
 
 import main.Game;
 import main.GameCharacter;
-import tag.TagManager;
 import content.logic.triggers.TriggerGameBindings;
 
 import java.io.IOException;
@@ -11,13 +10,11 @@ import java.util.List;
 public class GameContentLoader {
 
     private final CharacterContentLoader characterLoader;
-    private final TagContentLoader tagLoader;
 
     private static boolean wired = false;
 
     public GameContentLoader() {
         this.characterLoader = new CharacterContentLoader();
-        this.tagLoader = new TagContentLoader();
     }
 
     private static synchronized void wireTriggers() {
@@ -27,16 +24,12 @@ public class GameContentLoader {
     }
 
     public void loadAll(Game game,
-                        String characterFile,
-                        String tagFile) throws IOException {
+                        String characterFile) throws IOException {
 
-        // ensure trigger engine has all game bindings
+        // Ensure trigger engine bindings installed
         wireTriggers();
 
-        // 1. Load tags first (world state)
-        tagLoader.load(tagFile);
-
-        // 2. Load characters (includes visits)
+        // Load characters (includes visit trigger compilation)
         List<GameCharacter> characters =
                 characterLoader.load(characterFile);
 

@@ -13,10 +13,12 @@ public class Main {
 
         try {
             game.loadItems("items.json");
-            game.loadCharacters("characters.json");
+
+            // Use new content system (triggers compiled here)
+            game.loadContent("characters.json");
 
             GameContentValidator validator = new GameContentValidator(game);
-            validator.setFailOnError(true); // change to false for warning-only mode
+            validator.setFailOnError(true);
             validator.validate();
 
         } catch (Exception e) {

@@ -53,24 +53,10 @@ public class Game implements Serializable {
         }
     }
 
-    // ===== NEW CONTENT LOADING ENTRY POINT =====
-    public void loadContent(String characterFile, String tagFile) throws IOException {
-        GameContentLoader loader = new GameContentLoader();
-        loader.loadAll(this, characterFile, tagFile);
-    }
-
-    // ===== LEGACY (still available if needed) =====
-    public void loadCharacters(String file) throws IOException {
-        Gson gson = new Gson();
-        Type charListType = new TypeToken<ArrayList<GameCharacter>>() {}.getType();
-
-        InputStream is = getClass().getClassLoader().getResourceAsStream(file);
-        if (is == null) throw new IOException("Resource not found: " + file);
-
-        try (InputStreamReader reader = new InputStreamReader(is)) {
-            characters = gson.fromJson(reader, charListType);
-        }
-    }
+    public void loadContent(String characterFile) throws IOException {
+    GameContentLoader loader = new GameContentLoader();
+    loader.loadAll(this, characterFile);
+}
 
    
 

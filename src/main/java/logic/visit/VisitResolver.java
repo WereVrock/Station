@@ -40,8 +40,6 @@ public class VisitResolver {
         debugger.setDebugRejected(debugRejectedVisits);
     }
 
-    // --------------------------------------------------
-
     private boolean hasExcludedTag(List<String> excluded) {
         if (excluded == null || excluded.isEmpty()) return false;
 
@@ -56,9 +54,6 @@ public class VisitResolver {
         return false;
     }
 
-    // --------------------------------------------------
-    // Legacy entry point (now priority-safe)
-    // --------------------------------------------------
     public List<VisitResult> resolveByType(String mode, String fireEffect) {
 
         List<VisitResult> results = new ArrayList<>();
@@ -72,7 +67,7 @@ public class VisitResolver {
                 results.addAll(resolveByTypeOrdered("scheduled", fireEffect));
             }
         }
-        else { // normal / random / anything else
+        else {
             results.addAll(resolveByTypeOrdered("scripted", fireEffect));
             results.addAll(resolveByTypeOrdered("scheduled", fireEffect));
             if (results.isEmpty()) {
@@ -82,10 +77,6 @@ public class VisitResolver {
 
         return results;
     }
-
-    // --------------------------------------------------
-    // Ordered (scripted / scheduled)
-    // --------------------------------------------------
 
     private List<VisitResult> resolveByTypeOrdered(String mode, String fireEffect) {
 
@@ -132,17 +123,23 @@ public class VisitResolver {
                 boolean ok;
 
                 if ("scripted".equals(visit.type)) {
+
                     if (!visitMatch.success) {
                         debugger.debugRejected(character, visit, "Visit conditions failed", normalizedFire, visitMatch);
                         continue;
                     }
+
                     visit.markFirstEligible(game.day);
                     ok = visit.isReady(game.day);
+
                     if (!ok) continue;
+
                     visit.used = true;
 
-                } else { // scheduled
+                } else {
+
                     ok = visit.scheduledReady(game.day, true, visitMatch.success);
+
                     if (!ok) {
                         debugger.debugRejected(character, visit, "Scheduled conditions not ready", normalizedFire, visitMatch);
                         continue;
@@ -172,7 +169,15 @@ public class VisitResolver {
                 debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, normalizedFire);
                 results.add(vr);
 
-                TriggerEngine.evaluate(visit.runtimeTriggers, GameEvent.VISIT_START.toString(), null);
+                VisitTriggerContext context =
+                        new VisitTriggerContext(game, character, visit);
+
+                TriggerEngine.evaluate(
+                        visit.runtimeTriggers,
+                        GameEvent.VISIT_START.toString(),
+                        context
+                );
+
                 if (visit.isOneShot()) it.remove();
 
                 for (TagSpec spec : visit.tagsToAdd) {
@@ -190,10 +195,6 @@ public class VisitResolver {
 
         return results;
     }
-
-    // --------------------------------------------------
-    // Random (shuffled)
-    // --------------------------------------------------
 
     public List<VisitResult> resolveRandomVisits(int count) {
 
@@ -252,8 +253,6 @@ public class VisitResolver {
 
         return results;
     }
-
-    // --------------------------------------------------
 
     public MatchResult evaluateDeferred(
             String fireEffect,

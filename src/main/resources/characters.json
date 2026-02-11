@@ -25,7 +25,7 @@
                             }
                         },
                         "effect": {
-                            "type": "print",
+                            "type": "addDialogue",
                             "args": {
                                 "message": "Liora feels the fire shift..."
                             }
@@ -254,5 +254,321 @@
                 "allowRandomVisits": null
             }
         ]
+    },
+
+    {
+        "id": "ziphra",
+        "name": "Ziphra",
+        "background": "A nun in the Sisterhood Of the Flame Mother. She comes regularly to sell fuel to feed the 'child'",
+
+        "allowScriptedVisits": false,
+        "allowScheduledVisits": true,
+        "allowRandomVisits": false,
+
+        "visits": [
+            {
+                "type": "scheduled",
+
+                "timerStartFireRequired": [],
+                "timerStartTags": [],
+                "visitFireRequired": [],
+                "visitRequiredTags": [],
+                "minDays": 2,
+                "maxDays": 4,
+                "dialogue": [
+                    "You keep the child alive and well fed and they will behave.",
+                    "Fuel is harder to find each season. I sell what I can spare."
+                ],
+                "sells": [],
+                "buys": [],
+                "sellFood": 0,
+                "sellFuel": 3,
+                "buyFood": 0,
+                "buyFuel": 0,
+                "tagsToAdd": []
+            }
+        ]
+    }, {
+        "id": "cinder_bram",
+        "name": "Cinder Bram",
+        "background": "Once a sapper in the old wars. Now he drags a half-dead bomb through the ashlands, feeding it fuel so it won’t wake up hungry.",
+        "defaultPortrait": "cinder_bram_default",
+        "gold": 18,
+        "scriptedVisitsAllowed": false,
+        "scheduledVisitsAllowed": false,
+        "randomVisitsAllowed": true,
+        "visits": [
+            {
+                "type": "random",
+                "fireRequired": ["strongClean", "weakClean"],
+                "requiredTags": [],
+                "minDay": 0,
+                "maxDay": 0,
+                "dialogue": [
+                    "Don’t get close to it.",
+                    "It listens when it’s warm.",
+                    "Fuel keeps it dreaming."
+                ],
+                "sells": [],
+                "buys": [],
+                "sellFood": 0,
+                "sellFuel": 0,
+                "buyFood": 0,
+                "buyFuel": 2,
+                "exhaustionText": {
+                    "BUY_FUEL": "He presses a hand against the bomb’s cracked shell and exhales. \"Enough. It’s sleeping. Pray it stays that way.\""
+                },
+                "goldChange": 0,
+                "portraitOverride": null,
+                "portraitOneTime": false,
+                "allowScriptedVisits": null,
+                "allowScheduledVisits": null,
+                "allowRandomVisits": null
+            },
+            {
+                "type": "random",
+                "fireRequired": ["strongTainted"],
+                "requiredTags": [],
+                "minDay": 0,
+                "maxDay": 0,
+                "dialogue": [
+                    "This fire smells wrong.",
+                    "If it wakes… we won’t hear it scream."
+                ],
+                "sells": [],
+                "buys": [],
+                "sellFood": 0,
+                "sellFuel": 0,
+                "buyFood": 0,
+                "buyFuel": 1,
+                "goldChange": 0,
+                "portraitOverride": null,
+                "portraitOneTime": false,
+                "allowScriptedVisits": null,
+                "allowScheduledVisits": null,
+                "allowRandomVisits": null
+            }
+        ]
+    },
+    {
+        "id": "ragged_merchant",
+        "name": "Ragged Merchant",
+        "background": "A gaunt trader who walks from ruin to ruin with sacks of grain. Every visit costs him something he cannot replace.",
+        "defaultPortrait": "ragged_merchant_default",
+        "gold": 60,
+
+        "allowScriptedVisits": false,
+        "allowScheduledVisits": true,
+        "allowRandomVisits": false,
+
+        "visits": [
+            {
+                "type": "scheduled",
+
+                "timerStartFireRequired": ["strongClean", "strongTainted"],
+                "timerStartTags": [],
+                "visitFireRequired": ["strongClean", "strongTainted"],
+                "visitRequiredTags": [],
+
+                "minDays": 1,
+                "maxDays": 2,
+
+                "dialogue": [
+                    "I paid for this food with days of my life.",
+                    "If you can burn it… then you can afford it.",
+                    "Don’t ask what it cost me to carry it this far."
+                ],
+
+                "sells": [],
+                "buys": [],
+
+                "sellFood": 25,
+                "sellFuel": 0,
+                "buyFood": 0,
+                "buyFuel": 0,
+
+                "pricing": {
+                    "sellFoodMin": 6,
+                    "sellFoodMax": 8
+                },
+
+                "tagsToAdd": []
+            },
+            {
+                "type": "scheduled",
+
+                "timerStartFireRequired": ["strongClean", "strongTainted"],
+                "timerStartTags": [],
+                "visitFireRequired": ["strongClean", "strongTainted"],
+                "visitRequiredTags": [],
+
+                "minDays": 5,
+                "maxDays": 10,
+
+                "dialogue": [
+                    "This is all I have left.",
+                    "I barely made it here. Another night on the road and I wouldn’t.",
+                    "Take it. Or I starve with it."
+                ],
+
+                "sells": [],
+                "buys": [],
+
+                "sellFood": 10,
+                "sellFuel": 0,
+                "buyFood": 0,
+                "buyFuel": 0,
+
+                "pricing": {
+                    "sellFoodMin": 9,
+                    "sellFoodMax": 12
+                },
+
+                "tagsToAdd": []
+            }
+        ]
     }
+
+    , {
+        "id": "ember_wretch",
+        "name": "Ember Wretch",
+        "background": "A hollow-eyed survivor who claims the fire noticed him first. He comes once in terror, then only when it remembers you.",
+        "defaultPortrait": "ember_wretch_default",
+        "gold": 5,
+
+        "scriptedVisitsAllowed": true,
+        "scheduledVisitsAllowed": false,
+        "randomVisitsAllowed": true,
+
+        "visits": [
+            {
+                "type": "scripted",
+                "fireRequired": [],
+                "requiredTags": [],
+                "minDay": 0,
+                "maxDay": 0,
+
+                "dialogue": [
+                    "It’s wrong that it burns this steady.",
+                    "It watched me before I watched it.",
+                    "If I don’t leave something behind… it follows."
+                ],
+
+                "sells": [],
+                "buys": [],
+
+                "sellFood": 1,
+                "sellFuel": 0,
+                "buyFood": 0,
+                "buyFuel": 0,
+
+                "goldChange": 0,
+
+                "tagsToAdd": [
+                    {
+                        "name": "emberWretchSeen"
+                    }
+                ]
+            },
+            {
+                "type": "random",
+                "fireRequired": [],
+                "requiredTags": ["emberWretchSeen"],
+                "minDay": 1,
+                "maxDay": 0,
+
+                "dialogue": [
+                    "You felt it too, didn’t you?",
+                    "That pause in the flame.",
+                    "It remembers places where it was fed."
+                ],
+
+                "sells": [],
+                "buys": [],
+
+                "sellFood": 1,
+                "sellFuel": 0,
+                "buyFood": 0,
+                "buyFuel": 0,
+
+                "goldChange": 0
+            },
+            {
+                "type": "scripted",
+                "fireRequired": [],
+                "requiredTags": [],
+                "minDay": 2,
+                "maxDay": 2,
+
+                "dialogue": [
+                    "I shouldn’t stay long. It notices patterns.",
+                    "If I return tomorrow, it means the mark is still on me.",
+                    "If not… then it finally let go."
+                ],
+
+                "sells": [],
+                "buys": [],
+
+                "sellFood": 0,
+                "sellFuel": 0,
+                "buyFood": 0,
+                "buyFuel": 0,
+
+                "tagsToAdd": [
+                    {
+                        "name": "emberWretchMark",
+                        "days": 1
+                    }
+                ]
+            },
+            {
+                "type": "scripted",
+                "fireRequired": [],
+                "requiredTags": ["emberWretchMark"],
+                "minDay": 3,
+                "maxDay": 3,
+
+                "dialogue": [
+                    "You see? It didn’t fade.",
+                    "I tried to sleep. The flame kept breathing in my dreams.",
+                    "If it’s still here tomorrow, I won’t come back."
+                ],
+
+                "sells": [],
+                "buys": [],
+
+                "sellFood": 0,
+                "sellFuel": 0,
+                "buyFood": 0,
+                "buyFuel": 1
+            },
+            {
+                "type": "scripted",
+                "fireRequired": [],
+                "requiredTags": [],
+                "excludedTags": ["emberWretchMark"],
+                "minDays": 4,
+                "maxDays": 4,
+
+                "dialogue": [
+                    "It’s gone.",
+                    "For the first time in weeks I slept without hearing the crackling.",
+                    "Maybe it chose someone else to remember."
+                ],
+
+                "sells": [],
+                "buys": [],
+
+                "sellFood": 0,
+                "sellFuel": 0,
+                "buyFood": 12,
+                "buyFuel": 0
+            }
+        ]
+    }
+
 ]
+
+
+
+

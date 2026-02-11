@@ -3,6 +3,7 @@ package content.logic.triggers;
 import content.logic.triggers.engine.ConditionFactory;
 import content.logic.triggers.engine.EffectFactory;
 import content.logic.triggers.engine.Trigger;
+import content.logic.triggers.engine.TriggerSpec;
 
 public final class TriggerFactory {
 
