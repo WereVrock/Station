@@ -14,8 +14,6 @@ final class TriggerEngineBootstrap {
         if (initialized) return;
         initialized = true;
 
-        // Built-in registrations go here
-        BuiltinConditions.register();
-        BuiltinEffects.register();
+        
     }
 }
