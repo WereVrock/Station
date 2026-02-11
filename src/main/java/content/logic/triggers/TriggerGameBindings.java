@@ -1,5 +1,7 @@
 package content.logic.triggers;
 
+import content.logic.triggers.effects.PrintEffect;
+import content.logic.triggers.conditions.RandomChanceCondition;
 import content.logic.triggers.engine.ConditionRegistry;
 import content.logic.triggers.engine.EffectRegistry;
 

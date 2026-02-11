@@ -1,4 +1,4 @@
-package content.logic.triggers;
+package content.logic.triggers.conditions;
 
 import content.logic.triggers.engine.Condition;
 import content.logic.triggers.engine.SpecNode;

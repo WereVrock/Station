@@ -1,4 +1,4 @@
-package content.logic.triggers;
+package content.logic.triggers.effects;
 
 import content.logic.triggers.engine.Effect;
 import content.logic.triggers.engine.SpecNode;
