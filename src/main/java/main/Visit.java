@@ -3,6 +3,8 @@ package main;
 import ui.ExhaustionTextFactory.ExhaustionType;
 import logic.VisitTradePricing;
 import content.TagSpec;
+import content.logic.triggers.engine.TriggerSpec;
+import content.logic.triggers.engine.Trigger;
 
 import java.util.*;
 import main.GameConstants;
@@ -40,6 +42,12 @@ public class Visit {
 
     public List<VisitItem> sells = new ArrayList<>();
     public List<VisitItem> buys = new ArrayList<>();
+
+    // JSON SPEC
+    public List<TriggerSpec> triggers = new ArrayList<>();
+
+    // RUNTIME ONLY
+    public transient List<Trigger> runtimeTriggers;
 
     public boolean used = false;
 

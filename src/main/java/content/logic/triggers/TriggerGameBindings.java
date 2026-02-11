@@ -5,10 +5,6 @@ import content.logic.triggers.conditions.RandomChanceCondition;
 import content.logic.triggers.engine.ConditionRegistry;
 import content.logic.triggers.engine.EffectRegistry;
 
-/**
- * Game-side trigger wiring.
- * This is where ALL condition/effect implementations are registered.
- */
 public final class TriggerGameBindings {
 
     private static boolean installed = false;
@@ -30,5 +26,12 @@ public final class TriggerGameBindings {
                 "print",
                 PrintEffect::fromSpec
         );
+
+        // EVENTS
+        TriggerEventRegistry.register("VISIT_START", GameEvent.VISIT_START);
+        TriggerEventRegistry.register("VISIT_END", GameEvent.VISIT_END);
+        TriggerEventRegistry.register("TIMER_START", GameEvent.TIMER_START);
+        TriggerEventRegistry.register("DAY_START", GameEvent.DAY_START);
+        TriggerEventRegistry.register("DAY_END", GameEvent.DAY_END);
     }
 }

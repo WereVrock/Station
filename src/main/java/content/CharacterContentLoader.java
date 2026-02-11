@@ -2,7 +2,11 @@ package content;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import content.logic.triggers.engine.Trigger;
+import content.logic.triggers.engine.TriggerCompiler;
+import content.logic.triggers.engine.TriggerSpec;
 import main.GameCharacter;
+import main.Visit;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +31,31 @@ public class CharacterContentLoader {
             throw new IOException("Character JSON not found: " + file);
         }
 
+        List<GameCharacter> characters;
+
         try (InputStreamReader reader = new InputStreamReader(is)) {
-            return gson.fromJson(reader, listType);
+            characters = gson.fromJson(reader, listType);
         }
+
+        // ---- Compile trigger specs into runtime triggers ----
+        for (GameCharacter c : characters) {
+
+            if (c.visits == null) continue;
+
+            for (Visit v : c.visits) {
+
+                if (v.triggers == null || v.triggers.isEmpty()) continue;
+
+                List<Trigger> runtime = new ArrayList<>();
+
+                for (TriggerSpec spec : v.triggers) {
+                    runtime.add(TriggerCompiler.compile(spec));
+                }
+
+                v.runtimeTriggers = runtime;
+            }
+        }
+
+        return characters;
     }
 }
