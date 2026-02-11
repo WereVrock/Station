@@ -6,6 +6,8 @@ import logic.visit.resolve.VisitEligibility;
 import logic.visit.resolve.VisitMatcher;
 import logic.visit.resolve.VisitSelector;
 import content.TagSpec;
+import content.logic.triggers.GameEvent;
+import content.logic.triggers.engine.TriggerEngine;
 import main.*;
 import java.util.*;
 import logic.VisitTradePricing;
@@ -170,6 +172,7 @@ public class VisitResolver {
                 debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, normalizedFire);
                 results.add(vr);
 
+                TriggerEngine.evaluate(visit.runtimeTriggers, GameEvent.VISIT_START.toString(), null);
                 if (visit.isOneShot()) it.remove();
 
                 for (TagSpec spec : visit.tagsToAdd) {

@@ -10,6 +10,7 @@ public final class TriggerEngine {
                                 String event,
                                 TriggerContext context) {
 
+        System.out.println("triggers: " +triggers +" event "+event);
         if (triggers == null || event == null) return;
 
         for (Trigger trigger : triggers) {
