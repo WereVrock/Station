@@ -163,7 +163,8 @@ public class VisitResolver {
                         p.resolveSellFood(),
                         p.resolveSellFuel(),
                         p.resolveBuyFood(),
-                        p.resolveBuyFuel()
+                        p.resolveBuyFuel(),
+                        visit
                 );
 
                 debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, normalizedFire);
@@ -239,6 +240,7 @@ public class VisitResolver {
                         p.resolveSellFuel(),
                         p.resolveBuyFood(),
                         p.resolveBuyFuel()
+                        ,visit
                 );
 
                 debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, "random");

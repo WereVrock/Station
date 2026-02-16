@@ -5,11 +5,13 @@ import main.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+import main.Visit;
 
 public class VisitResult {
 
     public GameCharacter character;
 
+    public final Visit visit;
     public List<Item> itemsForSale = new ArrayList<>();
     public List<Item> itemsWanted = new ArrayList<>();
 
@@ -29,20 +31,21 @@ public class VisitResult {
     public String type;
 
     public VisitResult(GameCharacter character,
-                       List<Item> itemsForSale,
-                       List<Item> itemsWanted,
-                       List<String> dialogue,
-                       String fireEffect,
-                       String type,
-                       int sellFood,
-                       int sellFuel,
-                       int buyFood,
-                       int buyFuel,
-                       int sellFoodPrice,
-                       int sellFuelPrice,
-                       int buyFoodPrice,
-                       int buyFuelPrice) {
-
+            List<Item> itemsForSale,
+            List<Item> itemsWanted,
+            List<String> dialogue,
+            String fireEffect,
+            String type,
+            int sellFood,
+            int sellFuel,
+            int buyFood,
+            int buyFuel,
+            int sellFoodPrice,
+            int sellFuelPrice,
+            int buyFoodPrice,
+            int buyFuelPrice,
+            Visit visit) {
+        this.visit = visit;
         this.character = character;
         this.itemsForSale = itemsForSale != null ? itemsForSale : new ArrayList<>();
         this.itemsWanted = itemsWanted != null ? itemsWanted : new ArrayList<>();
@@ -67,21 +70,21 @@ public class VisitResult {
 
     @Override
     public String toString() {
-        return "VisitResult {\n" +
-                "  character=" + (character != null ? character.name : "null") + ",\n" +
-                "  itemsForSale=" + itemsForSale + ",\n" +
-                "  itemsWanted=" + itemsWanted + ",\n" +
-                "  sellFood=" + sellFood + ",\n" +
-                "  sellFuel=" + sellFuel + ",\n" +
-                "  buyFood=" + buyFood + ",\n" +
-                "  buyFuel=" + buyFuel + ",\n" +
-                "  sellFoodPrice=" + sellFoodPrice + ",\n" +
-                "  sellFuelPrice=" + sellFuelPrice + ",\n" +
-                "  buyFoodPrice=" + buyFoodPrice + ",\n" +
-                "  buyFuelPrice=" + buyFuelPrice + ",\n" +
-                "  dialogue=" + dialogue + ",\n" +
-                "  fireEffect=" + fireEffect + ",\n" +
-                "  type=" + type + "\n" +
-                "}";
+        return "VisitResult {\n"
+                + "  character=" + (character != null ? character.name : "null") + ",\n"
+                + "  itemsForSale=" + itemsForSale + ",\n"
+                + "  itemsWanted=" + itemsWanted + ",\n"
+                + "  sellFood=" + sellFood + ",\n"
+                + "  sellFuel=" + sellFuel + ",\n"
+                + "  buyFood=" + buyFood + ",\n"
+                + "  buyFuel=" + buyFuel + ",\n"
+                + "  sellFoodPrice=" + sellFoodPrice + ",\n"
+                + "  sellFuelPrice=" + sellFuelPrice + ",\n"
+                + "  buyFoodPrice=" + buyFoodPrice + ",\n"
+                + "  buyFuelPrice=" + buyFuelPrice + ",\n"
+                + "  dialogue=" + dialogue + ",\n"
+                + "  fireEffect=" + fireEffect + ",\n"
+                + "  type=" + type + "\n"
+                + "}";
     }
 }

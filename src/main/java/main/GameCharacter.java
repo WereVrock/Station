@@ -24,8 +24,24 @@ public class GameCharacter implements Serializable {
     public boolean allowScheduledVisits = true;
     public boolean allowRandomVisits = true;
 
-    // visits
-    public List<Visit> visits = new ArrayList<>();
+    // overrides add method to set a reference to character
+    public List<Visit> visits = new ArrayList<Visit>() {
+        @Override
+        public boolean add(Visit v) {
+            if (v != null) {
+                v.character = GameCharacter.this;
+            }
+            return super.add(v);
+        }
+
+        @Override
+        public void add(int index, Visit v) {
+            if (v != null) {
+                v.character = GameCharacter.this;
+            }
+            super.add(index, v);
+        }
+    };
 
     // runtime state
     public boolean visitedToday = false;
@@ -37,7 +53,6 @@ public class GameCharacter implements Serializable {
     private final Map<ExhaustionType, String> exhaustionText = new EnumMap<>(ExhaustionType.class);
 
     // ===== EXHAUSTION TEXT =====
-
     public void setExhaustionText(ExhaustionType type, String text) {
         if (text == null) {
             exhaustionText.remove(type);
@@ -51,14 +66,15 @@ public class GameCharacter implements Serializable {
     }
 
     // ===== INVENTORY HELPERS =====
-
     public boolean hasItem(Item item) {
         return getStack(item) != null;
     }
 
     public ItemStack getStack(Item item) {
         for (ItemStack s : inventory) {
-            if (s.item == item) return s;
+            if (s.item == item) {
+                return s;
+            }
         }
         return null;
     }
@@ -74,7 +90,9 @@ public class GameCharacter implements Serializable {
 
     public void removeItem(Item item) {
         ItemStack stack = getStack(item);
-        if (stack == null) return;
+        if (stack == null) {
+            return;
+        }
 
         stack.decrement(1);
         if (stack.isEmpty()) {
@@ -107,7 +125,9 @@ public class GameCharacter implements Serializable {
         sb.append("  inventory: [");
         for (int i = 0; i < inventory.size(); i++) {
             sb.append(inventory.get(i));
-            if (i < inventory.size() - 1) sb.append(", ");
+            if (i < inventory.size() - 1) {
+                sb.append(", ");
+            }
         }
         sb.append("]\n");
 

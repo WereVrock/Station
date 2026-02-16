@@ -89,6 +89,7 @@ public class MainWindow extends JFrame {
         }
 
         VisitResult visit = currentVisits.get(currentVisitIndex);
+        
         logPanel.visitAppears(visit);
         displayPanel.showVisit(visit);
 

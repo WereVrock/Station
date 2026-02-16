@@ -18,6 +18,7 @@ public class Visit {
     public int sellFuel = 0;
     public int buyFood = 0;
     public int buyFuel = 0;
+    public GameCharacter character;
 
     // per-visit pricing (optional)
     public VisitTradePricing pricing = new VisitTradePricing();
@@ -125,6 +126,9 @@ public class Visit {
         return false;
     }
 
+    public void notifyAppearance(){
+        
+    }
     private int randomDelay() {
         int min = resolveDelayMin();
         int max = resolveDelayMax();
@@ -161,6 +165,8 @@ public class Visit {
         public List<String> sells = new ArrayList<>();
         public List<String> buys = new ArrayList<>();
     }
+    
+   
 
     @Override
     public String toString() {

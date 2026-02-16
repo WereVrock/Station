@@ -153,7 +153,8 @@ public class VisitService {
                         p.resolveSellFood(),
                         p.resolveSellFuel(),
                         p.resolveBuyFood(),
-                        p.resolveBuyFuel()
+                        p.resolveBuyFuel(),
+                        dv.visit
                 );
 
                 pendingVisits.add(vr);
