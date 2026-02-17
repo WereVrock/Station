@@ -13,6 +13,8 @@ public class MainDisplayPanel extends JPanel {
     private final JLabel imageLabel;
     private final JTextArea dialogueArea;
 
+    private final ImageIcon fireIcon;
+
     public MainDisplayPanel() {
         setLayout(new BorderLayout(10, 10));
 
@@ -28,15 +30,35 @@ public class MainDisplayPanel extends JPanel {
         dialogueArea.setLineWrap(true);
         dialogueArea.setWrapStyleWord(true);
 
+        fireIcon = loadAndScaleFireIcon();
+
         add(nameLabel, BorderLayout.NORTH);
         add(imageLabel, BorderLayout.CENTER);
         add(new JScrollPane(dialogueArea), BorderLayout.SOUTH);
     }
 
+    private ImageIcon loadAndScaleFireIcon() {
+        java.net.URL url = getClass().getResource("/images/strong_fire.png");
+        if (url == null) {
+            return null;
+        }
+
+        ImageIcon raw = new ImageIcon(url);
+        Image img = raw.getImage().getScaledInstance(280, 280, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
+    }
+
     public void showBurnPhase(Game game) {
         nameLabel.setText("Day " + game.day);
-        imageLabel.setIcon(null);
-        imageLabel.setText("🔥 FIRE 🔥");
+
+        if (fireIcon != null) {
+            imageLabel.setText("");
+            imageLabel.setIcon(fireIcon);
+        } else {
+            imageLabel.setIcon(null);
+            imageLabel.setText("🔥 FIRE 🔥");
+        }
+
         dialogueArea.setText("What will you burn today?");
     }
 
