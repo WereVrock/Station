@@ -21,9 +21,6 @@ public class CharacterContentLoader {
 
     public List<GameCharacter> load(String file) throws IOException {
 
-//        System.out.println("=== CharacterContentLoader.load START ===");
-//        System.out.println("Loading file: " + file);
-
         Type listType =
                 new TypeToken<ArrayList<GameCharacter>>() {}.getType();
 
@@ -41,67 +38,42 @@ public class CharacterContentLoader {
         }
 
         if (characters == null) {
-//            System.out.println("No characters loaded (JSON returned null).");
             return new ArrayList<>();
         }
 
-//        System.out.println("Characters loaded: " + characters.size());
+        // ---- WIRE VISIT -> CHARACTER REFERENCES ----
+        for (GameCharacter c : characters) {
+            if (c.visits == null) continue;
 
-        // ---- Compile trigger specs into runtime triggers ----
+            for (Visit v : c.visits) {
+                v.character = c;
+            }
+        }
+
+        // ---- COMPILE TRIGGERS ----
         for (GameCharacter c : characters) {
 
-//            System.out.println("\nCharacter: " + c.name);
-
-            if (c.visits == null) {
-//                System.out.println("  Visits: null");
-                continue;
-            }
-
-//            System.out.println("  Visits count: " + c.visits.size());
+            if (c.visits == null) continue;
 
             for (Visit v : c.visits) {
 
-//                System.out.println("    Visit type: " + v.type);
-
-                if (v.triggers == null) {
-//                    System.out.println("      Triggers: null");
-                    continue;
-                }
-
-                if (v.triggers.isEmpty()) {
-//                    System.out.println("      Triggers: empty");
-                    continue;
-                }
-
-//                System.out.println("      TriggerSpecs count: " + v.triggers.size());
+                if (v.triggers == null || v.triggers.isEmpty()) continue;
 
                 List<Trigger> runtime = new ArrayList<>();
 
                 for (TriggerSpec spec : v.triggers) {
-
-//                    System.out.println("        Compiling TriggerSpec:");
-//                    System.out.println("          Event: " + spec.event);
-//                    System.out.println("          Condition: " + spec.condition);
-//                    System.out.println("          Effect: " + spec.effect);
-
                     try {
                         Trigger compiled = TriggerCompiler.compile(spec);
                         runtime.add(compiled);
-                        System.out.println("          → Compiled OK");
                     } catch (Exception e) {
-                        System.out.println("          → Compilation FAILED: " + e.getMessage());
+                        System.out.println("Trigger compile failed: " + e.getMessage());
                         e.printStackTrace();
                     }
                 }
 
                 v.runtimeTriggers = runtime;
-
-//                System.out.println("      RuntimeTriggers assigned: " +
-//                        (v.runtimeTriggers == null ? "null" : v.runtimeTriggers.size()));
             }
         }
-
-//        System.out.println("\n=== CharacterContentLoader.load END ===");
 
         return characters;
     }

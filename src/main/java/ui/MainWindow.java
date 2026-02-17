@@ -89,7 +89,11 @@ public class MainWindow extends JFrame {
         }
 
         VisitResult visit = currentVisits.get(currentVisitIndex);
-        
+
+        if (visit.visit != null) {
+            visit.visit.notifyAppearance();
+        }
+
         logPanel.visitAppears(visit);
         displayPanel.showVisit(visit);
 

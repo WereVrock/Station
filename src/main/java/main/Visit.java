@@ -127,7 +127,7 @@ public class Visit {
     }
 
     public void notifyAppearance(){
-        
+        System.out.println("visit appeared . "+character.name);
     }
     private int randomDelay() {
         int min = resolveDelayMin();
