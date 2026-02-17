@@ -171,7 +171,7 @@ public class VisitResolver {
                 results.add(vr);
 
                 VisitTriggerContext context =
-                        new VisitTriggerContext(game, character, visit);
+                        new VisitTriggerContext(visit);
 
                 TriggerEngine.evaluate(
                         visit.runtimeTriggers,

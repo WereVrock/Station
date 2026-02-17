@@ -3,11 +3,13 @@ package main;
 import ui.ExhaustionTextFactory.ExhaustionType;
 import logic.VisitTradePricing;
 import content.TagSpec;
+import content.logic.triggers.GameEvent;
 import content.logic.triggers.engine.TriggerSpec;
 import content.logic.triggers.engine.Trigger;
+import content.logic.triggers.engine.TriggerEngine;
 
 import java.util.*;
-import main.GameConstants;
+import logic.visit.VisitTriggerContext;
 
 public class Visit {
 
@@ -127,7 +129,16 @@ public class Visit {
     }
 
     public void notifyAppearance(){
-        System.out.println("visit appeared . "+character.name);
+       if (runtimeTriggers == null || runtimeTriggers.isEmpty()) return;
+
+        VisitTriggerContext context =
+                new VisitTriggerContext(this);
+
+        TriggerEngine.evaluate(
+                runtimeTriggers,
+                GameEvent.VISIT_APPEARS.name(),
+                context
+        );
     }
     private int randomDelay() {
         int min = resolveDelayMin();

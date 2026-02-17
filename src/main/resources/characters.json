@@ -17,7 +17,7 @@
                 "maxDay": 0,
                 "triggers": [
                     {
-                        "event": "VISIT_START",
+                        "event": "VISIT_APPEARS",
                         "condition": {
                             "type": "randomChance",
                             "args": {
@@ -25,7 +25,7 @@
                             }
                         },
                         "effect": {
-                            "type": "addDialogue",
+                            "type": "print",
                             "args": {
                                 "message": "Liora feels the fire shift..."
                             }

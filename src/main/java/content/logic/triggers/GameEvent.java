@@ -2,7 +2,7 @@ package content.logic.triggers;
 
 public enum GameEvent {
     VISIT_START, //implemented
-    VISIT_APPEARS,
+    VISIT_APPEARS,//implemented
     VISIT_END,
     VISIT_CREATED,
     ITEM_SOLD_TO_CHARACTER,

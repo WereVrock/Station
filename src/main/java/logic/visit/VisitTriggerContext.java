@@ -7,24 +7,18 @@ import main.Visit;
 
 public class VisitTriggerContext implements TriggerContext {
 
-    private final Game game;
-    private final GameCharacter character;
+ 
     private final Visit visit;
 
-    public VisitTriggerContext(Game game,
-                               GameCharacter character,
-                               Visit visit) {
-        this.game = game;
-        this.character = character;
+    public VisitTriggerContext(Visit visit) {
+     
         this.visit = visit;
     }
 
-    public Game getGame() {
-        return game;
-    }
+   
 
     public GameCharacter getCharacter() {
-        return character;
+        return visit.character;
     }
 
     public Visit getVisit() {
