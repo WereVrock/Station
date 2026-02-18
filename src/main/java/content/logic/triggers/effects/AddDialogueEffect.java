@@ -8,10 +8,10 @@ import main.Visit;
 
 public final class AddDialogueEffect implements Effect {
 
-    private final String message;
+    private final String text;
 
-    private AddDialogueEffect(String message) {
-        this.message = message;
+    private AddDialogueEffect(String text) {
+        this.text = text;
     }
 
     @Override
@@ -32,16 +32,16 @@ public final class AddDialogueEffect implements Effect {
                     "Visit dialogue list is null");
         }
 
-        visit.dialogue.add(message);
+        visit.dialogue.add(text);
     }
 
     public static Effect fromSpec(SpecNode node) {
 
-        Object raw = node.args.get("message");
+        Object raw = node.args.get("text");
 
         if (!(raw instanceof String)) {
             throw new IllegalArgumentException(
-                    "addDialogue requires 'message' string");
+                    "addDialogue requires 'text' string");
         }
 
         return new AddDialogueEffect((String) raw);
@@ -49,6 +49,6 @@ public final class AddDialogueEffect implements Effect {
 
     @Override
     public String toString() {
-        return "AddDialogueEffect{message='" + message + "'}";
+        return "AddDialogueEffect{text='" + text + "'}";
     }
 }

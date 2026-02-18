@@ -7,24 +7,23 @@ import ui.MainDisplayPanel;
 
 public final class PrintDialogueEffect implements Effect {
 
-    private final String line;
+    private final String text;
 
-    private PrintDialogueEffect(String line) {
-        this.line = line;
+    private PrintDialogueEffect(String text) {
+        this.text = text;
     }
 
     @Override
     public void apply(TriggerContext context) {
-//        System.out.println("apply");
-        MainDisplayPanel.appendToDialogueStatic(line);
+        MainDisplayPanel.appendToDialogueStatic(text);
     }
 
     public static Effect fromSpec(SpecNode node) {
-        Object raw = node.args.get("line");
+        Object raw = node.args.get("text");
 
         if (!(raw instanceof String)) {
             throw new IllegalArgumentException(
-                    "printDialogue requires 'line' string");
+                    "printDialogue requires 'text' string");
         }
 
         return new PrintDialogueEffect((String) raw);
@@ -32,6 +31,6 @@ public final class PrintDialogueEffect implements Effect {
 
     @Override
     public String toString() {
-        return "PrintDialogueEffect{line='" + line + "'}";
+        return "PrintDialogueEffect{text='" + text + "'}";
     }
 }

@@ -25,32 +25,13 @@
                             }
                         },
                         "effect": {
-                            "type": "printDialogue",
+                            "type": "print",
                             "args": {
-                                "lines": "Liora feels the fire shift..."
+                                "text": "Liora feels the fire shift..."
                             }
-                        }
-                    },
-                    {
-                    "event": "VISIT_START",
-                    "condition": {
-                        "type": "not",
-                        "args": {
-                            "condition": {
-                                "type": "randomChance",
-                                "args": {
-                                    "chance": 0.9
-                                }
-                            }
-                        }
-                    },
-                    "effect": {
-                        "type": "print",
-                        "args": {
-                            "message": "printed test."
                         }
                     }
-                }
+                    
 
             ],
             "dialogue": [

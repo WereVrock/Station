@@ -6,23 +6,23 @@ import content.logic.triggers.engine.TriggerContext;
 
 public final class PrintEffect implements Effect {
 
-    private final String message;
+    private final String text;
 
-    private PrintEffect(String message) {
-        this.message = message;
+    private PrintEffect(String text) {
+        this.text = text;
     }
 
     @Override
     public void apply(TriggerContext context) {
-        System.out.println(message);
+        System.out.println(text);
     }
 
     public static Effect fromSpec(SpecNode node) {
-        Object raw = node.args.get("message");
+        Object raw = node.args.get("text");
 
         if (!(raw instanceof String)) {
             throw new IllegalArgumentException(
-                    "print requires 'message' string");
+                    "print requires 'text' string");
         }
 
         return new PrintEffect((String) raw);
@@ -30,6 +30,6 @@ public final class PrintEffect implements Effect {
 
     @Override
     public String toString() {
-        return "PrintEffect{message='" + message + "'}";
+        return "PrintEffect{message='" + text + "'}";
     }
 }
