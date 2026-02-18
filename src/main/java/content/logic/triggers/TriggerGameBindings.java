@@ -1,6 +1,7 @@
 package content.logic.triggers;
 
 import content.logic.triggers.effects.PrintEffect;
+import content.logic.triggers.effects.PrintDialogueEffect;
 import content.logic.triggers.conditions.RandomChanceCondition;
 import content.logic.triggers.conditions.NotCondition;
 import content.logic.triggers.effects.AddDialogueEffect;
@@ -27,6 +28,7 @@ public final class TriggerGameBindings {
         // EFFECTS
         EffectRegistry.register("print", PrintEffect::fromSpec);
         EffectRegistry.register("addDialogue", AddDialogueEffect::fromSpec);
+        EffectRegistry.register("printDialogue", PrintDialogueEffect::fromSpec);
 
         // EVENTS auto iterated
         for (GameEvent event : GameEvent.values()) {

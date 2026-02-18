@@ -25,9 +25,9 @@
                             }
                         },
                         "effect": {
-                            "type": "print",
+                            "type": "printDialogue",
                             "args": {
-                                "message": "Liora feels the fire shift..."
+                                "lines": "Liora feels the fire shift..."
                             }
                         }
                     },

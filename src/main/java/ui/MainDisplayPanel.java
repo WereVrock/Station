@@ -11,6 +11,8 @@ import java.awt.event.ComponentEvent;
 
 public class MainDisplayPanel extends JPanel {
 
+    private static MainDisplayPanel instance;
+
     private final JLabel nameLabel;
     private final JLabel imageLabel;
     private final JTextArea dialogueArea;
@@ -20,6 +22,9 @@ public class MainDisplayPanel extends JPanel {
     private ImageIcon rawPortraitIcon;
 
     public MainDisplayPanel() {
+
+        instance = this;
+
         setLayout(new BorderLayout(10, 10));
 
         nameLabel = new JLabel("", JLabel.CENTER);
@@ -64,6 +69,14 @@ public class MainDisplayPanel extends JPanel {
                 adjustDialogueWidth();
             }
         });
+    }
+
+    public static void appendToDialogueStatic(String line) {
+        if (instance == null) {
+            return;
+        }
+
+        SwingUtilities.invokeLater(() -> instance.appendDialogue(line));
     }
 
     private void adjustDialogueWidth() {
