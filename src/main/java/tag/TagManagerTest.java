@@ -8,7 +8,7 @@ public class TagManagerTest {
 
         System.out.println("=== Adding Tags ===");
         Tag t1 = new Tag("Alpha");
-        Tag t2 = new Tag("Beta", 1); // expires after 2 days
+        Tag t2 = new Tag("Beta", 2); // expires after 2 days
         Tag t3 = new Tag("Gamma");
         TagManager.add(t1);
         TagManager.add(t2);
@@ -16,7 +16,7 @@ public class TagManagerTest {
         System.out.println(TagManager.view());
 
         System.out.println("\n=== Checking Existence ===");
-        System.out.println("Has Alpha? " + TagManager.has(t1.getUniqueId()));
+        System.out.println("Has Alpha? " + TagManager.hasByName(t1.getName()));
         System.out.println("Has Beta? " + TagManager.has(t2.getUniqueId()));
         System.out.println("Has Random? " + TagManager.has(UUID.randomUUID().toString()));
 

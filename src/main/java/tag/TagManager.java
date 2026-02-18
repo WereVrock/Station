@@ -12,62 +12,56 @@ import java.util.*;
  */
 public final class TagManager {
 
-    // ===== Single Internal Instance =====
     private static final TagManager INSTANCE = new TagManager();
 
-    // ===== Internal State =====
     private final TagList tagList = new TagList();
-
-    /**
-     * Stateless helper responsible for day-based tag updates
-     * (e.g. expiration countdown).
-     */
     private final TagUpdater updater = new TagUpdater();
 
-    // ===== Constructor =====
     private TagManager() {
-        // no external instantiation
     }
 
-    // ===== Static API =====
+    // ===== NAME-DRIVEN PRIMARY API =====
 
     public static boolean add(Tag tag) {
         return INSTANCE.tagList.add(tag);
     }
 
+    public static boolean removeByName(String name) {
+        return INSTANCE.tagList.removeByName(name);
+    }
+
+    public static boolean hasByName(String name) {
+        return INSTANCE.tagList.containsByName(name);
+    }
+
+    public static Tag getByName(String name) {
+        return INSTANCE.tagList.getByName(name);
+    }
+
+    // ===== COMPATIBILITY (ID-BASED) =====
+
     public static boolean remove(String uniqueId) {
-        return INSTANCE.tagList.remove(uniqueId);
+        return INSTANCE.tagList.removeById(uniqueId);
     }
 
     public static boolean has(String uniqueId) {
-        return INSTANCE.tagList.contains(uniqueId);
+        return INSTANCE.tagList.containsById(uniqueId);
     }
 
-    /**
-     * Advances time-dependent tag logic by one day.
-     * Should be called exactly once per game day.
-     */
+    // ===== SYSTEM =====
+
     public static void onNewDay() {
         INSTANCE.tagList.update(INSTANCE.updater);
     }
 
-    /**
-     * Returns a copy of all tags for persistence.
-     */
     public static List<Tag> exportTags() {
         return INSTANCE.tagList.export();
     }
 
-    /**
-     * Replaces all current tags with imported ones.
-     */
     public static void importTags(List<Tag> importedTags) {
         INSTANCE.tagList.importTags(importedTags);
     }
 
-    /**
-     * Read-only view of current tags.
-     */
     public static List<Tag> view() {
         return INSTANCE.tagList.view();
     }
