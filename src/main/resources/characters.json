@@ -18,14 +18,9 @@
                 "triggers": [
                     {
                         "event": "VISIT_APPEARS",
-                        "condition": {
-                            "type": "randomChance",
-                            "args": {
-                                "chance": 0.95
-                            }
-                        },
+                        
                         "effect": {
-                            "type": "print",
+                            "type": "printDialogue",
                             "args": {
                                 "text": "Liora feels the fire shift..."
                             }

@@ -8,7 +8,11 @@ public final class ConditionFactory {
 
         TriggerEngineBootstrap.ensureInitialized();
 
-        if (spec == null || spec.type == null) {
+        if (spec == null) {
+            return null;
+        }
+
+        if (spec.type == null) {
             throw new IllegalArgumentException("Condition spec missing type");
         }
 

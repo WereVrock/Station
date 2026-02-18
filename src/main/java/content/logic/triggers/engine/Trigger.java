@@ -13,7 +13,7 @@ public final class Trigger {
                    Effect effect) {
 
         this.event = Objects.requireNonNull(event);
-        this.condition = Objects.requireNonNull(condition);
+        this.condition = condition;
         this.effect = Objects.requireNonNull(effect);
     }
 
@@ -22,6 +22,9 @@ public final class Trigger {
     }
 
     boolean check(TriggerContext context) {
+        if (condition == null) {
+            return true;
+        }
         return condition.isTrue(context);
     }
 
