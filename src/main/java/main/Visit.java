@@ -9,6 +9,7 @@ import content.logic.triggers.engine.Trigger;
 import content.logic.triggers.engine.TriggerEngine;
 
 import java.util.*;
+import javax.swing.ImageIcon;
 import logic.visit.VisitTriggerContext;
 
 public class Visit {
@@ -70,6 +71,9 @@ public class Visit {
     public Boolean allowScriptedVisits;
     public Boolean allowScheduledVisits;
     public Boolean allowRandomVisits;
+    
+    public String portraitOverride;
+    public Boolean portraitOneTime;
 
     public void setExhaustionText(ExhaustionType type, String text) {
         if (text == null) exhaustionText.remove(type);
@@ -170,6 +174,22 @@ public class Visit {
         }
 
         return trade;
+    }
+
+    public ImageIcon resolvePortrait() {
+        if (portraitOverride != null && character != null) {
+
+            ImageIcon icon = character.loadPortrait(portraitOverride);
+
+            if (Boolean.TRUE.equals(portraitOneTime)) {
+                portraitOverride = null;
+                portraitOneTime = false;
+            }
+
+            return icon;
+        }
+
+        return character != null ? character.getPortraitIcon() : null;
     }
 
     public static class ResolvedTrade {

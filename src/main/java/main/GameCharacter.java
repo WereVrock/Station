@@ -1,10 +1,10 @@
-// ===== GameCharacter.java =====
-// ===== GameCharacter.java =====
 package main;
 
 import ui.ExhaustionTextFactory.ExhaustionType;
 
+import javax.swing.*;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -21,13 +21,15 @@ public class GameCharacter implements Serializable {
     public String name;
     public String background;
 
+    // portrait system (JSON driven)
+    public String defaultPortrait;
+
     // visit permissions
     public boolean allowScriptedVisits = true;
     public boolean allowScheduledVisits = true;
     public boolean allowRandomVisits = true;
 
-    
-    public List<Visit> visits = new ArrayList<Visit>() ;
+    public List<Visit> visits = new ArrayList<>();
 
     // runtime state
     public boolean visitedToday = false;
@@ -38,6 +40,32 @@ public class GameCharacter implements Serializable {
     // exhaustion text
     private final Map<ExhaustionType, String> exhaustionText =
             new EnumMap<>(ExhaustionType.class);
+
+    // ===== PORTRAIT =====
+    public ImageIcon getPortraitIcon() {
+        return loadPortrait(defaultPortrait);
+    }
+
+    public ImageIcon loadPortrait(String portraitId) {
+        if (portraitId == null || portraitId.isEmpty()) {
+            return loadPlaceholder();
+        }
+
+        String path = "/images/" + portraitId + ".png";
+        URL url = getClass().getResource(path);
+
+        if (url == null) {
+            return loadPlaceholder();
+        }
+
+        return new ImageIcon(url);
+    }
+
+    private ImageIcon loadPlaceholder() {
+        String path = "/images/character_placeholder.png";
+        URL url = getClass().getResource(path);
+        return url != null ? new ImageIcon(url) : null;
+    }
 
     // ===== EXHAUSTION TEXT =====
     public void setExhaustionText(ExhaustionType type, String text) {
@@ -85,12 +113,6 @@ public class GameCharacter implements Serializable {
         inventory.clear();
     }
 
-    public javax.swing.ImageIcon getPortraitIcon() {
-        String path = "/images/character_placeholder.png";
-        java.net.URL url = getClass().getResource(path);
-        return url != null ? new javax.swing.ImageIcon(url) : null;
-    }
-
     // ===== TO STRING =====
     @Override
     public String toString() {
@@ -98,6 +120,7 @@ public class GameCharacter implements Serializable {
         sb.append("GameCharacter {\n");
         sb.append("  id: ").append(id).append(",\n");
         sb.append("  name: ").append(name).append(",\n");
+        sb.append("  defaultPortrait: ").append(defaultPortrait).append(",\n");
 
         sb.append("  allowScriptedVisits: ").append(allowScriptedVisits).append(",\n");
         sb.append("  allowScheduledVisits: ").append(allowScheduledVisits).append(",\n");
@@ -116,4 +139,3 @@ public class GameCharacter implements Serializable {
         return sb.toString();
     }
 }
-

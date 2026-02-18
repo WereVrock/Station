@@ -2,7 +2,7 @@ package ui;
 
 import main.VisitResult;
 import main.Game;
-import main.GameCharacter;
+import main.Visit;
 
 import javax.swing.*;
 import java.awt.*;
@@ -72,9 +72,7 @@ public class MainDisplayPanel extends JPanel {
     }
 
     public static void appendToDialogueStatic(String line) {
-        if (instance == null) {
-            return;
-        }
+        if (instance == null) return;
 
         SwingUtilities.invokeLater(() -> instance.appendDialogue(line));
     }
@@ -114,19 +112,20 @@ public class MainDisplayPanel extends JPanel {
         dialogueArea.setText("What will you burn today?");
     }
 
-    public void showVisit(VisitResult visit) {
-        GameCharacter c = visit.character;
+    public void showVisit(VisitResult visitResult) {
 
-        nameLabel.setText(c.name);
+        Visit visit = visitResult.visit;
 
-        rawPortraitIcon = c.getPortraitIcon();
+        nameLabel.setText(visitResult.character.name);
+
+        rawPortraitIcon = visit.resolvePortrait();
 
         imageLabel.setText("");
         rescaleCurrentImage();
 
         dialogueArea.setText("");
 
-        for (String line : visit.dialogue) {
+        for (String line : visitResult.dialogue) {
             appendDialogue(line);
         }
     }
