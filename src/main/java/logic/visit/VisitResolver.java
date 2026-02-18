@@ -1,5 +1,6 @@
 package logic.visit;
 
+import main.VisitResult;
 import logic.FireKeyNormalizer;
 import logic.visit.trade.*;
 import logic.visit.resolve.VisitEligibility;

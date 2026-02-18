@@ -1,11 +1,13 @@
 package ui;
 
-import logic.visit.VisitResult;
+import main.VisitResult;
 import main.Game;
 import main.GameCharacter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class MainDisplayPanel extends JPanel {
 
@@ -13,7 +15,8 @@ public class MainDisplayPanel extends JPanel {
     private final JLabel imageLabel;
     private final JTextArea dialogueArea;
 
-    private final ImageIcon fireIcon;
+    private ImageIcon rawFireIcon;
+    private ImageIcon rawPortraitIcon;
 
     public MainDisplayPanel() {
         setLayout(new BorderLayout(10, 10));
@@ -30,34 +33,42 @@ public class MainDisplayPanel extends JPanel {
         dialogueArea.setLineWrap(true);
         dialogueArea.setWrapStyleWord(true);
 
-        fireIcon = loadAndScaleFireIcon();
+        rawFireIcon = new ImageIcon(getClass().getResource("/images/strong_fire.png"));
 
         add(nameLabel, BorderLayout.NORTH);
         add(imageLabel, BorderLayout.CENTER);
         add(new JScrollPane(dialogueArea), BorderLayout.SOUTH);
+
+        imageLabel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                rescaleCurrentImage();
+            }
+        });
     }
 
-    private ImageIcon loadAndScaleFireIcon() {
-        java.net.URL url = getClass().getResource("/images/strong_fire.png");
-        if (url == null) {
-            return null;
-        }
+    private void rescaleCurrentImage() {
+        if (imageLabel.getWidth() <= 0 || imageLabel.getHeight() <= 0) return;
 
-        ImageIcon raw = new ImageIcon(url);
-        Image img = raw.getImage().getScaledInstance(280, 280, Image.SCALE_SMOOTH);
-        return new ImageIcon(img);
+        ImageIcon src = rawPortraitIcon != null ? rawPortraitIcon : rawFireIcon;
+        if (src == null) return;
+
+        ImageIcon scaled = ImageScaler.scaleToFit(
+                src,
+                imageLabel.getWidth(),
+                imageLabel.getHeight()
+        );
+
+        imageLabel.setIcon(scaled);
     }
 
     public void showBurnPhase(Game game) {
         nameLabel.setText("Day " + game.day);
 
-        if (fireIcon != null) {
-            imageLabel.setText("");
-            imageLabel.setIcon(fireIcon);
-        } else {
-            imageLabel.setIcon(null);
-            imageLabel.setText("🔥 FIRE 🔥");
-        }
+        rawPortraitIcon = null;
+
+        imageLabel.setText("");
+        rescaleCurrentImage();
 
         dialogueArea.setText("What will you burn today?");
     }
@@ -67,14 +78,10 @@ public class MainDisplayPanel extends JPanel {
 
         nameLabel.setText(c.name);
 
-        ImageIcon icon = c.getPortraitIcon();
-        if (icon != null) {
-            imageLabel.setText("");
-            imageLabel.setIcon(icon);
-        } else {
-            imageLabel.setIcon(null);
-            imageLabel.setText("Character Image");
-        }
+        rawPortraitIcon = c.getPortraitIcon();
+
+        imageLabel.setText("");
+        rescaleCurrentImage();
 
         dialogueArea.setText("");
 
@@ -95,5 +102,6 @@ public class MainDisplayPanel extends JPanel {
         imageLabel.setIcon(null);
         imageLabel.setText("");
         dialogueArea.setText("");
+        rawPortraitIcon = null;
     }
 }

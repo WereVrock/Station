@@ -1,7 +1,7 @@
 package ui;
 
 import logic.GameEngine;
-import logic.visit.VisitResult;
+import main.VisitResult;
 import main.ItemStack;
 
 import javax.swing.*;

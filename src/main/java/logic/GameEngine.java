@@ -1,6 +1,6 @@
 package logic;
 
-import logic.visit.VisitResult;
+import main.VisitResult;
 import logic.visit.VisitService;
 import main.Game;
 import main.*;

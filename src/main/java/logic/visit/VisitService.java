@@ -1,5 +1,6 @@
 package logic.visit;
 
+import main.VisitResult;
 import main.Game;
 import main.*;
 import java.util.*;
