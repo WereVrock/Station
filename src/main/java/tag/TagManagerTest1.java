@@ -2,7 +2,7 @@ package tag;
 
 import java.util.*;
 
-public class TagManagerTest {
+public class TagManagerTest1 {
     public static void main(String[] args) {
         
 
