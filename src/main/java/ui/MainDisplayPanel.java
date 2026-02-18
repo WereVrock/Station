@@ -14,6 +14,7 @@ public class MainDisplayPanel extends JPanel {
     private final JLabel nameLabel;
     private final JLabel imageLabel;
     private final JTextArea dialogueArea;
+    private final JScrollPane dialogueScroll;
 
     private ImageIcon rawFireIcon;
     private ImageIcon rawPortraitIcon;
@@ -23,9 +24,12 @@ public class MainDisplayPanel extends JPanel {
 
         nameLabel = new JLabel("", JLabel.CENTER);
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD, 18f));
+        add(nameLabel, BorderLayout.NORTH);
+
+        JPanel content = new JPanel(new BorderLayout(10, 10));
+        add(content, BorderLayout.CENTER);
 
         imageLabel = new JLabel("", JLabel.CENTER);
-        imageLabel.setPreferredSize(new Dimension(300, 300));
         imageLabel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 
         dialogueArea = new JTextArea();
@@ -33,11 +37,19 @@ public class MainDisplayPanel extends JPanel {
         dialogueArea.setLineWrap(true);
         dialogueArea.setWrapStyleWord(true);
 
-        rawFireIcon = new ImageIcon(getClass().getResource("/images/strong_fire.png"));
+        dialogueScroll = new JScrollPane(dialogueArea);
+        dialogueScroll.setBorder(BorderFactory.createEmptyBorder());
+        dialogueScroll.setVerticalScrollBarPolicy(
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED
+        );
+        dialogueScroll.setHorizontalScrollBarPolicy(
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+        );
 
-        add(nameLabel, BorderLayout.NORTH);
-        add(imageLabel, BorderLayout.CENTER);
-        add(new JScrollPane(dialogueArea), BorderLayout.SOUTH);
+        content.add(imageLabel, BorderLayout.CENTER);
+        content.add(dialogueScroll, BorderLayout.EAST);
+
+        rawFireIcon = new ImageIcon(getClass().getResource("/images/strong_fire.png"));
 
         imageLabel.addComponentListener(new ComponentAdapter() {
             @Override
@@ -45,6 +57,22 @@ public class MainDisplayPanel extends JPanel {
                 rescaleCurrentImage();
             }
         });
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                adjustDialogueWidth();
+            }
+        });
+    }
+
+    private void adjustDialogueWidth() {
+        int totalWidth = getWidth();
+        if (totalWidth <= 0) return;
+
+        int dialogueWidth = Math.max(250, totalWidth / 3);
+        dialogueScroll.setPreferredSize(new Dimension(dialogueWidth, getHeight()));
+        revalidate();
     }
 
     private void rescaleCurrentImage() {
