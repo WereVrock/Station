@@ -1,10 +1,12 @@
 package content.logic.triggers;
 
+import content.logic.triggers.conditions.AndCondition;
 import content.logic.triggers.conditions.HasTagCondition;
 import content.logic.triggers.effects.PrintEffect;
 import content.logic.triggers.effects.PrintDialogueEffect;
 import content.logic.triggers.conditions.RandomChanceCondition;
 import content.logic.triggers.conditions.NotCondition;
+import content.logic.triggers.conditions.OrCondition;
 import content.logic.triggers.effects.AddDialogueEffect;
 import content.logic.triggers.effects.AddTagEffect;
 import content.logic.triggers.effects.RemoveTagEffect;
@@ -28,6 +30,8 @@ public final class TriggerGameBindings {
         ConditionRegistry.register("randomChance", RandomChanceCondition::fromSpec);
         ConditionRegistry.register("not", NotCondition::fromSpec);
         ConditionRegistry.register("hasTag", HasTagCondition::fromSpec);
+        ConditionRegistry.register("and", AndCondition::fromSpec);
+        ConditionRegistry.register("or", OrCondition::fromSpec);
 
         // EFFECTS
         EffectRegistry.register("print", PrintEffect::fromSpec);
