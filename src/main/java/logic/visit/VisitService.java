@@ -4,61 +4,23 @@ import main.VisitResult;
 import main.Game;
 import main.*;
 import java.util.*;
-import logic.BurnService;
-import logic.FireVisitKey;
 import logic.VisitTradePricing;
-import tag.Tag;
-import tag.TagManager;
 
 public class VisitService {
 
     private final Game game;
     private final VisitResolver visitResolver;
-    private final BurnService burnService;
 
     private final Queue<VisitResult> pendingVisits = new LinkedList<>();
     private final Queue<DeferredVisit> deferredVisits = new LinkedList<>();
 
-    private boolean burnedToday = false;
-
     public VisitService(Game game) {
         this.game = game;
         this.visitResolver = new VisitResolver(game);
-        this.burnService = new BurnService();
     }
 
-    public List<VisitResult> burnFuel() {
-        if (burnedToday || game.player.fuel <= 0) return Collections.emptyList();
-
-        burnedToday = true;
-        game.player.fuel -= GameConstants.FUEL_BURN_COST;
-        game.burnChosen();
-
-        FireStatus fireStatus = burnService.burnFuel();
-        game.setFireStatus(fireStatus);
-
-        enqueueResolvedVisits(FireVisitKey.from(fireStatus).legacyKey());
-        return drainVisitsForToday();
-    }
-
-    public List<VisitResult> burnItem(Item item) {
-        if (burnedToday || item == null || !game.player.hasItem(item)) {
-            return Collections.emptyList();
-        }
-
-        burnedToday = true;
-        game.player.removeItem(item);
-
-        for (String tagName : item.tags) {
-            TagManager.add(new Tag(tagName));
-        }
-
-        game.burnChosen();
-
-        FireStatus fireStatus = burnService.burnItem(item);
-        game.setFireStatus(fireStatus);
-
-        enqueueResolvedVisits(FireVisitKey.from(fireStatus).legacyKey());
+    public List<VisitResult> resolveAfterBurn(String fireEffect) {
+        enqueueResolvedVisits(fireEffect);
         return drainVisitsForToday();
     }
 
@@ -108,14 +70,11 @@ public class VisitService {
 
     public void nextDay() {
 
-        burnedToday = false;
         game.visitsToday = 0;
-
         game.day++;
-        System.out.println("DAY: "+ game.day);
         game.waitingForBurnChoice = true;
 
-        TagManager.onNewDay();
+        tag.TagManager.onNewDay();
 
         for (GameCharacter c : game.characters) {
             c.visitedToday = false;
