@@ -55,7 +55,7 @@ public class StatusPanel extends JPanel {
 
         fireStatusLabel.setText(
             "Fire: " +
-            status.getStrength().name() +
+            status.getStrength()+
             " (" + status.getEffect() + ")"
         );
         fireStatusLabel.setVisible(true);

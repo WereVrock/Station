@@ -29,7 +29,7 @@ public class Game implements Serializable {
     public boolean waitingForBurnChoice = true;
 
     private FireStatus fireStatus =
-            new FireStatus(FireStatus.Strength.WEAK, "clean");
+            new FireStatus(FireStatus.StrengthEnum.WEAK, "clean");
 
     private transient Scanner scanner = new Scanner(System.in);
 

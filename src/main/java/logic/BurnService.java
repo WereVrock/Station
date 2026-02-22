@@ -17,7 +17,7 @@ public class BurnService {
         Main.game.player.fuel -= main.GameConstants.FUEL_BURN_COST;
 
         FireStatus fireStatus = new FireStatus(
-                FireStatus.Strength.STRONG,
+                FireStatus.StrengthEnum.STRONG,
                 "clean"
         );
 
@@ -41,10 +41,10 @@ public class BurnService {
             }
         }
 
-        FireStatus.Strength strength =
+        FireStatus.StrengthEnum strength =
                 item.fireStrength != null
                         ? item.fireStrength
-                        : FireStatus.Strength.WEAK;
+                        : FireStatus.StrengthEnum.WEAK;
 
         String effect =
                 (item.fireEffect == null || item.fireEffect.isBlank())

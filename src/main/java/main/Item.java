@@ -14,7 +14,7 @@ public class Item implements Serializable {
 
     public int basePrice = GameConstants.DEFAULT_ITEM_BASE_PRICE;
 
-    public FireStatus.Strength fireStrength = FireStatus.Strength.WEAK;
+    public FireStatus.StrengthEnum fireStrength = FireStatus.StrengthEnum.WEAK;
     public String fireEffect = "clean";
 
     public boolean burnable = true;
