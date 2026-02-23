@@ -1,18 +1,17 @@
 package logic.visit.resolve;
 
-import logic.FireKeyNormalizer;
+import logic.FireStatusMatcher;
 import logic.visit.MatchResult;
+import main.FireStatus;
+import main.Main;
 import tag.Tag;
 import tag.TagManager;
 
 import java.util.*;
-import tag.TagManager;
 
 public class VisitMatcher {
 
-    public MatchResult evaluate(String fireEffect,
-                                
-                                List<String> fireReq,
+    public MatchResult evaluate(List<String> fireReq,
                                 List<String> tagReq,
                                 List<String> legacyFire,
                                 List<String> legacyTags) {
@@ -20,38 +19,31 @@ public class VisitMatcher {
         List<String> sourceFire = fireReq.isEmpty() ? legacyFire : fireReq;
         List<String> sourceTags = tagReq.isEmpty() ? legacyTags : tagReq;
 
-        List<String> normalizedFire = normalizeFire(sourceFire);
+        FireStatus status = getCurrentStatus();
 
         MatchResult result = new MatchResult();
-        result.requiredFire = normalizedFire;
+        result.requiredFire = new ArrayList<>(sourceFire);
         result.requiredTags = new ArrayList<>(sourceTags);
-        result.actualFire = fireEffect;
+        result.actualFire = status != null ? status.getEffect() : null;
         result.actualTags = new ArrayList<>(TagManager.view());
 
-        result.fireOk = fireMatches(normalizedFire, fireEffect);
+        result.fireOk = fireMatches(sourceFire, status);
         result.tagsOk = tagsMatch(sourceTags);
         result.success = result.fireOk && result.tagsOk;
 
         return result;
     }
 
-    // ---------------- helpers ----------------
+    private boolean fireMatches(List<String> required, FireStatus status) {
+        if (required == null || required.isEmpty()) return true;
+        if (status == null) return false;
 
-    private List<String> normalizeFire(List<String> fireReq) {
-        List<String> out = new ArrayList<>();
-        for (String f : fireReq) {
-            out.add(FireKeyNormalizer.normalize(f));
-        }
-        return out;
-    }
-
-    private boolean fireMatches(List<String> required, String actual) {
-        return required.isEmpty() || required.contains(actual);
+        return FireStatusMatcher.matchesAny(status, required);
     }
 
     private boolean tagsMatch(List<String> required) {
 
-        if (required.isEmpty()) return true;
+        if (required == null || required.isEmpty()) return true;
 
         Set<String> present = new HashSet<>();
         for (Tag tag : TagManager.view()) {
@@ -63,5 +55,10 @@ public class VisitMatcher {
         }
 
         return true;
+    }
+
+    private FireStatus getCurrentStatus() {
+        if (Main.game == null) return null;
+        return Main.game.getFireStatus();
     }
 }

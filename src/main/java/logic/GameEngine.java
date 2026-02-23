@@ -24,13 +24,13 @@ public class GameEngine {
     }
 
     public List<VisitResult> burnFuelVisits() {
-        FireStatus status = burnService.burnFuel();
-        return visitService.resolveAfterBurn(status.getEffect());
+        burnService.burnFuel();
+        return visitService.resolveAfterBurn();
     }
 
     public List<VisitResult> burnItemVisits(Item item) {
-        FireStatus status = burnService.burnItem(item);
-        return visitService.resolveAfterBurn(status.getEffect());
+        burnService.burnItem(item);
+        return visitService.resolveAfterBurn();
     }
 
     public boolean hasPendingVisits() {

@@ -1,7 +1,6 @@
 package logic.visit;
 
 import main.VisitResult;
-import logic.FireKeyNormalizer;
 import logic.visit.trade.*;
 import logic.visit.resolve.VisitEligibility;
 import logic.visit.resolve.VisitMatcher;
@@ -55,22 +54,22 @@ public class VisitResolver {
         return false;
     }
 
-    public List<VisitResult> resolveByType(String mode, String fireEffect) {
+    public List<VisitResult> resolveByType(String mode) {
 
         List<VisitResult> results = new ArrayList<>();
 
         if ("scripted".equals(mode)) {
-            results.addAll(resolveByTypeOrdered("scripted", fireEffect));
+            results.addAll(resolveByTypeOrdered("scripted"));
         }
         else if ("scheduled".equals(mode)) {
-            results.addAll(resolveByTypeOrdered("scripted", fireEffect));
+            results.addAll(resolveByTypeOrdered("scripted"));
             if (results.isEmpty()) {
-                results.addAll(resolveByTypeOrdered("scheduled", fireEffect));
+                results.addAll(resolveByTypeOrdered("scheduled"));
             }
         }
         else {
-            results.addAll(resolveByTypeOrdered("scripted", fireEffect));
-            results.addAll(resolveByTypeOrdered("scheduled", fireEffect));
+            results.addAll(resolveByTypeOrdered("scripted"));
+            results.addAll(resolveByTypeOrdered("scheduled"));
             if (results.isEmpty()) {
                 results.addAll(resolveRandomVisits(Integer.MAX_VALUE));
             }
@@ -79,9 +78,8 @@ public class VisitResolver {
         return results;
     }
 
-    private List<VisitResult> resolveByTypeOrdered(String mode, String fireEffect) {
+    private List<VisitResult> resolveByTypeOrdered(String mode) {
 
-        String normalizedFire = FireKeyNormalizer.normalize(fireEffect);
         List<VisitResult> results = new ArrayList<>();
 
         for (GameCharacter character : game.characters) {
@@ -92,29 +90,28 @@ public class VisitResolver {
                 Visit visit = it.next();
 
                 if (visit.used && visit.isOneShot()) {
-                    debugger.debugRejected(character, visit, "One-shot already used", normalizedFire, null);
+                    debugger.debugRejected(character, visit, "One-shot already used", null, null);
                     continue;
                 }
 
                 if (!eligibility.isAllowed(character, visit)) {
-                    debugger.debugRejected(character, visit, "Eligibility blocked", normalizedFire, null);
+                    debugger.debugRejected(character, visit, "Eligibility blocked", null, null);
                     continue;
                 }
 
                 if (!mode.equals(visit.type)) continue;
 
                 if (hasExcludedTag(visit.excludedTags)) {
-                    debugger.debugRejected(character, visit, "Excluded tag present", normalizedFire, null);
+                    debugger.debugRejected(character, visit, "Excluded tag present", null, null);
                     continue;
                 }
 
                 if (!visit.isWithinDayWindow(game.day)) {
-                    debugger.debugRejected(character, visit, "Outside day window", normalizedFire, null);
+                    debugger.debugRejected(character, visit, "Outside day window", null, null);
                     continue;
                 }
 
                 MatchResult visitMatch = matcher.evaluate(
-                        normalizedFire,
                         visit.visitFireRequired,
                         visit.visitRequiredTags,
                         visit.fireRequired,
@@ -126,7 +123,7 @@ public class VisitResolver {
                 if ("scripted".equals(visit.type)) {
 
                     if (!visitMatch.success) {
-                        debugger.debugRejected(character, visit, "Visit conditions failed", normalizedFire, visitMatch);
+                        debugger.debugRejected(character, visit, "Visit conditions failed", null, visitMatch);
                         continue;
                     }
 
@@ -142,7 +139,7 @@ public class VisitResolver {
                     ok = visit.scheduledReady(game.day, true, visitMatch.success);
 
                     if (!ok) {
-                        debugger.debugRejected(character, visit, "Scheduled conditions not ready", normalizedFire, visitMatch);
+                        debugger.debugRejected(character, visit, "Scheduled conditions not ready", null, visitMatch);
                         continue;
                     }
                 }
@@ -155,7 +152,7 @@ public class VisitResolver {
                         itemLookup.resolve(trade.sells),
                         itemLookup.resolve(trade.buys),
                         visit.dialogue,
-                        normalizedFire,
+                        visitMatch.actualFire,
                         visit.type,
                         visit.sellFood,
                         visit.sellFuel,
@@ -168,7 +165,7 @@ public class VisitResolver {
                         visit
                 );
 
-                debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, normalizedFire);
+                debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, visitMatch.actualFire);
                 results.add(vr);
 
                 VisitTriggerContext context =
@@ -264,7 +261,6 @@ public class VisitResolver {
             List<String> legacyTags) {
 
         return matcher.evaluate(
-                null,
                 fireReq,
                 tagReq,
                 legacyFire,

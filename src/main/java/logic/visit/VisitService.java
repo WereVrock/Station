@@ -19,18 +19,18 @@ public class VisitService {
         this.visitResolver = new VisitResolver(game);
     }
 
-    public List<VisitResult> resolveAfterBurn(String fireEffect) {
-        enqueueResolvedVisits(fireEffect);
+    public List<VisitResult> resolveAfterBurn() {
+        enqueueResolvedVisits();
         return drainVisitsForToday();
     }
 
-    private void enqueueResolvedVisits(String fireEffect) {
+    private void enqueueResolvedVisits() {
 
         List<VisitResult> results = new ArrayList<>();
 
-        results.addAll(visitResolver.resolveByType("scripted", fireEffect));
-        results.addAll(visitResolver.resolveByType("scheduled", fireEffect));
-        results.addAll(visitResolver.resolveByType("normal", fireEffect));
+        results.addAll(visitResolver.resolveByType("scripted"));
+        results.addAll(visitResolver.resolveByType("scheduled"));
+        results.addAll(visitResolver.resolveByType("normal"));
 
         if (results.size() < 3) {
             int want = new Random().nextBoolean() ? 1 : 2;
