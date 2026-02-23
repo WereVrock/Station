@@ -54,7 +54,6 @@ public class VisitService {
                 deferredVisits.add(new DeferredVisit(
                         vr.character,
                         findVisit(vr),
-                        vr.fireEffect,
                         game.day
                 ));
             }
@@ -104,7 +103,7 @@ public class VisitService {
                         sells,
                         buys,
                         dv.visit.dialogue,
-                        dv.fireEffect,
+                        null,
                         dv.visit.type,
                         dv.visit.sellFood,
                         dv.visit.sellFuel,

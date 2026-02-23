@@ -240,8 +240,8 @@ public class VisitResolver {
                         p.resolveSellFood(),
                         p.resolveSellFuel(),
                         p.resolveBuyFood(),
-                        p.resolveBuyFuel()
-                        ,visit
+                        p.resolveBuyFuel(),
+                        visit
                 );
 
                 debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, "random");
@@ -258,14 +258,13 @@ public class VisitResolver {
     }
 
     public MatchResult evaluateDeferred(
-            String fireEffect,
             List<String> fireReq,
             List<String> tagReq,
             List<String> legacyFire,
             List<String> legacyTags) {
 
         return matcher.evaluate(
-                fireEffect,
+                null,
                 fireReq,
                 tagReq,
                 legacyFire,
