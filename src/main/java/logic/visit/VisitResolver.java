@@ -152,7 +152,7 @@ public class VisitResolver {
                         itemLookup.resolve(trade.sells),
                         itemLookup.resolve(trade.buys),
                         visit.dialogue,
-                        visitMatch.actualFire,
+                        null,
                         visit.type,
                         visit.sellFood,
                         visit.sellFuel,
@@ -165,7 +165,7 @@ public class VisitResolver {
                         visit
                 );
 
-                debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, visitMatch.actualFire);
+                debugger.debugVisit(character, visit, vr.itemsForSale, vr.itemsWanted, null);
                 results.add(vr);
 
                 VisitTriggerContext context =
