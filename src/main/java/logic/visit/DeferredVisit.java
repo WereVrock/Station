@@ -23,9 +23,8 @@ public class DeferredVisit implements Serializable {
 
         MatchResult match = resolver.evaluateDeferred(
                 visit.visitFireRequired,
-                visit.visitRequiredTags,
-                visit.fireRequired,
-                visit.requiredTags
+                visit.visitRequiredTags
+                
         );
 
         return match.success && !character.visitedToday;

@@ -113,9 +113,8 @@ public class VisitResolver {
 
                 MatchResult visitMatch = matcher.evaluate(
                         visit.visitFireRequired,
-                        visit.visitRequiredTags,
-                        visit.fireRequired,
-                        visit.requiredTags
+                        visit.visitRequiredTags
+                        
                 );
 
                 boolean ok;
@@ -256,15 +255,12 @@ public class VisitResolver {
 
     public MatchResult evaluateDeferred(
             List<String> fireReq,
-            List<String> tagReq,
-            List<String> legacyFire,
-            List<String> legacyTags) {
+            List<String> tagReq) {
 
         return matcher.evaluate(
                 fireReq,
-                tagReq,
-                legacyFire,
-                legacyTags
+                tagReq
+                
         );
     }
 }

@@ -35,8 +35,7 @@ public class Visit {
     public List<String> visitFireRequired = new ArrayList<>();
     public List<String> visitRequiredTags = new ArrayList<>();
 
-    public List<String> fireRequired = new ArrayList<>();
-    public List<String> requiredTags = new ArrayList<>();
+   
 
     public List<String> excludedTags = new ArrayList<>();
 

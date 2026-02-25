@@ -11,20 +11,17 @@ public class VisitMatcher {
 
     public MatchResult evaluate(
             List<String> fireReq,
-            List<String> tagReq,
-            List<String> legacyFire,
-            List<String> legacyTags) {
+            List<String> tagReq) {
 
-        List<String> sourceFire = fireReq.isEmpty() ? legacyFire : fireReq;
-        List<String> sourceTags = tagReq.isEmpty() ? legacyTags : tagReq;
+        
 
         MatchResult result = new MatchResult();
-        result.requiredFire = new ArrayList<>(sourceFire);
-        result.requiredTags = new ArrayList<>(sourceTags);
+        result.requiredFire = new ArrayList<>(fireReq);
+        result.requiredTags = new ArrayList<>(tagReq);
         result.actualTags = new ArrayList<>(TagManager.view());
 
-        result.fireOk = fireMatches(sourceFire);
-        result.tagsOk = tagsMatch(sourceTags);
+        result.fireOk = fireMatches(fireReq);
+        result.tagsOk = tagsMatch(tagReq);
         result.success = result.fireOk && result.tagsOk;
 
         return result;

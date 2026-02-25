@@ -85,7 +85,7 @@ public class GameContentValidator {
         validateVisitItems(c, v.sells, "sells");
         validateVisitItems(c, v.buys, "buys");
 
-        validateFireKeys(c, v.fireRequired);
+        
         validateFireKeys(c, v.timerStartFireRequired);
         validateFireKeys(c, v.visitFireRequired);
     }
