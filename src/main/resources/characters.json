@@ -11,14 +11,13 @@
         "visits": [
             {
                 "type": "scripted",
-                "fireRequired": ["strongClean", "weakClean"],
-                "requiredTags": [],
+                "visitFireRequired": ["strongClean", "weakClean"],
+                "visitRequiredTags": [],
                 "minDay": 0,
                 "maxDay": 0,
                 "triggers": [
                     {
                         "event": "VISIT_APPEARS",
-
                         "effect": {
                             "type": "printDialogue",
                             "args": {
@@ -26,8 +25,6 @@
                             }
                         }
                     }
-
-
                 ],
                 "dialogue": [
                     "Ah… this fire is clean. Rare, these days.",
@@ -36,20 +33,18 @@
                 "sells": [{
                         "item": "herbs"
                     }],
-                "buys": [{
-                        "item": "herbs"
-                    }],
+                "buys": [],
                 "goldChange": 0,
-                "portraitOverride": null,
-                "portraitOneTime": false,
-                "allowScriptedVisits": null,
-                "allowScheduledVisits": null,
-                "allowRandomVisits": null
+                "tagsToAdd": [
+                    {
+                        "name": "lioraVisit1"
+                    }
+                ]  
             },
             {
                 "type": "scripted",
-                "fireRequired": ["strongTainted"],
-                "requiredTags": ["lioraVisit1"],
+                "visitFireRequired": ["strongTainted"],
+                "visitRequiredTags": ["lioraVisit1"],
                 "minDay": 0,
                 "maxDay": 0,
                 "dialogue": [
@@ -61,14 +56,9 @@
                         "rarity": "rare"
                     }],
                 "buys": [{
-                        "item": "herbs"
+                        "item": "silkCloth"
                     }],
-                "goldChange": 0,
-                "portraitOverride": null,
-                "portraitOneTime": false,
-                "allowScriptedVisits": null,
-                "allowScheduledVisits": null,
-                "allowRandomVisits": null
+                "goldChange": 0
             }
         ]
     },
@@ -84,8 +74,8 @@
         "visits": [
             {
                 "type": "random",
-                "fireRequired": ["strongTainted", "weakClean"],
-                "requiredTags": [],
+                "visitFireRequired": ["strongTainted", "weakClean"],
+                "visitRequiredTags": [],
                 "minDay": 0,
                 "maxDay": 0,
                 "dialogue": [
@@ -96,19 +86,14 @@
                         "item": "ironOre"
                     }],
                 "buys": [{
-                        "item": "ironOre"
+                        "item": "herbs"
                     }],
-                "goldChange": 0,
-                "portraitOverride": null,
-                "portraitOneTime": false,
-                "allowScriptedVisits": null,
-                "allowScheduledVisits": null,
-                "allowRandomVisits": null
+                "goldChange": 0
             },
             {
                 "type": "scripted",
-                "fireRequired": ["strongClean"],
-                "requiredTags": ["thornVisit1"],
+                "visitFireRequired": ["strongClean"],
+                "visitRequiredTags": ["thornVisit1"],
                 "minDay": 0,
                 "maxDay": 0,
                 "dialogue": [
@@ -117,12 +102,7 @@
                 ],
                 "sells": [],
                 "buys": [],
-                "goldChange": 0,
-                "portraitOverride": null,
-                "portraitOneTime": false,
-                "allowScriptedVisits": null,
-                "allowScheduledVisits": null,
-                "allowRandomVisits": null
+                "goldChange": 0
             }
         ]
     },
@@ -138,8 +118,8 @@
         "visits": [
             {
                 "type": "scripted",
-                "fireRequired": ["weakClean"],
-                "requiredTags": [],
+                "visitFireRequired": ["weakClean"],
+                "visitRequiredTags": [],
                 "minDay": 0,
                 "maxDay": 0,
                 "dialogue": [
@@ -151,17 +131,12 @@
                         "rarity": "rare"
                     }],
                 "buys": [],
-                "goldChange": 0,
-                "portraitOverride": null,
-                "portraitOneTime": false,
-                "allowScriptedVisits": null,
-                "allowScheduledVisits": null,
-                "allowRandomVisits": null
+                "goldChange": 0
             },
             {
                 "type": "scripted",
-                "fireRequired": ["strongTainted"],
-                "requiredTags": ["witchVisit1"],
+                "visitFireRequired": ["strongTainted"],
+                "visitRequiredTags": ["witchVisit1"],
                 "minDay": 0,
                 "maxDay": 0,
                 "dialogue": [
@@ -175,12 +150,7 @@
                 "buys": [{
                         "item": "ancientTalisman"
                     }],
-                "goldChange": 0,
-                "portraitOverride": null,
-                "portraitOneTime": false,
-                "allowScriptedVisits": null,
-                "allowScheduledVisits": null,
-                "allowRandomVisits": null
+                "goldChange": 0
             }
         ]
     },
@@ -196,8 +166,8 @@
         "visits": [
             {
                 "type": "random",
-                "fireRequired": ["weakClean", "strongClean"],
-                "requiredTags": [],
+                "visitFireRequired": ["weakClean", "strongClean"],
+                "visitRequiredTags": [],
                 "minDay": 0,
                 "maxDay": 0,
                 "dialogue": [
@@ -208,19 +178,14 @@
                         "item": "silkCloth"
                     }],
                 "buys": [{
-                        "item": "silkCloth"
+                        "item": "herbs"
                     }],
-                "goldChange": 0,
-                "portraitOverride": null,
-                "portraitOneTime": false,
-                "allowScriptedVisits": null,
-                "allowScheduledVisits": null,
-                "allowRandomVisits": null
+                "goldChange": 0
             },
             {
                 "type": "random",
-                "fireRequired": ["strongTainted"],
-                "requiredTags": ["maraVisit1"],
+                "visitFireRequired": ["strongTainted"],
+                "visitRequiredTags": ["maraVisit1"],
                 "minDay": 0,
                 "maxDay": 0,
                 "dialogue": [
@@ -240,12 +205,7 @@
                 "buys": [{
                         "item": "silkCloth"
                     }],
-                "goldChange": 0,
-                "portraitOverride": null,
-                "portraitOneTime": false,
-                "allowScriptedVisits": null,
-                "allowScheduledVisits": null,
-                "allowRandomVisits": null
+                "goldChange": 0
             }
         ]
     },
@@ -264,22 +224,20 @@
                 "timerStartTags": [],
                 "visitFireRequired": [],
                 "visitRequiredTags": [],
-                "minDays": 2,
-                "maxDays": 4,
+                "delayMinDays": 2,
+                "delayMaxDays": 4,
                 "dialogue": [
                     "You keep the child alive and well fed and they will behave.",
                     "Fuel is harder to find each season. I sell what I can spare."
                 ],
-                "sells": [],
-                "buys": [],
                 "sellFood": 0,
                 "sellFuel": 3,
                 "buyFood": 0,
-                "buyFuel": 0,
-                "tagsToAdd": []
+                "buyFuel": 0
             }
         ]
-    }, {
+    },
+    {
         "id": "cinder_bram",
         "name": "Cinder Bram",
         "background": "Once a sapper in the old wars. Now he drags a half-dead bomb through the ashlands, feeding it fuel so it won’t wake up hungry.",
@@ -291,8 +249,8 @@
         "visits": [
             {
                 "type": "random",
-                "fireRequired": ["strongClean", "weakClean"],
-                "requiredTags": [],
+                "visitFireRequired": ["strongClean", "weakClean"],
+                "visitRequiredTags": [],
                 "minDay": 0,
                 "maxDay": 0,
                 "dialogue": [
@@ -300,44 +258,24 @@
                     "It listens when it’s warm.",
                     "Fuel keeps it dreaming."
                 ],
-                "sells": [],
-                "buys": [],
-                "sellFood": 0,
-                "sellFuel": 0,
-                "buyFood": 0,
                 "buyFuel": 2,
                 "exhaustionText": {
                     "BUY_FUEL": "He presses a hand against the bomb’s cracked shell and exhales. \"Enough. It’s sleeping. Pray it stays that way.\""
                 },
-                "goldChange": 0,
-                "portraitOverride": null,
-                "portraitOneTime": false,
-                "allowScriptedVisits": null,
-                "allowScheduledVisits": null,
-                "allowRandomVisits": null
+                "goldChange": 0
             },
             {
                 "type": "random",
-                "fireRequired": ["strongTainted"],
-                "requiredTags": [],
+                "visitFireRequired": ["strongTainted"],
+                "visitRequiredTags": [],
                 "minDay": 0,
                 "maxDay": 0,
                 "dialogue": [
                     "This fire smells wrong.",
                     "If it wakes… we won’t hear it scream."
                 ],
-                "sells": [],
-                "buys": [],
-                "sellFood": 0,
-                "sellFuel": 0,
-                "buyFood": 0,
                 "buyFuel": 1,
-                "goldChange": 0,
-                "portraitOverride": null,
-                "portraitOneTime": false,
-                "allowScriptedVisits": null,
-                "allowScheduledVisits": null,
-                "allowRandomVisits": null
+                "goldChange": 0
             }
         ]
     },
@@ -357,24 +295,18 @@
                 "timerStartTags": [],
                 "visitFireRequired": ["strongClean", "strongTainted"],
                 "visitRequiredTags": [],
-                "minDays": 1,
-                "maxDays": 2,
+                "delayMinDays": 1,
+                "delayMaxDays": 2,
                 "dialogue": [
                     "I paid for this food with days of my life.",
                     "If you can burn it… then you can afford it.",
                     "Don’t ask what it cost me to carry it this far."
                 ],
-                "sells": [],
-                "buys": [],
                 "sellFood": 25,
-                "sellFuel": 0,
-                "buyFood": 0,
-                "buyFuel": 0,
                 "pricing": {
                     "sellFoodMin": 6,
                     "sellFoodMax": 8
-                },
-                "tagsToAdd": []
+                }
             },
             {
                 "type": "scheduled",
@@ -382,29 +314,22 @@
                 "timerStartTags": [],
                 "visitFireRequired": ["strongClean", "strongTainted"],
                 "visitRequiredTags": [],
-                "minDays": 5,
-                "maxDays": 10,
+                "delayMinDays": 5,
+                "delayMaxDays": 10,
                 "dialogue": [
                     "This is all I have left.",
                     "I barely made it here. Another night on the road and I wouldn’t.",
                     "Take it. Or I starve with it."
                 ],
-                "sells": [],
-                "buys": [],
                 "sellFood": 10,
-                "sellFuel": 0,
-                "buyFood": 0,
-                "buyFuel": 0,
                 "pricing": {
                     "sellFoodMin": 9,
                     "sellFoodMax": 12
-                },
-                "tagsToAdd": []
+                }
             }
         ]
-    }
-
-    , {
+    },
+    {
         "id": "ember_wretch",
         "name": "Ember Wretch",
         "background": "A hollow-eyed survivor who claims the fire noticed him first. He comes once in terror, then only when it remembers you.",
@@ -416,8 +341,8 @@
         "visits": [
             {
                 "type": "scripted",
-                "fireRequired": [],
-                "requiredTags": [],
+                "visitFireRequired": [],
+                "visitRequiredTags": [],
                 "minDay": 0,
                 "maxDay": 0,
                 "dialogue": [
@@ -425,42 +350,27 @@
                     "It watched me before I watched it.",
                     "If I don’t leave something behind… it follows."
                 ],
-                "sells": [],
-                "buys": [],
                 "sellFood": 1,
-                "sellFuel": 0,
-                "buyFood": 0,
-                "buyFuel": 0,
-                "goldChange": 0,
-                "tagsToAdd": [
-                    {
+                "tagsToAdd": [{
                         "name": "emberWretchSeen"
-                    }
-                ]
+                    }]
             },
             {
                 "type": "random",
-                "fireRequired": [],
-                "requiredTags": ["emberWretchSeen"],
+                "visitFireRequired": [],
+                "visitRequiredTags": ["emberWretchSeen"],
                 "minDay": 1,
-                "maxDay": 0,
                 "dialogue": [
                     "You felt it too, didn’t you?",
                     "That pause in the flame.",
                     "It remembers places where it was fed."
                 ],
-                "sells": [],
-                "buys": [],
-                "sellFood": 1,
-                "sellFuel": 0,
-                "buyFood": 0,
-                "buyFuel": 0,
-                "goldChange": 0
+                "sellFood": 1
             },
             {
                 "type": "scripted",
-                "fireRequired": [],
-                "requiredTags": [],
+                "visitFireRequired": [],
+                "visitRequiredTags": [],
                 "minDay": 2,
                 "maxDay": 2,
                 "dialogue": [
@@ -468,23 +378,15 @@
                     "If I return tomorrow, it means the mark is still on me.",
                     "If not… then it finally let go."
                 ],
-                "sells": [],
-                "buys": [],
-                "sellFood": 0,
-                "sellFuel": 0,
-                "buyFood": 0,
-                "buyFuel": 0,
-                "tagsToAdd": [
-                    {
+                "tagsToAdd": [{
                         "name": "emberWretchMark",
                         "days": 1
-                    }
-                ]
+                    }]
             },
             {
                 "type": "scripted",
-                "fireRequired": [],
-                "requiredTags": ["emberWretchMark"],
+                "visitFireRequired": [],
+                "visitRequiredTags": ["emberWretchMark"],
                 "minDay": 3,
                 "maxDay": 3,
                 "dialogue": [
@@ -492,37 +394,22 @@
                     "I tried to sleep. The flame kept breathing in my dreams.",
                     "If it’s still here tomorrow, I won’t come back."
                 ],
-                "sells": [],
-                "buys": [],
-                "sellFood": 0,
-                "sellFuel": 0,
-                "buyFood": 0,
                 "buyFuel": 1
             },
             {
                 "type": "scripted",
-                "fireRequired": [],
-                "requiredTags": [],
+                "visitFireRequired": [],
+                "visitRequiredTags": [],
                 "excludedTags": ["emberWretchMark"],
-                "minDays": 4,
-                "maxDays": 4,
+                "minDay": 4,
+                "maxDay": 4,
                 "dialogue": [
                     "It’s gone.",
                     "For the first time in weeks I slept without hearing the crackling.",
                     "Maybe it chose someone else to remember."
                 ],
-                "sells": [],
-                "buys": [],
-                "sellFood": 0,
-                "sellFuel": 0,
-                "buyFood": 12,
-                "buyFuel": 0
+                "buyFood": 12
             }
         ]
     }
-
 ]
-
-
-
-
