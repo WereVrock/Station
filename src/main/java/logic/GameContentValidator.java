@@ -2,6 +2,7 @@ package logic;
 
 import main.Game;
 import main.*;
+import content.TagSpec;
 
 import java.util.*;
 
@@ -36,8 +37,6 @@ public class GameContentValidator {
         }
     }
 
-    // ===== ITEM VALIDATION =====
-
     private void validateItems() {
 
         Set<String> ids = new HashSet<>();
@@ -60,8 +59,6 @@ public class GameContentValidator {
         }
     }
 
-    // ===== CHARACTER / VISIT VALIDATION =====
-
     private void validateCharacters() {
 
         for (GameCharacter c : game.characters) {
@@ -69,6 +66,8 @@ public class GameContentValidator {
             if (c.id == null || c.id.isBlank()) {
                 errors.add("Character with missing id: " + c.name);
             }
+
+            if (c.visits == null) continue;
 
             for (Visit v : c.visits) {
                 validateVisit(c, v);
@@ -85,12 +84,19 @@ public class GameContentValidator {
         validateVisitItems(c, v.sells, "sells");
         validateVisitItems(c, v.buys, "buys");
 
-        
         validateFireKeys(c, v.timerStartFireRequired);
         validateFireKeys(c, v.visitFireRequired);
+
+        validateTagStrings(c, v.timerStartTags, "timerStartTags");
+        validateTagStrings(c, v.visitRequiredTags, "visitRequiredTags");
+        validateTagStrings(c, v.excludedTags, "excludedTags");
+
+        validateTagSpecs(c, v.tagsToAdd);
     }
 
     private void validateVisitItems(GameCharacter c, List<VisitItem> items, String side) {
+
+        if (items == null) return;
 
         for (VisitItem vi : items) {
 
@@ -119,6 +125,8 @@ public class GameContentValidator {
 
     private void validateFireKeys(GameCharacter c, List<String> keys) {
 
+        if (keys == null) return;
+
         for (String k : keys) {
             if (k == null || k.isBlank()) {
                 errors.add("Null/blank fire key in visit for character: " + c.name);
@@ -135,7 +143,39 @@ public class GameContentValidator {
         }
     }
 
-    // ===== HELPERS =====
+    private void validateTagStrings(GameCharacter c, List<String> tags, String field) {
+
+        if (tags == null) return;
+
+        for (String t : tags) {
+            if (t == null || t.isBlank()) {
+                errors.add("Null/blank tag in " + field +
+                        " for character: " + c.name);
+            }
+        }
+    }
+
+    private void validateTagSpecs(GameCharacter c, List<TagSpec> specs) {
+
+        if (specs == null) return;
+
+        for (TagSpec spec : specs) {
+
+            if (spec == null) {
+                errors.add("Null TagSpec in visit for character: " + c.name);
+                continue;
+            }
+
+            if (spec.name == null || spec.name.isBlank()) {
+                errors.add("TagSpec with missing name in visit for character: " + c.name);
+            }
+
+            if (spec.days != null && spec.days < 0) {
+                warnings.add("Negative tag duration for '" + spec.name +
+                        "' in character: " + c.name);
+            }
+        }
+    }
 
     private Item findItem(String ref) {
         for (Item i : game.items) {
