@@ -31,7 +31,7 @@
     "name": "Ancient Talisman",
     "type": "relic",
     "fireStrength": "STRONG",
-    "fireEffect": "effect",
+    "fireEffect": "Tainted",
     "burnable": true,
     "tags": ["magical", "ritual"]
   },
@@ -40,7 +40,7 @@
     "name": "Iron Ore",
     "type": "goods",
     "fireStrength": "WEAK",
-    "fireEffect": "effect",
+    "fireEffect": "Smell of Metal",
     "burnable": true,
     "tags": ["metal", "smithing"]
   },
@@ -58,7 +58,7 @@
     "name": "Mystic Scroll",
     "type": "relic",
     "fireStrength": "STRONG",
-    "fireEffect": "effect",
+    "fireEffect": "Arcanic Smell",
     "burnable": true,
     "tags": ["arcane", "ritual"]
   },
@@ -67,7 +67,7 @@
     "name": "Bone Charm",
     "type": "trinket",
     "fireStrength": "STRONG",
-    "fireEffect": "effect",
+    "fireEffect": "Tainted",
     "burnable": true,
     "tags": ["smells_of_death", "ritual"]
   },
@@ -76,7 +76,7 @@
     "name": "Ashen Ring",
     "type": "ring",
     "fireStrength": "WEAK",
-    "fireEffect": "effect",
+    "fireEffect": "Tainted",
     "burnable": true,
     "tags": ["ashes", "worn"]
   },

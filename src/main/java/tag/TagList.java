@@ -3,101 +3,101 @@ package tag;
 import java.io.Serializable;
 import java.util.*;
 
-/**
- * Internal helper for storing and manipulating tags.
- * Name is the true identity of a Tag.
- * Duplicate names are not allowed.
- */
 class TagList implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // Name is identity → use map for correctness + performance
-    private final Map<String, Tag> tagsByName = new HashMap<>();
+    private final Map<String, Tag> tagsByNormalizedName = new HashMap<>();
+
+    private String normalize(String name) {
+        if (name == null) return null;
+
+        return name
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("[\\s/|\\-]", "")
+                .trim();
+    }
 
     boolean add(Tag tag) {
         Objects.requireNonNull(tag);
 
-        if (tagsByName.containsKey(tag.getName())) {
-            return false; // duplicate name not allowed
+        String key = normalize(tag.getName());
+
+        if (tagsByNormalizedName.containsKey(key)) {
+            return false;
         }
 
-        tagsByName.put(tag.getName(), tag);
+        tagsByNormalizedName.put(key, tag);
         return true;
     }
 
-    // ===== NAME-BASED =====
-
     boolean removeByName(String name) {
-        return tagsByName.remove(name) != null;
+        return tagsByNormalizedName.remove(normalize(name)) != null;
     }
 
     boolean containsByName(String name) {
-        return tagsByName.containsKey(name);
+        return tagsByNormalizedName.containsKey(normalize(name));
     }
 
     Tag getByName(String name) {
-        return tagsByName.get(name);
+        return tagsByNormalizedName.get(normalize(name));
     }
 
-    // ===== ID-BASED (COMPATIBILITY ONLY) =====
-
     boolean removeById(String uniqueId) {
-        String key = findNameById(uniqueId);
+        String key = findKeyById(uniqueId);
         if (key == null) return false;
-        tagsByName.remove(key);
+        tagsByNormalizedName.remove(key);
         return true;
     }
 
     boolean containsById(String uniqueId) {
-        return findNameById(uniqueId) != null;
+        return findKeyById(uniqueId) != null;
     }
 
-    private String findNameById(String uniqueId) {
-        for (Tag tag : tagsByName.values()) {
-            if (tag.getUniqueId().equals(uniqueId)) {
-                return tag.getName();
+    private String findKeyById(String uniqueId) {
+        for (Map.Entry<String, Tag> e : tagsByNormalizedName.entrySet()) {
+            if (e.getValue().getUniqueId().equals(uniqueId)) {
+                return e.getKey();
             }
         }
         return null;
     }
 
-    // ===== SYSTEM =====
-
     void update(TagUpdater updater) {
-        List<Tag> list = new ArrayList<>(tagsByName.values());
+        List<Tag> list = new ArrayList<>(tagsByNormalizedName.values());
         updater.update(list);
 
-        // rebuild map in case expiration removed items
-        tagsByName.clear();
+        tagsByNormalizedName.clear();
+
         for (Tag tag : list) {
-            tagsByName.put(tag.getName(), tag);
+            tagsByNormalizedName.put(normalize(tag.getName()), tag);
         }
     }
 
     List<Tag> export() {
-        return new ArrayList<>(tagsByName.values());
+        return new ArrayList<>(tagsByNormalizedName.values());
     }
 
     void importTags(List<Tag> importedTags) {
-        tagsByName.clear();
+        tagsByNormalizedName.clear();
 
         for (Tag tag : importedTags) {
-            // Enforce uniqueness even during import
-            if (!tagsByName.containsKey(tag.getName())) {
-                tagsByName.put(tag.getName(), tag);
+            String key = normalize(tag.getName());
+
+            if (!tagsByNormalizedName.containsKey(key)) {
+                tagsByNormalizedName.put(key, tag);
             }
         }
     }
 
     List<Tag> view() {
-        return Collections.unmodifiableList(new ArrayList<>(tagsByName.values()));
+        return Collections.unmodifiableList(new ArrayList<>(tagsByNormalizedName.values()));
     }
 
     void clear() {
-        tagsByName.clear();
+        tagsByNormalizedName.clear();
     }
 
     int size() {
-        return tagsByName.size();
+        return tagsByNormalizedName.size();
     }
 }
